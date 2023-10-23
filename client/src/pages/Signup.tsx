@@ -1,27 +1,32 @@
 import { useState } from 'react'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { Link, useNavigate } from 'react-router-dom'
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 
 import { SendCredentialsForm } from '../components/common/SendCredentialsForm'
 import { Wrapper } from './Login'
-import { auth } from '../firebase'
+import { auth, db } from '../firebase'
 
 const useSignupForm = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
-
-  const sendCredentials = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const { user } = userCredential
-        navigate('/')
+  const sendCredentials = async () => {
+    try {
+      const { user } = await createUserWithEmailAndPassword(auth, email, password)
+      const userDocRef = doc(collection(db, 'users'), user.email)
+      await setDoc(userDocRef, {
+        id: user.uid,
+        email: user.email,
+        name: ''
       })
-      .catch((error) => {
-        const errorCode = error.code
-        const errorMessage = error.message
-      })
+      navigate('/')
+    } catch (error) {
+      const errorCode = error.code
+      const errorMessage = error.message
+      // eslint-disable-next-line no-console
+      console.warn({ errorCode, errorMessage })
+    }
   }
 
   return {
