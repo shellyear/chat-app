@@ -8,7 +8,9 @@ Logger.init(LogLevel.DEBUG)
 const DOMAIN = '.'
 
 type User = {
-    [x: string]: Socket
+    id: string
+    email: string
+    name: string
 }
 
 type IMessage = {
@@ -30,17 +32,17 @@ const io = new Server(httpServer, {
     cors: { origin: '*' }
 })
 
-const users: User = {}; // Store connected users
+const userSockets: Map<string, Socket> = new Map(); // Store connected users
 
 io.on('connect', (socket) => {
     Logger.info('a user connected', DOMAIN)
 
-    socket.on(SocketEvents.SET_USER, (user) => {
-        users[user.email] = socket
+    socket.on(SocketEvents.SET_USER, (user: User) => {
+        userSockets.set(user.email, socket)
     })
 
     socket.on(SocketEvents.PRIVATE_MESSAGE, (msg: IMessage) => {
-        const targetSocket = users[msg.receiverId]
+        const targetSocket = userSockets.get(msg.receiverId)
         if (targetSocket) {
             targetSocket.emit(SocketEvents.PRIVATE_MESSAGE, {
                 message: msg.message,
