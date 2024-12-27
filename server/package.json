@@ -12,9 +12,17 @@
   "author": "Nurbek Yelesh",
   "license": "ISC",
   "dependencies": {
-    "socket.io": "^4.7.2"
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.2",
+    "socket.io": "^4.7.2",
+    "twilio": "^5.4.0",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/ws": "^8.5.13",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
