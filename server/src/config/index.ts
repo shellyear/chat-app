@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 const Config = {
   NODE_ENV: process.env.NODE_ENV || "development",
   PORT: 3000,
@@ -7,6 +9,11 @@ const Config = {
   TWILLIO_PHONE_NUMBER:
     process.env.TWILLIO_PHONE_NUMBER || "twillio_phone_number",
   COOKIE_DOMAIN: "api.chatapp.one",
+  REDIS_PUBLIC_ENDPOINT:
+    process.env.REDIS_PUBLIC_ENDPOINT || "host_port_endpoint",
+  REDIS_USER_PASSWORD: process.env.REDIS_USER_PASSWORD || "redis_user_password",
 };
+
+console.log({ Config });
 
 export default Config;

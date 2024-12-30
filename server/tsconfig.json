@@ -7,7 +7,8 @@
     "rootDir": "./src",
     "strict": true,
     "sourceMap": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "typeRoots": ["@types"]
   },
   "include": ["src", "@types"],
   "exclude": ["node_modules"]

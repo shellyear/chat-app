@@ -6,10 +6,13 @@ import routes from "./routes";
 import Config from "./config";
 import cookieParser from "cookie-parser";
 import sessionMiddleware from "./middlewares/session";
+import dotenv from "dotenv";
 
 Logger.init(LogLevel.DEBUG);
 
 const DOMAIN = ".";
+
+dotenv.config();
 
 const app = express();
 
