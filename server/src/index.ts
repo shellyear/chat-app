@@ -4,18 +4,23 @@ import mongoose from "mongoose";
 import cors from "cors";
 import routes from "./routes";
 import Config from "./config";
+import cookieParser from "cookie-parser";
+import sessionMiddleware from "./middlewares/session";
 
 Logger.init(LogLevel.DEBUG);
 
 const DOMAIN = ".";
 
 const app = express();
+
 app.use(
   cors({
     origin: "*",
     credentials: true,
   })
 );
+app.use(cookieParser());
+app.use(sessionMiddleware);
 
 mongoose.connect(Config.MONGO_URL).then(() => {
   Logger.info(`Connected to Mongodb on ${Config.MONGO_URL}`, DOMAIN);

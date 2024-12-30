@@ -2,35 +2,66 @@ import express, { Request, Response } from "express";
 import { generateCode } from "../utils/generateCode";
 import User from "../models/User";
 import smsService from "../services/smsService";
+import redisClient from "../services/redisClient";
+import {
+  DEFAULT_EXPIRATION,
+  PERSISTENT_EXPIRATION,
+  SESSION_COOKIE,
+} from "../constants/session";
+import sessionService from "../services/sessionService";
+import Config from "../config";
+import Logger from "../logger";
+
+const DOMAIN = "authRoutes";
 
 const router = express.Router();
 
+/* For both login and register to simplify the flow */
 router.post(
-  "/register",
+  "/login",
   async (
     req: Request<
       {},
       {},
       {
         phoneNumber: string;
+        keepMeSignedIn: boolean;
       }
     >,
     res
   ) => {
-    const { phoneNumber } = req.body;
+    const { phoneNumber, keepMeSignedIn } = req.body;
 
     try {
+      const existingUser = await User.findOne({ phoneNumber });
       const verificationCode = generateCode();
+      const expirationTime = keepMeSignedIn
+        ? PERSISTENT_EXPIRATION
+        : DEFAULT_EXPIRATION;
 
-      const user = new User({ phoneNumber, verificationCode });
-      await user.save();
+      if (existingUser) {
+        await redisClient.set(phoneNumber, verificationCode, {
+          EX: expirationTime,
+        });
+
+        await smsService.sendVerificationCode(phoneNumber, verificationCode);
+
+        res.status(200).json({
+          message: "Verification code sent to your phone",
+          code: "VERIFICATION_CODE_SENT",
+        });
+
+        return;
+      }
+
+      await redisClient.set(phoneNumber, verificationCode, {
+        EX: expirationTime,
+      });
+
+      const newUser = new User({ phoneNumber });
+      await newUser.save();
 
       await smsService.sendVerificationCode(phoneNumber, verificationCode);
-
-      res.status(200).json({
-        message: "Verification code sent to your phone",
-        code: "VERIFICATION_CODE_SENT",
-      });
     } catch (error) {
       console.error(error);
       res.status(500).json({
@@ -50,31 +81,52 @@ router.post(
       {
         phoneNumber: string;
         code: string;
+        keepMeSignedIn: boolean;
       }
     >,
     res: Response
   ) => {
-    const { phoneNumber, code } = req.body;
+    const { phoneNumber, code, keepMeSignedIn } = req.body;
 
     try {
       const user = await User.findOne({ phoneNumber });
 
       if (!user) {
+        /* This should not happen if the user always registers via the /login route first. */
         res
           .status(404)
           .json({ message: "User not found", code: "USER_NOT_FOUND" });
         return;
       }
 
-      if (user.verificationCode === code) {
-        user.verified = true;
-        user.verificationCode = undefined;
-        await user.save();
+      const storedVerificationCode = await redisClient.get(phoneNumber);
 
-        res.status(200).json({
-          message: "User verified successfully",
-          code: "VERIFY_SUCCESS",
+      if (!storedVerificationCode) {
+        res.status(400).json({
+          message: "Verification code has expired",
+          code: "CODE_EXPIRED",
         });
+        return;
+      }
+
+      if (storedVerificationCode === code) {
+        const newSessionId = await sessionService.createSession(
+          "active",
+          keepMeSignedIn
+        );
+
+        res.cookie(SESSION_COOKIE, newSessionId, {
+          httpOnly: true,
+          secure: Config.NODE_ENV === "production",
+          sameSite: Config.NODE_ENV === "production" ? "none" : "strict",
+          maxAge: keepMeSignedIn
+            ? PERSISTENT_EXPIRATION * 1000
+            : DEFAULT_EXPIRATION * 1000,
+          domain:
+            Config.NODE_ENV === "production" ? Config.COOKIE_DOMAIN : undefined,
+        });
+
+        res.redirect("/chats");
       } else {
         res.status(400).json({
           message: "Invalid verification code",
@@ -82,7 +134,7 @@ router.post(
         });
       }
     } catch (error) {
-      console.error(error);
+      Logger.error(`Error while verifying code: ${error}`, DOMAIN);
       res.status(500).json({
         message: "Failed to verify code",
         code: "INVALID_VERIFICATION_CODE",
@@ -90,5 +142,29 @@ router.post(
     }
   }
 );
+
+router.post("/logout", async (req, res) => {
+  const sessionId = req.cookies[SESSION_COOKIE];
+
+  try {
+    await sessionService.deleteSession(sessionId);
+
+    res.clearCookie(SESSION_COOKIE, {
+      httpOnly: true,
+      secure: Config.NODE_ENV === "production",
+      sameSite: Config.NODE_ENV === "production" ? "none" : "strict",
+      domain:
+        Config.NODE_ENV === "production" ? Config.COOKIE_DOMAIN : undefined,
+    });
+
+    res.redirect("/login");
+  } catch (error) {
+    Logger.error(`Logout error: ${error}`, DOMAIN);
+    res.status(500).json({
+      message: "Failed to log out. Please try again later.",
+      code: "LOGOUT_FAIL",
+    });
+  }
+});
 
 export default router;
