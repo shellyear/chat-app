@@ -8,6 +8,10 @@ import { v4 as uuidv4 } from "uuid";
 
 const DOMAIN = "sessionService";
 
+type ISessionData = {
+  userId: string;
+};
+
 type IData = string | number | Array<any> | Object;
 
 const SESSION_PREFIX = "session:";
@@ -36,7 +40,7 @@ const createSession = async (
   }
 };
 
-const getSession = async (sessionId: string): Promise<string | null> => {
+const getSession = async (sessionId: string): Promise<ISessionData | null> => {
   try {
     const sessionData = await redisClient.get(`${SESSION_PREFIX}${sessionId}`);
     return sessionData ? JSON.parse(sessionData) : null;

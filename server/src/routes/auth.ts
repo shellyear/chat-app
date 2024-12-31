@@ -111,7 +111,7 @@ router.post(
 
       if (storedVerificationCode === code) {
         const newSessionId = await sessionService.createSession(
-          "active",
+          { userId: user._id },
           keepMeSignedIn
         );
 
@@ -126,7 +126,14 @@ router.post(
             Config.NODE_ENV === "production" ? Config.COOKIE_DOMAIN : undefined,
         });
 
-        res.redirect("/chats");
+        res.status(200).json({
+          message: "Verification successful",
+          user: {
+            id: user._id,
+            phoneNumber: user.phoneNumber,
+            username: user.username,
+          },
+        });
       } else {
         res.status(400).json({
           message: "Invalid verification code",
@@ -142,6 +149,43 @@ router.post(
     }
   }
 );
+
+router.get("/session", async (req, res) => {
+  try {
+    const sessionID = req.cookies[SESSION_COOKIE];
+
+    if (!sessionID) {
+      res.status(401).json({ message: "Not authenticated" });
+      return;
+    }
+
+    const sessionData = await sessionService.getSession(sessionID);
+
+    if (!sessionData) {
+      res.status(401).json({ message: "Not authenticated" });
+      return;
+    }
+
+    const user = await User.findById(sessionData.userId);
+
+    if (!user) {
+      res.status(401).json({ message: "Not authenticated" });
+      return;
+    }
+
+    res.status(200).json({
+      user: {
+        id: user._id,
+        phoneNumber: user.phoneNumber,
+        username: user.username,
+        profilePicture: user.profilePicture,
+      },
+    });
+  } catch (error) {
+    Logger.error(`Error fetching session: ${error}`, DOMAIN);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 router.post("/logout", async (req, res) => {
   const sessionId = req.cookies[SESSION_COOKIE];
