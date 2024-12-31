@@ -10,19 +10,15 @@ const DOMAIN = "sessionService";
 
 type ISessionData = {
   userId: string;
+  isPersistent: boolean;
 };
-
-type IData = string | number | Array<any> | Object;
 
 const SESSION_PREFIX = "session:";
 
-const createSession = async (
-  data: IData = "active",
-  isPersistent: boolean = false
-) => {
+const createSession = async (data: ISessionData) => {
   try {
     const sessionID = uuidv4();
-    const expirationTime = isPersistent
+    const expirationTime = data.isPersistent
       ? PERSISTENT_EXPIRATION
       : DEFAULT_EXPIRATION;
 
@@ -52,7 +48,7 @@ const getSession = async (sessionId: string): Promise<ISessionData | null> => {
 
 const updateSession = async (
   sessionId: string,
-  newData: IData = "active",
+  newData: ISessionData,
   isPersistent: boolean = false
 ) => {
   try {

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useMemo } from 'react'
+import React, { createContext, useState, useEffect, useMemo, useContext } from 'react'
 import axios from 'axios'
 
 import { IUser } from '../types/user'
@@ -38,6 +38,14 @@ function AuthProvider({ children }: IAuthProvider) {
   const contextValue = useMemo(() => ({ user, loading, setUser }), [user, loading])
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+}
+
+export const useAuth = (): IAuthContext => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
 }
 
 export default AuthProvider

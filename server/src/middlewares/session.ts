@@ -15,7 +15,6 @@ const sessionMiddleware = async (
   next: NextFunction
 ) => {
   const sessionId = req.cookies[SESSION_COOKIE];
-  const isPersistent = req.body.keepMeSignedIn;
 
   if (!sessionId) {
     req.session = undefined;
@@ -37,7 +36,9 @@ const sessionMiddleware = async (
 
     req.session = sessionData;
 
-    const expirationTime = isPersistent ? 30 * 24 * 60 * 60 : undefined; // 30 days in seconds, or undefined
+    const expirationTime = sessionData.isPersistent
+      ? 30 * 24 * 60 * 60
+      : undefined; // 30 days in seconds, or undefined
     await sessionService.refreshSession(sessionId, expirationTime);
 
     next();

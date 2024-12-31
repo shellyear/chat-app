@@ -110,10 +110,10 @@ router.post(
       }
 
       if (storedVerificationCode === code) {
-        const newSessionId = await sessionService.createSession(
-          { userId: user._id },
-          keepMeSignedIn
-        );
+        const newSessionId = await sessionService.createSession({
+          userId: user._id,
+          isPersistent: keepMeSignedIn,
+        });
 
         res.cookie(SESSION_COOKIE, newSessionId, {
           httpOnly: true,

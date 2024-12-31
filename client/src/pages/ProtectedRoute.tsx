@@ -1,21 +1,19 @@
-import { Outlet, useNavigate } from 'react-router-dom'
+import React, { useContext } from 'react'
+import { Navigate, useLocation } from 'react-router-dom'
 
-export function ProtectedRoute() {
-  // const [user, loading] = useAuthState(auth)
-  const navigate = useNavigate()
+import { AuthContext } from '../contexts/AuthContext'
 
-  // if (!user) {
-  //   navigate('/login')
-  //   return null
-  // }
+type ProtectedRouteProps = {
+  children: React.JSX.Element
+}
 
-  // if (loading) {
-  //   return (
-  //     <div className="loading-component">
-  //       <p>Loading...</p>
-  //     </div>
-  //   )
-  // }
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { user } = useContext(AuthContext)
+  const location = useLocation()
+  console.log({ user })
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />
+  }
 
-  return <Outlet context={{}} />
+  return children
 }
