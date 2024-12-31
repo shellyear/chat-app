@@ -1,16 +1,9 @@
-import axios from 'axios'
-
-import { getSession } from './auth'
-import Config from '../config'
-
-export const apiClient = axios.create({
-  baseURL: `${Config.API_BASE_URL}/api`,
-  withCredentials: true
-})
+import { getSession, login } from './auth'
 
 const API = {
   auth: {
-    getSession
+    getSession,
+    login
   }
 }
 

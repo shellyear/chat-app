@@ -1,64 +1,103 @@
-'use client'
+import { useEffect, useState, ChangeEvent, FormEvent } from 'react'
+import { FaChevronDown } from 'react-icons/fa'
+import { IoChatbox } from 'react-icons/io5'
+import parsePhoneNumber, { CountryCode } from 'libphonenumber-js'
 
-import { useState } from 'react'
+import { countries } from '../constants/countries'
+import API from '../api'
 
 export default function Login() {
-  const [countryCode, setCountryCode] = useState('+1')
+  const browserLanguage = navigator.language
+  const [country, setCountry] = useState<(typeof countries)[0] | undefined>()
   const [phoneNumber, setPhoneNumber] = useState('')
   const [keepSignedIn, setKeepSignedIn] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [error, setError] = useState('')
 
-  const countries = [
-    { name: 'United States', code: '+1', flag: '🇺🇸' },
-    { name: 'United Kingdom', code: '+44', flag: '🇬🇧' },
-    { name: 'Canada', code: '+1', flag: '🇨🇦' }
-    // Add more countries as needed
-  ]
+  useEffect(() => {
+    const foundCountry = countries.find((country) => browserLanguage.includes(country.code))
+    setCountry(foundCountry)
+    setPhoneNumber(foundCountry.phoneCode)
+  }, [browserLanguage])
+
+  useEffect(() => {
+    if (country) {
+      setPhoneNumber(country.phoneCode)
+    }
+  }, [country])
+
+  const handlePhoneNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+
+    if (country && value.startsWith(country.phoneCode)) {
+      setPhoneNumber(`${country.phoneCode} ${value.slice(country.phoneCode.length + ' '.length)}`)
+    }
+
+    if (error) setError('')
+  }
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (phoneNumber && country) {
+      try {
+        const parsedPhoneNumber = parsePhoneNumber(phoneNumber, country.code as CountryCode)
+
+        if (parsedPhoneNumber.isValid()) {
+          await API.auth.login(phoneNumber, keepSignedIn)
+        } else {
+          setError('Number is not valid')
+        }
+      } catch (error) {
+        setError("Couldn't process the request, please try again")
+      }
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-blue-500 rounded-full mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-800">Telegram</h1>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="p-8 w-full max-w-md">
+        <div className="flex flex-col gap-6	justify-items-center items-center text-center mb-6">
+          <IoChatbox size={62} />
+          <h1 className="text-2xl font-bold text-gray-800">Chatogram</h1>
         </div>
         <p className="text-gray-600 text-center mb-6">Please confirm your country code and enter your phone number.</p>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="relative">
             <button
               type="button"
               className="w-full text-left bg-gray-50 px-4 py-2 rounded-md flex items-center justify-between"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-              <span>{countryCode}</span>
-              {/* <ChevronDown className="h-5 w-5 text-gray-400" /> */}
+              {country && <span>{country.label}</span>}
+              <FaChevronDown className="h-4 w-4 text-gray-400" />
             </button>
             {isDropdownOpen && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
+              <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-56 overflow-y-auto">
                 {countries.map((country) => (
-                  <button
-                    key={country.name}
-                    type="button"
-                    className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
+                  <li
+                    key={country.label}
+                    className="w-full px-4 py-2 hover:bg-gray-100 flex justify-between space-x-2"
                     onClick={() => {
-                      setCountryCode(country.code)
+                      setCountry(country)
                       setIsDropdownOpen(false)
+                      setError('')
                     }}
                   >
                     <span>{country.flag}</span>
-                    <span>{country.name}</span>
-                    <span className="text-gray-500">{country.code}</span>
-                  </button>
+                    <span>{country.label}</span>
+                    <span className="text-gray-500 text-right">{country.phoneCode}</span>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
           </div>
           <input
             type="tel"
+            required
             placeholder="Your phone number"
             className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            onChange={handlePhoneNumberChange}
           />
           <label id="keepMeSignedIn" className="flex items-center space-x-2">
             <input
@@ -70,17 +109,12 @@ export default function Login() {
             />
             <span className="text-gray-700">Keep me signed in</span>
           </label>
+          {error && <div className="text-red-400 text-center">{error}</div>}
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
           >
             Continue
-          </button>
-          <button
-            type="button"
-            className="w-full text-blue-500 py-2 rounded-md hover:bg-blue-50 transition duration-300"
-          >
-            Pokračovat v Češtině
           </button>
         </form>
       </div>

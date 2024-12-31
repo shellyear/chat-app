@@ -49,6 +49,8 @@ module.exports = {
 
     'react/require-default-props': 'off', // defaultProps are not used in that project
     'react/jsx-props-no-spreading': 'off', // allow spreading props
+    'jsx-a11y/no-noninteractive-element-interactions': 'off',
+    'jsx-a11y/click-events-have-key-events': 'off',
 
     // probably will be enabled (?)
     'no-shadow': 'off'
