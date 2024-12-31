@@ -2,7 +2,7 @@ import "dotenv/config";
 
 const Config = {
   NODE_ENV: process.env.NODE_ENV || "development",
-  PORT: 3000,
+  PORT: 5000,
   MONGO_URL: "mongodb://localhost:27017/chatapp",
   TWILLIO_SID: process.env.TWILLIO_SID || "twillio_sid",
   TWILLIO_AUTH_TOKEN: process.env.TWILLIO_AUTH_TOKEN || "twillio_auth_token",
