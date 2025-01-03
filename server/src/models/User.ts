@@ -4,14 +4,14 @@ type IImageUrl = string;
 
 export interface IUser extends Document {
   _id: string;
-  phoneNumber: string;
+  email: string;
   username?: string;
   profilePicture?: IImageUrl;
   photos?: IImageUrl[];
 }
 
 const UserSchema = new Schema<IUser>({
-  phoneNumber: { type: String, required: true, unique: true },
+  email: { type: String, unique: true },
   username: { type: String, unique: true },
   profilePicture: { type: String },
   photos: [{ type: String }],

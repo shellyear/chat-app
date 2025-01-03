@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import { generateCode } from "../utils/generateCode";
 import User from "../models/User";
-import smsService from "../services/smsService";
 import redisClient from "../services/redisClient";
 import {
   DEFAULT_EXPIRATION,
@@ -11,6 +10,7 @@ import {
 import sessionService from "../services/sessionService";
 import Config from "../config";
 import Logger from "../logger";
+import emailService from "../services/emailService";
 
 const DOMAIN = "authRoutes";
 
@@ -24,47 +24,47 @@ router.post(
       {},
       {},
       {
-        phoneNumber: string;
+        email: string;
         keepMeSignedIn: boolean;
       }
     >,
     res
   ) => {
-    const { phoneNumber, keepMeSignedIn } = req.body;
+    const { email, keepMeSignedIn } = req.body;
 
     try {
-      const existingUser = await User.findOne({ phoneNumber });
+      const existingUser = await User.findOne({ email });
       const verificationCode = generateCode();
       const expirationTime = keepMeSignedIn
         ? PERSISTENT_EXPIRATION
         : DEFAULT_EXPIRATION;
 
       if (existingUser) {
-        await redisClient.set(phoneNumber, verificationCode, {
+        await redisClient.set(email, verificationCode, {
           EX: expirationTime,
         });
 
-        await smsService.sendVerificationCode(phoneNumber, verificationCode);
+        await emailService.sendVerificationEmail(email, verificationCode);
 
         res.status(200).json({
-          message: "Verification code sent to your phone",
+          message: "Verification code sent to your email",
           code: "VERIFICATION_CODE_SENT",
         });
 
         return;
       }
 
-      await redisClient.set(phoneNumber, verificationCode, {
+      await redisClient.set(email, verificationCode, {
         EX: expirationTime,
       });
 
-      const newUser = new User({ phoneNumber });
+      const newUser = new User({ email });
       await newUser.save();
 
-      await smsService.sendVerificationCode(phoneNumber, verificationCode);
+      await emailService.sendVerificationEmail(email, verificationCode);
 
       res.status(200).json({
-        message: "Verification code sent to your phone",
+        message: "Verification code sent to your email",
         code: "VERIFICATION_CODE_SENT",
       });
     } catch (error) {
@@ -84,17 +84,17 @@ router.post(
       {},
       {},
       {
-        phoneNumber: string;
+        email: string;
         code: string;
         keepMeSignedIn: boolean;
       }
     >,
     res: Response
   ) => {
-    const { phoneNumber, code, keepMeSignedIn } = req.body;
+    const { email, code, keepMeSignedIn } = req.body;
 
     try {
-      const user = await User.findOne({ phoneNumber });
+      const user = await User.findOne({ email });
 
       if (!user) {
         /* This should not happen if the user always registers via the /login route first. */
@@ -104,7 +104,7 @@ router.post(
         return;
       }
 
-      const storedVerificationCode = await redisClient.get(phoneNumber);
+      const storedVerificationCode = await redisClient.get(email);
 
       if (!storedVerificationCode) {
         res.status(400).json({
@@ -135,7 +135,7 @@ router.post(
           message: "Verification successful",
           user: {
             id: user._id,
-            phoneNumber: user.phoneNumber,
+            email: user.email,
             username: user.username,
           },
         });
@@ -181,7 +181,7 @@ router.get("/session", async (req, res) => {
     res.status(200).json({
       user: {
         id: user._id,
-        phoneNumber: user.phoneNumber,
+        email: user.email,
         username: user.username,
         profilePicture: user.profilePicture,
       },

@@ -12,7 +12,7 @@ function Login() {
         {verificationCodeSent ? (
           <VerificationSubmit />
         ) : (
-          <LoginForm userLocation="KZ" setVerificationCodeSent={setVerificationCodeSent} />
+          <LoginForm setVerificationCodeSent={setVerificationCodeSent} />
         )}
       </div>
     </div>
