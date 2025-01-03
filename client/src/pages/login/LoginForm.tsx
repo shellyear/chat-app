@@ -1,24 +1,29 @@
-import { useEffect, useState, ChangeEvent, FormEvent } from 'react'
+import { useEffect, useState, ChangeEvent, FormEvent, Dispatch, SetStateAction } from 'react'
 import { FaChevronDown } from 'react-icons/fa'
 import { IoChatbox } from 'react-icons/io5'
 import parsePhoneNumber, { CountryCode } from 'libphonenumber-js'
 
-import { countries } from '../constants/countries'
-import API from '../api'
+import { allowedCountries as countries } from '../../constants/countries'
+import API from '../../api'
 
-export default function Login() {
-  const browserLanguage = navigator.language
+interface ILoginForm {
+  userLocation: string
+  setVerificationCodeSent: Dispatch<SetStateAction<boolean>>
+}
+
+export default function LoginForm({ userLocation, setVerificationCodeSent }: ILoginForm) {
   const [country, setCountry] = useState<(typeof countries)[0] | undefined>()
   const [phoneNumber, setPhoneNumber] = useState('')
   const [keepSignedIn, setKeepSignedIn] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const foundCountry = countries.find((country) => browserLanguage.includes(country.code))
+    const foundCountry = countries.find((country) => userLocation.includes(country.code))
     setCountry(foundCountry)
     setPhoneNumber(foundCountry.phoneCode)
-  }, [browserLanguage])
+  }, [userLocation])
 
   useEffect(() => {
     if (country) {
@@ -41,14 +46,19 @@ export default function Login() {
     if (phoneNumber && country) {
       try {
         const parsedPhoneNumber = parsePhoneNumber(phoneNumber, country.code as CountryCode)
-
         if (parsedPhoneNumber.isValid()) {
-          await API.auth.login(phoneNumber, keepSignedIn)
+          setLoading(true)
+          const response = await API.auth.login(parsedPhoneNumber.number, keepSignedIn)
+          if (response.status === 200) {
+            setVerificationCodeSent(true)
+          }
         } else {
           setError('Number is not valid')
         }
       } catch (error) {
         setError("Couldn't process the request, please try again")
+      } finally {
+        setLoading(false)
       }
     }
   }
@@ -112,6 +122,7 @@ export default function Login() {
           {error && <div className="text-red-400 text-center">{error}</div>}
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
           >
             Continue

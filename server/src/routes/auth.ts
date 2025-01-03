@@ -62,6 +62,11 @@ router.post(
       await newUser.save();
 
       await smsService.sendVerificationCode(phoneNumber, verificationCode);
+
+      res.status(200).json({
+        message: "Verification code sent to your phone",
+        code: "VERIFICATION_CODE_SENT",
+      });
     } catch (error) {
       console.error(error);
       res.status(500).json({

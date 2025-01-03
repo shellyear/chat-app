@@ -15,7 +15,7 @@ const DOMAIN = ".";
 dotenv.config();
 
 const app = express();
-
+app.use(express.json());
 app.use(
   cors({
     origin: Config.FRONT_END_BASE_URL,
@@ -23,11 +23,16 @@ app.use(
   })
 );
 app.use(cookieParser());
-app.use(sessionMiddleware);
+// app.use(sessionMiddleware);
 
-mongoose.connect(Config.MONGO_URL).then(() => {
-  Logger.info(`Connected to Mongodb on ${Config.MONGO_URL}`, DOMAIN);
-});
+mongoose
+  .connect(Config.MONGO_URL)
+  .then(() => {
+    Logger.info(`Connected to Mongodb on ${Config.MONGO_URL}`, DOMAIN);
+  })
+  .catch((err) => {
+    Logger.error(`Failed to connect to ${Config.MONGO_URL}, ${err}`, DOMAIN);
+  });
 
 app.listen(Config.PORT, () => {
   app.use("/api", routes);

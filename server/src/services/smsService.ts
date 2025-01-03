@@ -19,6 +19,7 @@ export const sendVerificationCode = async (
     Logger.info(`Verification code sent: ${message.sid}`, DOMAIN);
   } catch (error) {
     Logger.error(`Error sending verification code: ${error}`, DOMAIN);
+    throw error;
   }
 };
 

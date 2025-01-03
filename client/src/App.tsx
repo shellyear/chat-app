@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import { ProtectedRoute } from './pages/ProtectedRoute'
-import Login from './pages/Login'
+import Login from './pages/login/Login'
 import Dashboard from './pages/Dashboard'
 import AuthProvider from './contexts/AuthContext'
 

@@ -226,3 +226,9 @@ export const countries = [
   { code: 'ZM', label: 'Zambia', phoneCode: '+260', flag: '🇿🇲' },
   { code: 'ZW', label: 'Zimbabwe', phoneCode: '+263', flag: '🇿🇼' }
 ]
+
+export const allowedCountries = [
+  { code: 'KZ', label: 'Kazakhstan', phoneCode: '+7', flag: '🇰🇿' },
+  { code: 'RU', label: 'Russia', phoneCode: '+7', flag: '🇷🇺' },
+  { code: 'CZ', label: 'Czech Republic', phoneCode: '+420', flag: '🇨🇿' }
+]

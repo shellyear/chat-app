@@ -19,7 +19,7 @@ const sessionMiddleware = async (
   if (!sessionId) {
     req.session = undefined;
     res.clearCookie(SESSION_COOKIE);
-    res.redirect("/login");
+    res.status(401).json({ message: "User unauthorized" });
     return;
   }
 
@@ -29,8 +29,10 @@ const sessionMiddleware = async (
     if (!sessionData) {
       req.session = undefined;
       res.clearCookie(SESSION_COOKIE);
-      Logger.info("Session expired or invalid, user redirected to login page.");
-      res.redirect("/login");
+      Logger.info(
+        "Session expired or invalid, user redirected to login page on FE."
+      );
+      res.status(401).json({ message: "User unauthorized" });
       return;
     }
 
@@ -46,7 +48,6 @@ const sessionMiddleware = async (
     Logger.error(`Error retrieving session: ${error}`, "Session Middleware");
     req.session = undefined;
     res.status(500).json({ message: "Internal Server Error" });
-    return next();
   }
 };
 
