@@ -1,9 +1,10 @@
-import { getSession, login } from './auth'
+import { getSession, login, verifyCode } from './auth'
 
 const API = {
   auth: {
     getSession,
-    login
+    login,
+    verifyCode
   }
 }
 

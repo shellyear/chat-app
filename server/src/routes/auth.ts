@@ -134,9 +134,9 @@ router.post(
         res.status(200).json({
           message: "Verification successful",
           user: {
-            id: user._id,
             email: user.email,
             username: user.username,
+            profilePicture: user.profilePicture,
           },
         });
       } else {
@@ -180,7 +180,6 @@ router.get("/session", async (req, res) => {
 
     res.status(200).json({
       user: {
-        id: user._id,
         email: user.email,
         username: user.username,
         profilePicture: user.profilePicture,
