@@ -23,6 +23,7 @@ function AuthProvider({ children }: IAuthProvider) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        setLoading(true)
         const response = await API.auth.getSession()
         setUser(response.data.user)
       } catch (error) {

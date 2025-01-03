@@ -178,6 +178,8 @@ router.get("/session", async (req, res) => {
       return;
     }
 
+    await sessionService.refreshSession(sessionID, sessionData.isPersistent);
+
     res.status(200).json({
       user: {
         email: user.email,

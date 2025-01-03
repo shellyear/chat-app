@@ -68,8 +68,12 @@ const updateSession = async (
 
 const refreshSession = async (
   sessionId: string,
-  expirationTime = DEFAULT_EXPIRATION
+  isPersistent: boolean = false
 ) => {
+  const expirationTime = isPersistent
+    ? PERSISTENT_EXPIRATION
+    : DEFAULT_EXPIRATION;
+
   try {
     await redisClient.expire(`${SESSION_PREFIX}${sessionId}`, expirationTime);
   } catch (error) {

@@ -8,9 +8,17 @@ type ProtectedRouteProps = {
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user } = useContext(AuthContext)
+  const { user, loading } = useContext(AuthContext)
   const location = useLocation()
-  console.log({ user })
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="border-t-4 border-blue-500 border-solid w-16 h-16 rounded-full animate-spin" />
+      </div>
+    )
+  }
+
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
