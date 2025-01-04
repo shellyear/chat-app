@@ -126,7 +126,7 @@ router.post(
           sameSite: Config.NODE_ENV === "production" ? "none" : "strict",
           maxAge: keepMeSignedIn
             ? PERSISTENT_EXPIRATION * 1000
-            : DEFAULT_EXPIRATION * 1000,
+            : undefined /* Set as undefined, so cookie persist only per tab session */,
           domain:
             Config.NODE_ENV === "production" ? Config.COOKIE_DOMAIN : undefined,
         });

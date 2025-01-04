@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect, useMemo, useContext } from 'react'
-import axios from 'axios'
 
 import { IUser } from '../types/user'
 import API from '../api'
