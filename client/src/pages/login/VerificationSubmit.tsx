@@ -20,6 +20,11 @@ function VerificationSubmit() {
 
       if (response.status === 200) {
         setUser(response.data.user)
+
+        if (!keepMeSignedIn) {
+          sessionStorage.setItem('sessionId', response.data.sessionId)
+        }
+
         navigate('/')
       }
     } catch (error) {

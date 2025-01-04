@@ -120,16 +120,18 @@ router.post(
           isPersistent: keepMeSignedIn,
         });
 
-        res.cookie(SESSION_COOKIE, newSessionId, {
-          httpOnly: true,
-          secure: Config.NODE_ENV === "production",
-          sameSite: Config.NODE_ENV === "production" ? "none" : "strict",
-          maxAge: keepMeSignedIn
-            ? PERSISTENT_EXPIRATION * 1000
-            : undefined /* Set as undefined, so cookie persist only per tab session */,
-          domain:
-            Config.NODE_ENV === "production" ? Config.COOKIE_DOMAIN : undefined,
-        });
+        if (keepMeSignedIn) {
+          res.cookie(SESSION_COOKIE, newSessionId, {
+            httpOnly: true,
+            secure: Config.NODE_ENV === "production",
+            sameSite: Config.NODE_ENV === "production" ? "none" : "strict",
+            maxAge: PERSISTENT_EXPIRATION * 1000,
+            domain:
+              Config.NODE_ENV === "production"
+                ? Config.COOKIE_DOMAIN
+                : undefined,
+          });
+        }
 
         res.status(200).json({
           message: "Verification successful",
@@ -138,6 +140,7 @@ router.post(
             username: user.username,
             profilePicture: user.profilePicture,
           },
+          ...(!keepMeSignedIn && { sessionId: newSessionId }),
         });
       } else {
         res.status(400).json({
@@ -157,7 +160,8 @@ router.post(
 
 router.get("/session", async (req, res) => {
   try {
-    const sessionID = req.cookies[SESSION_COOKIE];
+    const sessionID =
+      req.cookies[SESSION_COOKIE] || req.headers.authorization?.split(" ")[1];
 
     if (!sessionID) {
       res.status(401).json({ message: "Not authenticated" });
@@ -207,7 +211,10 @@ router.post("/logout", async (req, res) => {
         Config.NODE_ENV === "production" ? Config.COOKIE_DOMAIN : undefined,
     });
 
-    res.redirect("/login");
+    res.status(200).json({
+      message: "Succesfully logged out",
+      code: "LOGOUT_SUCCESS",
+    });
   } catch (error) {
     Logger.error(`Logout error: ${error}`, DOMAIN);
     res.status(500).json({

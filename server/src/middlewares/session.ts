@@ -38,10 +38,7 @@ const sessionMiddleware = async (
 
     req.session = sessionData;
 
-    const expirationTime = sessionData.isPersistent
-      ? 30 * 24 * 60 * 60
-      : undefined; // 30 days in seconds, or undefined
-    await sessionService.refreshSession(sessionId, expirationTime);
+    await sessionService.refreshSession(sessionId, sessionData.isPersistent);
 
     next();
   } catch (error) {

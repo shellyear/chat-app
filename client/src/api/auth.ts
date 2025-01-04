@@ -13,7 +13,7 @@ export const login = (email: string, keepMeSignedIn: boolean) => {
 }
 
 export const verifyCode = (email: string, keepMeSignedIn: boolean, code: string) => {
-  return apiClient.post<{ user: IUser }>('/auth/verify', {
+  return apiClient.post<{ user: IUser; sessionId?: string }>('/auth/verify', {
     email,
     keepMeSignedIn,
     code
