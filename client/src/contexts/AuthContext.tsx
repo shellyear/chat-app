@@ -9,7 +9,7 @@ interface IAuthContext {
   setUser: React.Dispatch<React.SetStateAction<IUser | null>>
 }
 
-export const AuthContext = createContext<IAuthContext | undefined>(undefined)
+const AuthContext = createContext<IAuthContext | undefined>(undefined)
 
 interface IAuthProvider {
   children: React.ReactNode

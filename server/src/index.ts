@@ -7,6 +7,7 @@ import Config from "./config";
 import cookieParser from "cookie-parser";
 import sessionMiddleware from "./middlewares/session";
 import dotenv from "dotenv";
+import websocketService from "./services/websocketService";
 
 Logger.init(LogLevel.DEBUG);
 
@@ -34,7 +35,9 @@ mongoose
     Logger.error(`Failed to connect to ${Config.MONGO_URL}, ${err}`, DOMAIN);
   });
 
-app.listen(Config.PORT, () => {
+const httpServer = app.listen(Config.PORT, () => {
   app.use("/api", routes);
   Logger.info(`Server is listening on port ${Config.PORT}`, DOMAIN);
 });
+
+websocketService.setupWebsocketServer(httpServer);

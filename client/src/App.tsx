@@ -4,6 +4,7 @@ import { ProtectedRoute } from './pages/ProtectedRoute'
 import Login from './pages/login/Login'
 import Dashboard from './pages/Dashboard'
 import AuthProvider from './contexts/AuthContext'
+import WebsocketProvider from './contexts/WebsocketContext'
 
 function App() {
   return (
@@ -15,7 +16,9 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <WebsocketProvider>
+                  <Dashboard />
+                </WebsocketProvider>
               </ProtectedRoute>
             }
           />
