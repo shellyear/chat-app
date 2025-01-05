@@ -7,7 +7,7 @@ import Config from "./config";
 import cookieParser from "cookie-parser";
 import sessionMiddleware from "./middlewares/session";
 import dotenv from "dotenv";
-import websocketService from "./services/websocketService";
+import websocketService from "./services/wsService";
 
 Logger.init(LogLevel.DEBUG);
 
