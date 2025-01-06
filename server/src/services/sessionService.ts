@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const DOMAIN = "sessionService";
 
-type ISessionData = {
+export type ISessionData = {
   userId: string;
   isPersistent: boolean;
 };
