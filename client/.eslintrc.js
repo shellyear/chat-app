@@ -20,6 +20,7 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
+    'no-unused-vars': 'off',
     'prettier/prettier': ['error', prettierConfig],
     // Import plugin
     'import/extensions': [
