@@ -129,6 +129,8 @@ const verify = async (
           email: user.email,
           username: user.username,
           profilePicture: user.profilePicture,
+          name: user.name,
+          surname: user.surname,
         },
         ...(!keepMeSignedIn && { sessionId: newSessionId }),
       });
@@ -178,7 +180,10 @@ const session = async (req: Request, res: Response) => {
         email: user.email,
         username: user.username,
         profilePicture: user.profilePicture,
+        name: user.name,
+        surname: user.surname,
       },
+      ...(!sessionData.isPersistent && { sessionId: sessionID }),
     });
   } catch (error) {
     Logger.error(`Error fetching session: ${error}`, DOMAIN);

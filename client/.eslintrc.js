@@ -21,6 +21,7 @@ module.exports = {
   },
   rules: {
     'no-unused-vars': 'off',
+    'import/no-cycle': 'off',
     'prettier/prettier': ['error', prettierConfig],
     // Import plugin
     'import/extensions': [

@@ -7,6 +7,7 @@ interface IAuthContext {
   user: IUser | null
   loading: boolean
   setUser: React.Dispatch<React.SetStateAction<IUser | null>>
+  isPersistent: boolean
 }
 
 const AuthContext = createContext<IAuthContext | undefined>(undefined)
@@ -17,6 +18,7 @@ interface IAuthProvider {
 
 function AuthProvider({ children }: IAuthProvider) {
   const [user, setUser] = useState<IUser | null>(null)
+  const [isPersistent, setIsPersistent] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -25,6 +27,7 @@ function AuthProvider({ children }: IAuthProvider) {
         setLoading(true)
         const response = await API.auth.getSession()
         setUser(response.data.user)
+        setIsPersistent(!response.data.sessionId)
       } catch (error) {
         setUser(null)
       } finally {
@@ -35,7 +38,7 @@ function AuthProvider({ children }: IAuthProvider) {
     checkAuth()
   }, [])
 
-  const contextValue = useMemo(() => ({ user, loading, setUser }), [user, loading])
+  const contextValue = useMemo(() => ({ user, loading, setUser, isPersistent }), [user, loading, isPersistent])
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }

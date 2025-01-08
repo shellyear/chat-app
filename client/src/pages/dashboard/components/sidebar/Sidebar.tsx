@@ -19,7 +19,7 @@ function Sidebar() {
       case SidebarPage.CONTACTS_PAGE:
         return <ContactsPage />
       case SidebarPage.SETTINGS_PAGE:
-        return <SettingsPage />
+        return <SettingsPage openSidebarPage={openSidebarPage} />
       default:
         return <ChatListPage openSidebarPage={openSidebarPage} />
     }

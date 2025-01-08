@@ -2,7 +2,7 @@ import { IUser } from '../types/user'
 import { apiClient } from './apiClient'
 
 export const getSession = () => {
-  return apiClient.get('/auth/session')
+  return apiClient.get<{ user: IUser; sessionId?: string }>('/auth/session')
 }
 
 export const login = (email: string, keepMeSignedIn: boolean) => {
@@ -18,4 +18,11 @@ export const verifyCode = (email: string, keepMeSignedIn: boolean, code: string)
     keepMeSignedIn,
     code
   })
+}
+
+export const logout = (isPersistent: boolean) => {
+  if (isPersistent) {
+    return apiClient.post('/auth/logout')
+  }
+  return sessionStorage.removeItem('sessionId')
 }
