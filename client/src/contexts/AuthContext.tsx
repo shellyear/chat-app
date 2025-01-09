@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useMemo, useContext } from 'react'
+import React, { createContext, useState, useEffect, useMemo, useContext, useCallback } from 'react'
 
 import { IUser } from '../types/user'
 import API from '../api'
@@ -7,7 +7,7 @@ interface IAuthContext {
   user: IUser | null
   loading: boolean
   setUser: React.Dispatch<React.SetStateAction<IUser | null>>
-  isPersistent: boolean
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<IAuthContext | undefined>(undefined)
@@ -21,24 +21,34 @@ function AuthProvider({ children }: IAuthProvider) {
   const [isPersistent, setIsPersistent] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        setLoading(true)
-        const response = await API.auth.getSession()
-        setUser(response.data.user)
-        setIsPersistent(!response.data.sessionId)
-      } catch (error) {
-        setUser(null)
-      } finally {
-        setLoading(false)
-      }
+  const logout = useCallback(async () => {
+    try {
+      await API.auth.logout(isPersistent)
+      setUser(null)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error while logging out')
     }
+  }, [isPersistent])
 
+  const checkAuth = async () => {
+    try {
+      setLoading(true)
+      const response = await API.auth.getSession()
+      setUser(response.data.user)
+      setIsPersistent(!response.data.sessionId)
+    } catch (error) {
+      setUser(null)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
     checkAuth()
   }, [])
 
-  const contextValue = useMemo(() => ({ user, loading, setUser, isPersistent }), [user, loading, isPersistent])
+  const contextValue = useMemo(() => ({ user, loading, setUser, logout }), [user, loading, logout])
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }

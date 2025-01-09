@@ -5,11 +5,10 @@ import { useState } from 'react'
 
 import { useAuth } from '../../../../contexts/AuthContext'
 import { SidebarPage } from './Sidebar'
-import API from '../../../../api'
 
-function LogoutMenu({ isPersistent }: { isPersistent: boolean }) {
+function LogoutMenu({ logout }: { logout: () => void }) {
   const handleLogout = async () => {
-    await API.auth.logout(isPersistent)
+    await logout()
   }
 
   return (
@@ -28,7 +27,7 @@ interface ISettingPageProps {
 }
 
 function SettingsPage({ openSidebarPage }: ISettingPageProps) {
-  const { user, isPersistent } = useAuth()
+  const { user, logout } = useAuth()
   const [showLogoutMenu, setShowLogoutMenu] = useState(false)
 
   const handleGoBack = () => {
@@ -54,7 +53,7 @@ function SettingsPage({ openSidebarPage }: ISettingPageProps) {
         <button type="button" className="p-2" onClick={onThreeDotsClick}>
           <BsThreeDotsVertical className="w-5 h-5" />
         </button>
-        {showLogoutMenu && <LogoutMenu isPersistent={isPersistent} />}
+        {showLogoutMenu && <LogoutMenu logout={logout} />}
       </div>
 
       <div className="flex flex-col items-center pt-8 pb-6">

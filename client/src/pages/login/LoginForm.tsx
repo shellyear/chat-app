@@ -9,7 +9,7 @@ interface ILoginForm {
 
 export default function LoginForm({ setVerificationCodeSent }: ILoginForm) {
   const [email, setEmail] = useState('')
-  const [keepMeSignedIn, setKeepMeSignedIn] = useState(false)
+  const [keepMeSignedIn, setKeepMeSignedIn] = useState(true)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
