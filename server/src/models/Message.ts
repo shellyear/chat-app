@@ -5,17 +5,18 @@ export interface IMessage extends Document {
   chatId: Types.ObjectId;
   senderId: Types.ObjectId;
   content: string;
-  messageType: string;
-  timestamp: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const MessageSchema = new Schema<IMessage>({
-  chatId: { type: Schema.Types.ObjectId, ref: "Chat", required: true },
-  senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  content: { type: String, required: true },
-  messageType: { type: String, default: "text" },
-  timestamp: { type: Date, default: Date.now },
-});
+const MessageSchema = new Schema<IMessage>(
+  {
+    chatId: { type: Schema.Types.ObjectId, ref: "Chat", required: true },
+    senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    content: { type: String, required: true },
+  },
+  { timestamps: true }
+);
 
 const Message = mongoose.model<IMessage>("Message", MessageSchema);
 export default Message;

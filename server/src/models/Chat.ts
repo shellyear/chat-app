@@ -2,23 +2,28 @@ import mongoose, { Schema, Types } from "mongoose";
 
 interface IChat {
   _id: Types.ObjectId;
-  isGroupChat: boolean;
   participantsIds: Types.ObjectId[];
-  groupName: string | null;
-  groupImage: string | null;
-  lastMessage: Types.ObjectId; // For fast retrieval of the latest message
+  lastMessage: Types.ObjectId;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-const ChatSchema = new mongoose.Schema({
-  isGroupChat: { type: Boolean, default: false },
-  participantsIds: [
-    { type: Schema.Types.ObjectId, ref: "User", required: true },
-  ],
-  groupName: { type: String, default: null },
-  groupImage: { type: String, default: null },
-  lastMessage: { type: Schema.Types.ObjectId, ref: "Message" }, // For fast retrieval of the latest message
-  createdAt: { type: Date, default: Date.now },
-});
+const ChatSchema = new mongoose.Schema(
+  {
+    participantsIds: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        validate: {
+          validator: (v: Types.ObjectId[]) => v.length === 2,
+          message: "Chats must have exactly 2 participants",
+        },
+      },
+    ],
+    lastMessage: { type: Schema.Types.ObjectId, ref: "Message" },
+  },
+  { timestamps: true }
+);
 
 export default mongoose.model<IChat>("Chat", ChatSchema);
