@@ -48,6 +48,8 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'jsx-a11y/media-has-caption': 'off',
     'no-param-reassign': 'off',
+    'jsx-a11y/no-static-element-interactions': 'off',
+    'no-underscore-dangle': 'off',
 
     'react/require-default-props': 'off', // defaultProps are not used in that project
     'react/jsx-props-no-spreading': 'off', // allow spreading props

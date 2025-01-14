@@ -1,9 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { IoMdMenu } from 'react-icons/io'
 
 import SidebarMenu from './SidebarMenu'
 import { SidebarPage } from './Sidebar'
+import { IChat } from '../../../../types/chat'
+import API from '../../../../api'
+import { useAuth } from '../../../../contexts/AuthContext'
 
 function SearchBar({ openSidebarPage }: { openSidebarPage: (pageName: SidebarPage) => void }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -32,16 +35,41 @@ function SearchBar({ openSidebarPage }: { openSidebarPage: (pageName: SidebarPag
   )
 }
 
-function ChatListPage({ openSidebarPage }: { openSidebarPage: (pageName: SidebarPage) => void }) {
+interface IChatListPageProps {
+  openSidebarPage: (pageName: SidebarPage) => void
+  openChat: (chatId: string) => void
+}
+
+function ChatListPage({ openSidebarPage, openChat }: IChatListPageProps) {
+  const { user } = useAuth()
+  const [chats, setChats] = useState<IChat[]>([])
+
+  const fetchChats = async () => {
+    const { data, status } = await API.chat.getChats()
+    if (status === 200) {
+      setChats(data.data)
+    }
+  }
+
+  useEffect(() => {
+    fetchChats()
+  }, [])
+
   return (
     <>
       <SearchBar openSidebarPage={openSidebarPage} />
       <div className="flex-grow overflow-y-auto">
-        {[1, 2, 3, 4, 5].map((item) => (
-          <div key={item} className="flex items-center p-4 hover:bg-gray-50 cursor-pointer">
+        {chats.map((item, i) => (
+          <div
+            key={item._id}
+            onClick={() => openChat(item._id)}
+            className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
+          >
             <div className="w-12 h-12 bg-gray-300 rounded-full mr-4" />
             <div className="flex-grow">
-              <h3 className="font-semibold">User {item}</h3>
+              <h3 className="font-semibold">
+                User {item.participantsIds.find((participant) => participant._id !== user._id).email}
+              </h3>
               <p className="text-sm text-gray-500 truncate">Last message...</p>
             </div>
           </div>

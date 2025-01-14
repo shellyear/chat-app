@@ -84,7 +84,7 @@ const getChats = async (req: Request, res: Response) => {
 
     res.status(200).json({
       message: "Chats fetched successfully",
-      chats,
+      data: chats,
     });
   } catch (error) {
     Logger.error(`Error fetching chats: ${error}`, DOMAIN);

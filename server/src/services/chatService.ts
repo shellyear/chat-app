@@ -9,7 +9,7 @@ const getUserChats = async (userId: Types.ObjectId) => {
     const chats = await Chat.find({
       participantsIds: { $in: [userId] },
     })
-      .populate("participantsIds", ["username", "profilePicture"])
+      .populate("participantsIds", ["email", "name", "profilePicture"])
       .populate("lastMessageId", ["content", "createdAt"])
       .sort({ updatedAt: -1 });
 

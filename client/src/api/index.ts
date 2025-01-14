@@ -1,4 +1,5 @@
 import { getSession, login, logout, verifyCode } from './auth'
+import { getChats } from './chat'
 
 const API = {
   auth: {
@@ -6,6 +7,9 @@ const API = {
     login,
     verifyCode,
     logout
+  },
+  chat: {
+    getChats
   }
 }
 
