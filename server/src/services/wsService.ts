@@ -41,6 +41,7 @@ const setupWebsocketServer = (server: http.Server) => {
       sessionData: ISessionData
     ) => {
       await wsConnectionService.addConnection(sessionData.userId, ws);
+      await wsConnectionService.handleUserReconnect(sessionData.userId, ws);
 
       ws.on("close", async () => {
         await wsConnectionService.removeConnection(sessionData.userId);

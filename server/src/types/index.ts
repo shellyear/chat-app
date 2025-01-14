@@ -1,18 +1,19 @@
-type IUser = {
-    id: string
-    email: string
-    name: string
-}
+export type IUser = {
+  id: string;
+  email: string;
+  name: string;
+};
 
-type IMessage = {
-    senderId: string,
-    receiverId: string,
-    message: string,
-    timestamp: number
-}
+export type IMessageData = {
+  senderId: string;
+  content: string;
+  message: string;
+  timestamp: number;
+  chatId: string;
+};
 
-enum SocketEvents {
-    PRIVATE_MESSAGE = 'private_message',
-    SET_USER = 'set_user',
-    DISCONNECT = 'disconnect'
+export enum SocketEvents {
+  PRIVATE_MESSAGE = "private_message",
+  SET_USER = "set_user",
+  DISCONNECT = "disconnect",
 }

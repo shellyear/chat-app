@@ -7,6 +7,7 @@ export interface IMessage extends Document {
   content: string;
   createdAt: Date;
   updatedAt: Date;
+  isRead: boolean;
 }
 
 const MessageSchema = new Schema<IMessage>(
@@ -14,6 +15,7 @@ const MessageSchema = new Schema<IMessage>(
     chatId: { type: Schema.Types.ObjectId, ref: "Chat", required: true },
     senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     content: { type: String, required: true },
+    isRead: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

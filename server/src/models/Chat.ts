@@ -3,7 +3,7 @@ import mongoose, { Schema, Types } from "mongoose";
 interface IChat {
   _id: Types.ObjectId;
   participantsIds: Types.ObjectId[];
-  lastMessage: Types.ObjectId;
+  lastMessageId: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,7 +21,7 @@ const ChatSchema = new mongoose.Schema(
         },
       },
     ],
-    lastMessage: { type: Schema.Types.ObjectId, ref: "Message" },
+    lastMessageId: { type: Schema.Types.ObjectId, ref: "Message" },
   },
   { timestamps: true }
 );

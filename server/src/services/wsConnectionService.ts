@@ -1,4 +1,5 @@
 import Logger from "../logger";
+import messageQueueService from "./messageQueueService";
 import redisClient from "./redisClient";
 import { WebSocket } from "ws";
 
@@ -51,10 +52,40 @@ const getConnection = async (userId: string): Promise<WebSocket | null> => {
   }
 };
 
+const handleUserReconnect = async (userId: string, ws: WebSocket) => {
+  try {
+    const undeliveredMessages =
+      await messageQueueService.getUndeliveredMessages(userId);
+
+    if (undeliveredMessages.length > 0) {
+      for (const message of undeliveredMessages) {
+        ws.send(
+          JSON.stringify({
+            type: "NEW_MESSAGE",
+            chatId: message.chatId,
+            message: {
+              sender: message.senderId,
+              content: message.content,
+              timestamp: message.timestamp,
+            },
+          })
+        );
+      }
+
+      await messageQueueService.clearUndeliveredMessages(userId);
+    }
+
+    Logger.info(`User has recieved undelivered messages.`);
+  } catch (error) {
+    Logger.error(`Error handling user reconnect: ${error}`, DOMAIN);
+  }
+};
+
 const wsConnectionService = {
   addConnection,
   removeConnection,
   getConnection,
+  handleUserReconnect,
 };
 
 export default wsConnectionService;
