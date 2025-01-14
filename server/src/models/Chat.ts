@@ -1,6 +1,6 @@
 import mongoose, { Schema, Types } from "mongoose";
 
-interface IChat {
+export interface IChat {
   _id: Types.ObjectId;
   participantsIds: Types.ObjectId[];
   lastMessageId: Types.ObjectId;

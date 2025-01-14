@@ -1,9 +1,9 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 type IImageUrl = string;
 
 export interface IUser extends Document {
-  _id: string;
+  _id: Types.ObjectId;
   email: string;
   username?: string;
   name?: string;

@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import {
   DEFAULT_EXPIRATION,
   PERSISTENT_EXPIRATION,
@@ -9,7 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 const DOMAIN = "sessionService";
 
 export type ISessionData = {
-  userId: string;
+  userId: Types.ObjectId;
   isPersistent: boolean;
 };
 
