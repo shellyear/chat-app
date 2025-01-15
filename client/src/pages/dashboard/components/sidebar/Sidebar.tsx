@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from 'react'
-
 import ContactsPage from './ContactsPage'
 import SettingsPage from './SettingsPage'
 import ChatListPage from './ChatListPage'

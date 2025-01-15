@@ -24,7 +24,7 @@ function SearchBar({ openSidebarPage }: { openSidebarPage: (pageName: SidebarPag
         <div className="relative">
           <input
             type="text"
-            placeholder="Search chats"
+            placeholder="Search"
             className="w-full pl-8 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
           <CiSearch className="absolute left-2.5 top-2.5 h-5 w-5 text-gray-400" />
