@@ -5,7 +5,6 @@ import cors from "cors";
 import routes from "./routes";
 import Config from "./config";
 import cookieParser from "cookie-parser";
-import sessionMiddleware from "./middlewares/session";
 import dotenv from "dotenv";
 import websocketService from "./services/wsService";
 
@@ -24,7 +23,6 @@ app.use(
   })
 );
 app.use(cookieParser());
-// app.use(sessionMiddleware);
 
 mongoose
   .connect(Config.MONGO_URL)

@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import { CiSearch } from 'react-icons/ci'
+import { CiSearch, CiBookmark } from 'react-icons/ci'
 import { IoMdMenu } from 'react-icons/io'
-import { debounce, DebouncedFunc } from 'lodash'
+import { debounce } from 'lodash'
 
 import SidebarMenu from './SidebarMenu'
 import { SidebarPage } from './Sidebar'
@@ -57,7 +57,7 @@ function ChatListPage({ openSidebarPage, openChat }: IChatListPageProps) {
   const { searchQuery, searchResults, setSearchQuery, setSearchResults } = useSearchBar<IUser>()
 
   const debouncedSearch = debounce(async (query: string) => {
-    if (query.trim() === '') {
+    if (query.trim() === '' || query.trim().length < 3) {
       setSearchResults([])
       return
     }
@@ -93,18 +93,33 @@ function ChatListPage({ openSidebarPage, openChat }: IChatListPageProps) {
       <SearchBar openSidebarPage={openSidebarPage} searchQuery={searchQuery} handleSearch={handleSearch} />
       <div className="flex-grow overflow-y-auto">
         {searchResults.length > 0
-          ? searchResults.map((user) => (
-              <div
-                key={user._id}
-                onClick={() => openChat(user._id)}
-                className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
-              >
-                <div className="w-12 h-12 bg-gray-300 rounded-full mr-4" />
-                <div className="flex-grow">
-                  <h3 className="font-semibold">{user.username || user.email}</h3>
+          ? searchResults.map((foundUser) =>
+              foundUser.email === user.email ? (
+                <div
+                  key={user.email}
+                  onClick={() => openChat(user._id)}
+                  className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
+                >
+                  <div className="box-border flex items-center justify-center w-12 h-12 rounded-full bg-blue-400 mr-4">
+                    <CiBookmark className="w-8 h-8" color="white" />
+                  </div>
+                  <div className="flex-grow">
+                    <h3 className="font-semibold">Saved messages</h3>
+                  </div>
                 </div>
-              </div>
-            ))
+              ) : (
+                <div
+                  key={foundUser._id}
+                  onClick={() => openChat(foundUser._id)}
+                  className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
+                >
+                  <div className="w-12 h-12 bg-gray-300 rounded-full mr-4" />
+                  <div className="flex-grow">
+                    <h3 className="font-semibold">{foundUser.username || foundUser.email}</h3>
+                  </div>
+                </div>
+              )
+            )
           : chats.map((item) => (
               <div
                 key={item._id}

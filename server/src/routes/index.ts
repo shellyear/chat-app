@@ -8,7 +8,7 @@ import { rateLimit } from "express-rate-limit";
 
 const seachLimiter = rateLimit({
   windowMs: 60 * 1000, // 1min
-  limit: 30,
+  limit: 120,
   message: "Too many search requests. Please try again later.",
 });
 
