@@ -37,7 +37,7 @@ function Messages() {
   )
 }
 
-function ChatArea() {
+function ChatArea({ activeChatId }: { activeChatId: string }) {
   return (
     <div className="flex-grow flex flex-col">
       <div className="bg-white p-4 border-b border-gray-200">

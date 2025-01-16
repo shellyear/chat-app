@@ -14,7 +14,7 @@ const seachLimiter = rateLimit({
 
 const router = express.Router();
 
-router.use("/auth", sessionMiddleware, authRoutes);
+router.use("/auth", authRoutes);
 router.use("/chats", sessionMiddleware, chatRoutes);
 router.use("/search", seachLimiter, sessionMiddleware, searchRoutes);
 

@@ -4,7 +4,7 @@ import Logger from "../logger";
 
 const DOMAIN = "searchController";
 
-const searchUsers = async (req: Request, res: Response) => {
+const searchUsers = async (req: Request<{ query: string }>, res: Response) => {
   const { query } = req.query;
 
   if (!query) {

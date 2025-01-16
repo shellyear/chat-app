@@ -13,7 +13,7 @@ function Dashboard() {
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar openChat={openChat} />
-      <ChatArea />
+      <ChatArea activeChatId={activeChatId} />
     </div>
   )
 }

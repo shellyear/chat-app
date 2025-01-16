@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
-import User from "../models/User";
 import Chat from "../models/Chat";
 import Message from "../models/Message";
 import wsConnectionService from "../services/wsConnectionService";
 import messageQueueService from "../services/messageQueueService";
 import Logger from "../logger";
 import chatService from "../services/chatService";
+import { Types } from "mongoose";
 
 const DOMAIN = "chatController";
 
 const sendMessage = async (
   req: Request<
-    { id: string },
+    { id: Types.ObjectId },
     {},
     {
       content: string;
@@ -19,28 +19,18 @@ const sendMessage = async (
   >,
   res: Response
 ) => {
-  const { id: recipientEmail } = req.params;
+  const { id: recipientId } = req.params;
   const { content } = req.body;
   const { userId: senderId } = req.session;
 
   try {
-    const recipient = await User.findOne({ email: recipientEmail });
-
-    if (!recipient) {
-      res.status(404).json({
-        code: "RECIPIENT_NOT_FOUND",
-        message: "Recipient not found",
-      });
-      return;
-    }
-
     let chat = await Chat.findOne({
-      participants: { $all: [senderId, recipient._id] },
+      participants: { $all: [senderId, recipientId] },
     });
 
     if (!chat) {
       chat = await Chat.create({
-        participantsIds: [senderId, recipient._id],
+        participantsIds: [senderId, recipientId],
       });
     }
 
@@ -53,7 +43,7 @@ const sendMessage = async (
     chat.lastMessageId = message._id;
     await chat.save();
 
-    const recipientWs = await wsConnectionService.getConnection(recipient._id);
+    const recipientWs = await wsConnectionService.getConnection(recipientId);
 
     if (recipientWs) {
       recipientWs.send(
@@ -68,7 +58,7 @@ const sendMessage = async (
         })
       );
     } else {
-      await messageQueueService.addUndeliveredMessage(recipient._id, message);
+      await messageQueueService.addUndeliveredMessage(recipientId, message);
     }
     res.status(201).send();
   } catch (error) {
