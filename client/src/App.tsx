@@ -5,6 +5,7 @@ import Login from './pages/login/Login'
 import Dashboard from './pages/dashboard/Dashboard'
 import AuthProvider from './contexts/AuthContext'
 import WebsocketProvider from './contexts/WebsocketContext'
+import ChatArea from './pages/dashboard/components/chatarea/ChatArea'
 
 function App() {
   return (
@@ -21,7 +22,11 @@ function App() {
                 </WebsocketProvider>
               </ProtectedRoute>
             }
-          />
+          >
+            <Route path="@:username" element={<ChatArea />} />
+            <Route path=":chatId" element={<ChatArea />} />
+            <Route path="" element={<ChatArea />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>
