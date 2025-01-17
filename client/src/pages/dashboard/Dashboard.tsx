@@ -1,19 +1,17 @@
-import { useState } from 'react'
+import { Route, Routes } from 'react-router-dom'
 
 import ChatArea from './components/chatarea/ChatArea'
 import Sidebar from './components/sidebar/Sidebar'
 
 function Dashboard() {
-  const [activeChatId, setActiveChatId] = useState<string | null>(null)
-
-  const openChat = (chatId: string) => {
-    setActiveChatId(chatId)
-  }
-
   return (
-    <div className="flex h-screen bg-gray-100">
-      <Sidebar openChat={openChat} />
-      <ChatArea activeChatId={activeChatId} />
+    <div className="flex h-screen">
+      <Sidebar />
+      <Routes>
+        <Route path="/@:username" element={<ChatArea />} />
+        <Route path="/:chatId" element={<ChatArea />} />
+        <Route path="*" element={<ChatArea />} />
+      </Routes>
     </div>
   )
 }

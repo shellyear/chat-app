@@ -9,23 +9,19 @@ export enum SidebarPage {
   CHATLIST_PAGE = 'CHAT_LIST_PAGE'
 }
 
-interface ISidebarProps {
-  openChat: (chatId: string) => void
-}
-
-function Sidebar({ openChat }: ISidebarProps) {
+function Sidebar() {
   const { currentPage, openSidebarPage } = useSidebarPage()
 
   const showCurrentSidebarPage = (currentPage: SidebarPage) => {
     switch (currentPage) {
       case SidebarPage.CHATLIST_PAGE:
-        return <ChatListPage openSidebarPage={openSidebarPage} openChat={openChat} />
+        return <ChatListPage openSidebarPage={openSidebarPage} />
       case SidebarPage.CONTACTS_PAGE:
         return <ContactsPage />
       case SidebarPage.SETTINGS_PAGE:
         return <SettingsPage openSidebarPage={openSidebarPage} />
       default:
-        return <ChatListPage openSidebarPage={openSidebarPage} openChat={openChat} />
+        return <ChatListPage openSidebarPage={openSidebarPage} />
     }
   }
 

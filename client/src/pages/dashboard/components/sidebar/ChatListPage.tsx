@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import { CiSearch, CiBookmark } from 'react-icons/ci'
 import { IoMdMenu } from 'react-icons/io'
 import { debounce } from 'lodash'
+import { Link } from 'react-router-dom'
 
 import SidebarMenu from './SidebarMenu'
 import { SidebarPage } from './Sidebar'
@@ -48,10 +49,9 @@ function SearchBar({ openSidebarPage, searchQuery, handleSearch }: ISearchBar) {
 
 interface IChatListPageProps {
   openSidebarPage: (pageName: SidebarPage) => void
-  openChat: (chatId: string) => void
 }
 
-function ChatListPage({ openSidebarPage, openChat }: IChatListPageProps) {
+function ChatListPage({ openSidebarPage }: IChatListPageProps) {
   const { user } = useAuth()
   const [chats, setChats] = useState<IChat[]>([])
   const { searchQuery, searchResults, setSearchQuery, setSearchResults } = useSearchBar<IUser>()
@@ -95,9 +95,9 @@ function ChatListPage({ openSidebarPage, openChat }: IChatListPageProps) {
         {searchResults.length > 0
           ? searchResults.map((foundUser) =>
               foundUser.email === user.email ? (
-                <div
+                <Link
+                  to={`/${user.email || user.username}`}
                   key={user.email}
-                  onClick={() => openChat(user._id)}
                   className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
                 >
                   <div className="box-border flex items-center justify-center w-12 h-12 rounded-full bg-blue-400 mr-4">
@@ -106,24 +106,24 @@ function ChatListPage({ openSidebarPage, openChat }: IChatListPageProps) {
                   <div className="flex-grow">
                     <h3 className="font-semibold">Saved messages</h3>
                   </div>
-                </div>
+                </Link>
               ) : (
-                <div
+                <Link
+                  to={`/${foundUser.email || foundUser.username}`}
                   key={foundUser._id}
-                  onClick={() => openChat(foundUser._id)}
                   className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
                 >
                   <div className="w-12 h-12 bg-gray-300 rounded-full mr-4" />
                   <div className="flex-grow">
                     <h3 className="font-semibold">{foundUser.username || foundUser.email}</h3>
                   </div>
-                </div>
+                </Link>
               )
             )
           : chats.map((item) => (
-              <div
+              <Link
+                to={`/${item._id}`}
                 key={item._id}
-                onClick={() => openChat(item._id)}
                 className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
               >
                 <div className="w-12 h-12 bg-gray-300 rounded-full mr-4" />
@@ -133,7 +133,7 @@ function ChatListPage({ openSidebarPage, openChat }: IChatListPageProps) {
                   </h3>
                   <p className="text-sm text-gray-500 truncate">Last message...</p>
                 </div>
-              </div>
+              </Link>
             ))}
       </div>
     </>

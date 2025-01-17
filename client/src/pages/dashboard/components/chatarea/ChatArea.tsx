@@ -1,4 +1,5 @@
 import { IoIosSend } from 'react-icons/io'
+import { useParams } from 'react-router-dom'
 
 function MessageInput() {
   return (
@@ -37,12 +38,23 @@ function Messages() {
   )
 }
 
-function ChatArea({ activeChatId }: { activeChatId: string }) {
+function ChatArea() {
+  const { username, chatId } = useParams<{ username?: string; chatId?: string }>()
+
+  if (!username && !chatId) {
+    return (
+      <div className="relative flex-grow flex flex-col">
+        <div className="chat-background" />
+      </div>
+    )
+  }
+
   return (
     <div className="flex-grow flex flex-col">
       <div className="bg-white p-4 border-b border-gray-200">
         <h2 className="font-semibold text-lg">Current Chat</h2>
       </div>
+      <div className="chat-background" />
       <Messages />
       <MessageInput />
     </div>
