@@ -4,13 +4,7 @@ import Logger from "../logger";
 import { SESSION_COOKIE } from "../constants/session";
 
 const sessionMiddleware = async (
-  req: Request<
-    {},
-    {},
-    {
-      keepMeSignedIn: boolean;
-    }
-  >,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {

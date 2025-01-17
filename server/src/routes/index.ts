@@ -3,7 +3,7 @@ import authRoutes from "./auth";
 import chatRoutes from "./chats";
 import sessionMiddleware from "../middlewares/session";
 import searchRoutes from "./search";
-
+import contactRoutes from "./contact";
 import { rateLimit } from "express-rate-limit";
 
 const seachLimiter = rateLimit({
@@ -17,5 +17,6 @@ const router = express.Router();
 router.use("/auth", authRoutes);
 router.use("/chats", sessionMiddleware, chatRoutes);
 router.use("/search", seachLimiter, sessionMiddleware, searchRoutes);
+router.use("/contacts", sessionMiddleware, contactRoutes);
 
 export default router;
