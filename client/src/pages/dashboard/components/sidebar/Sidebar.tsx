@@ -17,7 +17,7 @@ function Sidebar() {
       case SidebarPage.CHATLIST_PAGE:
         return <ChatListPage openSidebarPage={openSidebarPage} />
       case SidebarPage.CONTACTS_PAGE:
-        return <ContactsPage />
+        return <ContactsPage openSidebarPage={openSidebarPage} />
       case SidebarPage.SETTINGS_PAGE:
         return <SettingsPage openSidebarPage={openSidebarPage} />
       default:
@@ -26,7 +26,7 @@ function Sidebar() {
   }
 
   return (
-    <div className="w-full shrink-0 bg-white border-r border-gray-200 flex flex-col sm:w-80">
+    <div className="relative w-full shrink-0 bg-white border-r border-gray-200 flex flex-col sm:w-80">
       {showCurrentSidebarPage(currentPage)}
     </div>
   )
