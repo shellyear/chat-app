@@ -1,4 +1,4 @@
-import { ChangeEventHandler } from 'react'
+import { ChangeEventHandler, ForwardedRef, forwardRef, MutableRefObject } from 'react'
 import { CiSearch } from 'react-icons/ci'
 
 interface ISearchInputProps {
@@ -6,10 +6,11 @@ interface ISearchInputProps {
   onChange: ChangeEventHandler<HTMLInputElement>
 }
 
-function SearchInput({ value, onChange }: ISearchInputProps) {
+const SearchInput = forwardRef(({ value, onChange }: ISearchInputProps, ref: ForwardedRef<HTMLInputElement>) => {
   return (
     <div className="relative">
       <input
+        ref={ref}
         type="text"
         placeholder="Search"
         value={value}
@@ -19,6 +20,6 @@ function SearchInput({ value, onChange }: ISearchInputProps) {
       <CiSearch className="absolute left-2.5 top-2.5 h-5 w-5 text-gray-400" />
     </div>
   )
-}
+})
 
 export default SearchInput

@@ -1,6 +1,6 @@
 export type IContact = {
   userId: string
-  contactId: string
+  contactId: { _id: string; username?: string; email: string; profilePicture?: string }
   name: string
   email: string
   surname?: string

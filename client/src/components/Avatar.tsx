@@ -10,7 +10,7 @@ function Avatar({ name, size = 'md', className = '' }: AvatarProps) {
   const firstLetter = name.charAt(0).toUpperCase()
 
   const sizeClasses = {
-    sm: 'w-8 h-8 text-xs',
+    sm: 'w-10 h-10 text-xs',
     md: 'w-12 h-12 text-sm',
     lg: 'w-16 h-16 text-lg'
   }
