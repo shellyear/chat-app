@@ -27,7 +27,7 @@ function SearchBar({ openSidebarPage, searchQuery, handleSearch }: ISearchBar) {
   }
 
   return (
-    <div className="relative p-4 flex items-center border-b border-gray-200">
+    <div className="relative min-h-14 px-4 flex items-center">
       <button type="button" className="p-2 hover:bg-gray-100 rounded-full">
         <IoMdMenu onClick={() => toggleMenu()} className="h-5 w-5 text-gray-500" />
       </button>

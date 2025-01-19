@@ -1,5 +1,5 @@
 import { IoIosSend, IoMdArrowBack } from 'react-icons/io'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 
 import Avatar from '../../../../components/Avatar'
@@ -43,6 +43,7 @@ function Messages() {
 
 function ChatArea() {
   const { username, chatId } = useParams<{ username?: string; chatId?: string }>()
+  const navigate = useNavigate()
 
   if (!username && !chatId) {
     return (
@@ -55,7 +56,7 @@ function ChatArea() {
   return (
     <div className="flex-grow flex flex-col">
       <div className="flex items-center justify-between w-full bg-white p-4 border-b border-gray-200">
-        <button type="button" className="sm:hidden">
+        <button type="button" className="sm:hidden" onClick={() => navigate(-1)}>
           <IoMdArrowBack className="w-5 h-5" />
         </button>
         <div className="flex gap-4 items-center">
