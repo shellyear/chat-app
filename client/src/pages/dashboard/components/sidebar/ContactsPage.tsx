@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom'
 import { SidebarPage } from './Sidebar'
 import SearchInput from '../../../../components/SearchInput'
 import useSearchBar from '../../hooks/useSearchBar'
-import { IUser } from '../../../../types/user'
 import API from '../../../../api'
 import { IContact } from '../../../../types/contact'
 import RoundedButton from '../../../../components/RoundedButton'
@@ -82,7 +81,11 @@ function ContactsPage({ openSidebarPage }: IContactsPageProps) {
                 className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
               >
                 {foundContact.contactId.profilePicture ? (
-                  <div />
+                  <img
+                    src={foundContact.contactId.profilePicture}
+                    alt="profile img"
+                    className="w-10 h-10 rounded-full mr-4"
+                  />
                 ) : (
                   <Avatar name={foundContact.name} size="sm" className="mr-4" />
                 )}
@@ -97,7 +100,15 @@ function ContactsPage({ openSidebarPage }: IContactsPageProps) {
                 to={`/${contact.contactId?.username || contact.contactId._id}`}
                 className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
               >
-                {contact.contactId.profilePicture ? <div /> : <Avatar name={contact.name} size="sm" className="mr-4" />}
+                {contact.contactId.profilePicture ? (
+                  <img
+                    src={contact.contactId.profilePicture}
+                    alt="profile img"
+                    className="w-10 h-10 rounded-full mr-4"
+                  />
+                ) : (
+                  <Avatar name={contact.name} size="sm" className="mr-4" />
+                )}
                 <div className="flex-grow">
                   <h3>{`${contact.name} ${contact.surname}`}</h3>
                 </div>
