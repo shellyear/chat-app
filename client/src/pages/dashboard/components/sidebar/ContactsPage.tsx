@@ -43,12 +43,17 @@ interface IContactsPageProps {
 }
 
 function ContactsPage({ openSidebarPage }: IContactsPageProps) {
-  const { searchQuery, searchResults, setSearchQuery, setSearchResults } = useSearchBar<IUser>()
+  const { searchQuery, searchResults, setSearchQuery, setSearchResults } = useSearchBar<IContact>()
   const [contacts, setContacts] = useState<IContact[]>([])
   const { isOpen, setIsOpen } = usePopup()
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
+    const { value } = e.target
+    if (value.trim() === '') {
+      setSearchResults([])
+      return
+    }
+    setSearchQuery(value)
   }
 
   const fetchContacts = async () => {
@@ -69,18 +74,35 @@ function ContactsPage({ openSidebarPage }: IContactsPageProps) {
     <>
       <SearchBar openSidebarPage={openSidebarPage} searchQuery={searchQuery} handleSearch={handleSearch} />
       <div className="flex-grow overflow-y-auto">
-        {contacts.map((contact) => (
-          <Link
-            key={contact.contactId._id}
-            to={`/${contact.contactId?.username || contact.contactId._id}`}
-            className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
-          >
-            {contact.contactId.profilePicture ? <div /> : <Avatar name={contact.name} size="sm" className="mr-4" />}
-            <div className="flex-grow">
-              <h3>{`${contact.name} ${contact.surname}`}</h3>
-            </div>
-          </Link>
-        ))}
+        {searchResults.length > 0
+          ? searchResults.map((foundContact) => (
+              <Link
+                key={foundContact.contactId._id}
+                to={`/${foundContact.contactId?.username || foundContact.contactId._id}`}
+                className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
+              >
+                {foundContact.contactId.profilePicture ? (
+                  <div />
+                ) : (
+                  <Avatar name={foundContact.name} size="sm" className="mr-4" />
+                )}
+                <div className="flex-grow">
+                  <h3>{`${foundContact.name} ${foundContact.surname}`}</h3>
+                </div>
+              </Link>
+            ))
+          : contacts.map((contact) => (
+              <Link
+                key={contact.contactId._id}
+                to={`/${contact.contactId?.username || contact.contactId._id}`}
+                className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
+              >
+                {contact.contactId.profilePicture ? <div /> : <Avatar name={contact.name} size="sm" className="mr-4" />}
+                <div className="flex-grow">
+                  <h3>{`${contact.name} ${contact.surname}`}</h3>
+                </div>
+              </Link>
+            ))}
       </div>
       <RoundedButton
         className="absolute bottom-6 right-6"
