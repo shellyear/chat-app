@@ -1,5 +1,6 @@
 import { getSession, login, logout, verifyCode } from './auth'
 import { getChats } from './chat'
+import { addContact, getContacts } from './contact'
 import { searchUsers } from './search'
 
 const API = {
@@ -14,6 +15,10 @@ const API = {
   },
   search: {
     searchUsers
+  },
+  contacts: {
+    getContacts,
+    addContact
   }
 }
 

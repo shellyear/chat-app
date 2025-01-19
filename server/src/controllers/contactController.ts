@@ -55,9 +55,7 @@ const addContact = async (
     });
 
     await newContact.save();
-    res
-      .status(201)
-      .json({ message: "Contact added successfully", data: newContact });
+    res.status(201).json({ code: "CONTACT_ADDED", data: newContact });
   } catch (error) {
     res.status(500).json({ message: "Error adding contact" });
     return;
@@ -72,7 +70,7 @@ const getContacts = async (req: Request, res: Response) => {
       .populate("contactId", "email username name surname")
       .sort({ createdAt: -1 });
 
-    res.status(200).json({ message: "FOUND_CONTACTS_SUCCESS", data: contacts });
+    res.status(200).json({ code: "FOUND_CONTACTS_SUCCESS", data: contacts });
     return;
   } catch (error) {
     res.status(500).json({ message: "Error fetching contacts" });

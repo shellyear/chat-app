@@ -1,10 +1,15 @@
-import { ChangeEvent, useEffect } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { IoMdArrowBack } from 'react-icons/io'
+import { FaPlus } from 'react-icons/fa6'
 
 import { SidebarPage } from './Sidebar'
 import SearchInput from '../../../../components/SearchInput'
 import useSearchBar from '../../hooks/useSearchBar'
 import { IUser } from '../../../../types/user'
+import API from '../../../../api'
+import { IContact } from '../../../../types/contact'
+import RoundedButton from '../../../../components/RoundedButton'
+import Popup, { usePopup } from './Popup'
 
 interface ISearchBar {
   openSidebarPage: (pageName: SidebarPage) => void
@@ -31,15 +36,35 @@ interface IContactsPageProps {
 
 function ContactsPage({ openSidebarPage }: IContactsPageProps) {
   const { searchQuery, searchResults, setSearchQuery, setSearchResults } = useSearchBar<IUser>()
+  const [contacts, setContacts] = useState<IContact[]>([])
+  const { isOpen, setIsOpen } = usePopup()
 
   const handleSearch = () => {}
 
-  useEffect(() => {}, [])
+  const fetchContacts = async () => {
+    try {
+      const { data } = await API.contacts.getContacts()
+      setContacts(data)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error fetching contacts:', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchContacts()
+  }, [])
 
   return (
     <>
       <SearchBar openSidebarPage={openSidebarPage} searchQuery={searchQuery} handleSearch={handleSearch} />
       <div className="flex-grow overflow-y-auto" />
+      <RoundedButton
+        className="absolute bottom-6 right-6"
+        onClick={() => setIsOpen((prev) => !prev)}
+        icon={<FaPlus className="h-6 w-6" color="white" />}
+      />
+      <Popup isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>
   )
 }
