@@ -1,5 +1,8 @@
-import { IoIosSend } from 'react-icons/io'
+import { IoIosSend, IoMdArrowBack } from 'react-icons/io'
 import { useParams } from 'react-router-dom'
+import { BsThreeDotsVertical } from 'react-icons/bs'
+
+import Avatar from '../../../../components/Avatar'
 
 function MessageInput() {
   return (
@@ -51,8 +54,20 @@ function ChatArea() {
 
   return (
     <div className="flex-grow flex flex-col">
-      <div className="bg-white p-4 border-b border-gray-200">
-        <h2 className="font-semibold text-lg">Current Chat</h2>
+      <div className="flex items-center justify-between w-full bg-white p-4 border-b border-gray-200">
+        <button type="button" className="sm:hidden">
+          <IoMdArrowBack className="w-5 h-5" />
+        </button>
+        <div className="flex gap-4 items-center">
+          <Avatar name="dsfd" size="sm" />
+          <div>
+            <p className="font-bold text-base leading-4">Name Surname</p>
+            <p className="text-sm text-gray-500">last seen recently</p>
+          </div>
+        </div>
+        <div>
+          <BsThreeDotsVertical className="h-5 w-5 text-gray-500" />
+        </div>
       </div>
       <div className="chat-background" />
       <Messages />
