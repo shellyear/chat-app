@@ -6,6 +6,7 @@ import messageQueueService from "../services/messageQueueService";
 import Logger from "../logger";
 import chatService from "../services/chatService";
 import { Types } from "mongoose";
+import User from "../models/User";
 
 const DOMAIN = "chatController";
 
@@ -87,9 +88,51 @@ const getChats = async (req: Request, res: Response) => {
   }
 };
 
+type Username = string;
+type UserId = Types.ObjectId;
+/**
+ * Username example: "@username"
+ * UserId: Types.ObjectId
+ */
+const getChat = async (
+  req: Request<{
+    id: Username | UserId;
+  }>,
+  res: Response
+) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.session;
+
+    const participant = await User.findOne({
+      $or: [{ _id: id }, { username: id }],
+    });
+
+    if (!participant) {
+      res.status(404).json({ code: "USER_NOT_FOUND" });
+      return;
+    }
+
+    let chat = await Chat.findOne({
+      participantsIds: { $all: [userId, participant._id] },
+    }).populate("lastMessageId");
+
+    if (!chat) {
+      res.status(404).json({ code: "CHAT_NOT_FOUND" });
+      return;
+    }
+
+    res.status(200).json({
+      chat,
+      message: chat ? "Chat found" : "No chat yet",
+    });
+  } catch (error) {}
+};
+
 const chatController = {
   sendMessage,
   getChats,
+  getChat,
 };
 
 export default chatController;
