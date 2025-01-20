@@ -132,10 +132,40 @@ const getChat = async (
   } catch (error) {}
 };
 
+const getMessages = async (
+  req: Request<{
+    chatId: Types.ObjectId;
+  }>,
+  res: Response
+) => {
+  const { chatId } = req.params;
+  const { page = 1, limit = 20 } = req.query;
+
+  try {
+    const messages = await Message.find({ chatId })
+      .sort({ createdAt: -1 })
+      .skip((Number(page) - 1) * Number(limit))
+      .limit(Number(limit))
+      .lean();
+
+    res.status(200).json({
+      messages,
+      pagination: {
+        currentPage: Number(page),
+        pageSize: Number(limit),
+        totalMessages: await Message.countDocuments({ chatId }),
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching messages" });
+  }
+};
+
 const chatController = {
   sendMessage,
   getChats,
   getChat,
+  getMessages,
 };
 
 export default chatController;
