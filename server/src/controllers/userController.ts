@@ -15,8 +15,9 @@ const getUser = async (
   res: Response
 ) => {
   const { id } = req.params;
+
   try {
-    const user = User.findOne({
+    const user = await User.findOne({
       $or: [{ _id: id }, { username: id }],
     });
 
