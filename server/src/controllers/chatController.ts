@@ -123,8 +123,11 @@ const getChat = async (
     }
 
     res.status(200).json({
-      chat,
-      message: chat ? "Chat found" : "No chat yet",
+      code: "CHAT_EXISTS",
+      data: {
+        user: participant,
+        chat,
+      },
     });
   } catch (error) {}
 };
