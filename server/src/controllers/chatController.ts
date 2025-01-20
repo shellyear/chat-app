@@ -125,7 +125,6 @@ const getChat = async (
     res.status(200).json({
       code: "CHAT_EXISTS",
       data: {
-        user: participant,
         chat,
       },
     });
