@@ -26,4 +26,6 @@ const ChatSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+ChatSchema.index({ participantsIds: 1 });
+
 export default mongoose.model<IChat>("Chat", ChatSchema);

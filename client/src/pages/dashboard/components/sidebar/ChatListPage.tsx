@@ -12,6 +12,7 @@ import { useAuth } from '../../../../contexts/AuthContext'
 import useSearchBar from '../../hooks/useSearchBar'
 import { IUser } from '../../../../types/user'
 import SearchInput from '../../../../components/SearchInput'
+import { generateChatLink } from '../../../../utils/chat'
 
 interface ISearchBar {
   openSidebarPage: (pageName: SidebarPage) => void
@@ -88,7 +89,7 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
           ? searchResults.map((foundUser) =>
               foundUser.email === user.email ? (
                 <Link
-                  to={`/${user.email || user.username}`}
+                  to={generateChatLink(foundUser.username, foundUser._id)}
                   key={user.email}
                   className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
                 >
@@ -101,7 +102,7 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
                 </Link>
               ) : (
                 <Link
-                  to={`/${foundUser.email || foundUser.username}`}
+                  to={generateChatLink(foundUser.username, foundUser._id)}
                   key={foundUser._id}
                   className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
                 >

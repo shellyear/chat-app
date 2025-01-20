@@ -23,8 +23,7 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="@:username" element={<ChatArea />} />
-            <Route path=":chatId" element={<ChatArea />} />
+            <Route path=":id" element={<ChatArea />} />
             <Route path="" element={<ChatArea />} />
           </Route>
         </Routes>

@@ -4,10 +4,10 @@ import Sidebar from './components/sidebar/Sidebar'
 import useIsMobile from '../../hooks/useIsMobile'
 
 function Dashboard() {
-  const { username, chatId } = useParams<{ username?: string; chatId?: string }>()
+  const { id } = useParams<{ id?: string }>()
   const { isMobile } = useIsMobile()
 
-  const hideSidebar = isMobile && (username || chatId)
+  const hideSidebar = isMobile && id
 
   return (
     <div className="flex h-screen">

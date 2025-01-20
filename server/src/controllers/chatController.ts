@@ -40,6 +40,8 @@ const sendMessage = async (
       content,
     });
 
+    await message.save();
+
     chat.lastMessageId = message._id;
     await chat.save();
 
