@@ -149,11 +149,14 @@ const getMessages = async (
       .lean();
 
     res.status(200).json({
-      messages,
-      pagination: {
-        currentPage: Number(page),
-        pageSize: Number(limit),
-        totalMessages: await Message.countDocuments({ chatId }),
+      code: "GET_CHAT_MESSAGES_SUCCESS",
+      data: {
+        messages,
+        pagination: {
+          currentPage: Number(page),
+          pageSize: Number(limit),
+          totalMessages: await Message.countDocuments({ chatId }),
+        },
       },
     });
   } catch (error) {

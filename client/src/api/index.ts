@@ -1,5 +1,5 @@
 import { getSession, login, logout, verifyCode } from './auth'
-import { getChats } from './chat'
+import { getChat, getChatMessages, getChats } from './chat'
 import { addContact, getContacts } from './contact'
 import { searchUsers } from './search'
 
@@ -11,7 +11,9 @@ const API = {
     logout
   },
   chat: {
-    getChats
+    getChats,
+    getChat,
+    getChatMessages
   },
   search: {
     searchUsers

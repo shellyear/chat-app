@@ -7,7 +7,3 @@ export const generateChatLink = (username: string, userId: string) => {
     return `/${userId}`
   }
 }
-
-export const isUsername = (str: string) => {
-  return str.startsWith('@')
-}

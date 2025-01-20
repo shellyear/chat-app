@@ -1,8 +1,11 @@
 import { IoIosSend, IoMdArrowBack } from 'react-icons/io'
 import { useNavigate, useParams } from 'react-router-dom'
 import { BsThreeDotsVertical } from 'react-icons/bs'
+import { useEffect, useState } from 'react'
 
 import Avatar from '../../../../components/Avatar'
+import API from '../../../../api'
+import { IUser } from '../../../../types/user'
 
 function MessageInput() {
   return (
@@ -42,10 +45,24 @@ function Messages() {
 }
 
 function ChatArea() {
-  const { username, chatId } = useParams<{ username?: string; chatId?: string }>()
+  const { id } = useParams<{ id?: string }>()
   const navigate = useNavigate()
+  const [participant, setParticipant] = useState<IUser>()
 
-  if (!username && !chatId) {
+  useEffect(() => {
+    const fetchChat = async () => {
+      const { data } = await API.chat.getChat(id)
+      return data.chat._id
+    }
+
+    const fetchMessages = async (chatId: string, page: number) => {
+      const { data } = await API.chat.getChatMessages(chatId, page)
+    }
+
+    const fetchChatWithMessages = async () => {}
+  }, [id])
+
+  if (!id) {
     return (
       <div className="relative flex-grow flex flex-col">
         <div className="chat-background" />
@@ -55,7 +72,7 @@ function ChatArea() {
 
   return (
     <div className="flex-grow flex flex-col">
-      <div className="flex items-center justify-between w-full bg-white p-4 border-b border-gray-200">
+      <div className="flex items-center justify-between w-full bg-white p-4 border-b border-gray-200 cursor-pointer">
         <button type="button" className="sm:hidden" onClick={() => navigate(-1)}>
           <IoMdArrowBack className="w-5 h-5" />
         </button>
