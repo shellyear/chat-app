@@ -2,6 +2,7 @@ import { getSession, login, logout, verifyCode } from './auth'
 import { getChat, getChatMessages, getChats } from './chat'
 import { addContact, getContacts } from './contact'
 import { searchUsers } from './search'
+import { getUser } from './user'
 
 const API = {
   auth: {
@@ -21,6 +22,9 @@ const API = {
   contacts: {
     getContacts,
     addContact
+  },
+  user: {
+    getUser
   }
 }
 
