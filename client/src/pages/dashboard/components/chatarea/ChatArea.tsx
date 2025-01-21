@@ -1,11 +1,14 @@
 import { IoIosSend, IoMdArrowBack } from 'react-icons/io'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { useEffect, useState } from 'react'
 
 import Avatar from '../../../../components/Avatar'
 import API from '../../../../api'
 import { IUser } from '../../../../types/user'
+import { IChat } from '../../../../types/chat'
+import useMsgPagination from '../../hooks/useMsgPagination'
+import { IContactPreview } from '../../../../types/contact'
 
 function MessageInput() {
   return (
@@ -27,7 +30,9 @@ function MessageInput() {
   )
 }
 
-function Messages() {
+function Messages({ chatId }: { chatId: string }) {
+  const { messages, totalMessages, loading, setPage } = useMsgPagination(chatId)
+
   return (
     <div className="flex-grow overflow-y-auto p-4 space-y-4">
       {/* Sample messages */}
@@ -47,19 +52,37 @@ function Messages() {
 function ChatArea() {
   const { id } = useParams<{ id?: string }>()
   const navigate = useNavigate()
-  const [participant, setParticipant] = useState<IUser>()
+  const location = useLocation()
+  const [participant, setParticipant] = useState<IContactPreview>()
+  const [chat, setChat] = useState<IChat>()
+  const isFromContactsPage = Boolean(location.state?.fromContacts)
 
   useEffect(() => {
     const fetchChat = async () => {
-      const { data } = await API.chat.getChat(id)
-      return data.chat._id
+      try {
+        const response = await API.chat.getChat(id)
+        setChat(response.data.chat)
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error fetching chat:', error)
+      }
     }
 
-    const fetchMessages = async (chatId: string, page: number) => {
-      const { data } = await API.chat.getChatMessages(chatId, page)
+    const fetchParticipant = async () => {
+      try {
+        if (isFromContactsPage) {
+          setParticipant(location.state.data as IContactPreview)
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error fetching participant:', error)
+      }
     }
 
-    const fetchChatWithMessages = async () => {}
+    if (id) {
+      fetchChat()
+      fetchParticipant()
+    }
   }, [id])
 
   if (!id) {
@@ -70,6 +93,8 @@ function ChatArea() {
     )
   }
 
+  console.log({ chat, participant })
+
   return (
     <div className="flex-grow flex flex-col">
       <div className="flex items-center justify-between w-full bg-white p-4 border-b border-gray-200 cursor-pointer">
@@ -77,9 +102,15 @@ function ChatArea() {
           <IoMdArrowBack className="w-5 h-5" />
         </button>
         <div className="flex gap-4 items-center">
-          <Avatar name="dsfd" size="sm" />
+          {isFromContactsPage && participant?.contactId?.profilePicture ? (
+            <img src={participant?.contactId?.profilePicture} alt="profilePicture" className="w-10 h-10 rounded-full" />
+          ) : (
+            <Avatar name={participant?.name} size="sm" />
+          )}
           <div>
-            <p className="font-bold text-base leading-4">Name Surname</p>
+            <p className="font-bold text-base leading-4">
+              {participant?.name} {participant?.surname}
+            </p>
             <p className="text-sm text-gray-500">last seen recently</p>
           </div>
         </div>
@@ -88,7 +119,7 @@ function ChatArea() {
         </div>
       </div>
       <div className="chat-background" />
-      <Messages />
+      {chat?._id ? <Messages chatId={chat._id} /> : <div className="flex-grow overflow-y-auto p-4 space-y-4" />}
       <MessageInput />
     </div>
   )

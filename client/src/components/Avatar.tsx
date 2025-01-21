@@ -1,13 +1,13 @@
 import React from 'react'
 
 interface AvatarProps {
-  name: string
+  name?: string
   size?: 'sm' | 'md' | 'lg'
   className?: string
 }
 
 function Avatar({ name, size = 'md', className = '' }: AvatarProps) {
-  const firstLetter = name.charAt(0).toUpperCase()
+  const firstLetter = name?.charAt(0).toUpperCase()
 
   const sizeClasses = {
     sm: 'w-10 h-10 text-xs',
@@ -26,7 +26,7 @@ function Avatar({ name, size = 'md', className = '' }: AvatarProps) {
     'bg-teal-500'
   ]
 
-  const bgColor = bgColors[name.length % bgColors.length]
+  const bgColor = bgColors[(name?.length || 0) % bgColors.length]
 
   return (
     <div

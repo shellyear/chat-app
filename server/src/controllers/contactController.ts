@@ -70,7 +70,7 @@ const getContacts = async (req: Request, res: Response) => {
 
   try {
     const contacts = await Contact.find({ userId })
-      .populate("contactId", "email username profilePicture")
+      .populate("contactId", "username profilePicture")
       .sort({ createdAt: -1 });
 
     res.status(200).json({ code: "FOUND_CONTACTS_SUCCESS", data: contacts });
