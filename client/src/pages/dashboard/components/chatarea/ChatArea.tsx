@@ -1,5 +1,5 @@
 import { IoIosSend, IoMdArrowBack } from 'react-icons/io'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Location, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { useEffect, useState } from 'react'
 
@@ -51,28 +51,12 @@ function Messages({ chatId }: { chatId: string }) {
 function ChatArea() {
   const { id } = useParams<{ id?: string }>()
   const navigate = useNavigate()
-  const location = useLocation()
   const [participant, setParticipant] = useState<IContactPreview>()
   const [chat, setChat] = useState<IChat>()
-  const isFromContactsPage = Boolean(location.state?.fromContacts)
-  const isFromChatListPage = Boolean(location.state?.fromChatListPage)
 
   useEffect(() => {
-    const fetchChat = async () => {
-      try {
-        const response = await API.chat.getChat(id)
-        setChat(response.data.chat)
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Error fetching chat:', error)
-      }
-    }
-
     const fetchParticipant = async () => {
       try {
-        if (isFromContactsPage) setParticipant(location.state.data as IContactPreview)
-        else if (isFromChatListPage) {
-        }
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Error fetching participant:', error)
@@ -80,10 +64,9 @@ function ChatArea() {
     }
 
     if (id) {
-      fetchChat()
       fetchParticipant()
     }
-  }, [id, isFromContactsPage, location.state.data])
+  }, [id])
 
   if (!id) {
     return (
@@ -93,8 +76,6 @@ function ChatArea() {
     )
   }
 
-  console.log({ chat, participant })
-
   return (
     <div className="flex-grow flex flex-col">
       <div className="flex items-center justify-between w-full bg-white p-4 border-b border-gray-200 cursor-pointer">
@@ -102,7 +83,7 @@ function ChatArea() {
           <IoMdArrowBack className="w-5 h-5" />
         </button>
         <div className="flex gap-4 items-center">
-          {isFromContactsPage && participant?.contactId?.profilePicture ? (
+          {participant?.contactId?.profilePicture ? (
             <img src={participant?.contactId?.profilePicture} alt="profilePicture" className="w-10 h-10 rounded-full" />
           ) : (
             <Avatar name={participant?.name} size="sm" />

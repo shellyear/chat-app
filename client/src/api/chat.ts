@@ -6,12 +6,8 @@ export const getChats = () => {
   return apiClient.get<{ message: string; data: IChat[] }>('/chats')
 }
 
-type Username = string
-type UserId = string
-type ChatId = Username | UserId
-
-export const getChat = async (id: ChatId) => {
-  const response = await apiClient.get<{ code: string; data: { chat: IChat } }>(`/chats/${id}`)
+export const getChat = async (chatId: string) => {
+  const response = await apiClient.get<{ code: string; data: { chat: IChat } }>(`/chats/${chatId}`)
 
   return response.data
 }
