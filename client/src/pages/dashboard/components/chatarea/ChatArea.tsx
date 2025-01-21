@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 
 import Avatar from '../../../../components/Avatar'
 import API from '../../../../api'
-import { IUser } from '../../../../types/user'
 import { IChat } from '../../../../types/chat'
 import useMsgPagination from '../../hooks/useMsgPagination'
 import { IContactPreview } from '../../../../types/contact'
@@ -56,6 +55,7 @@ function ChatArea() {
   const [participant, setParticipant] = useState<IContactPreview>()
   const [chat, setChat] = useState<IChat>()
   const isFromContactsPage = Boolean(location.state?.fromContacts)
+  const isFromChatListPage = Boolean(location.state?.fromChatListPage)
 
   useEffect(() => {
     const fetchChat = async () => {
@@ -70,8 +70,8 @@ function ChatArea() {
 
     const fetchParticipant = async () => {
       try {
-        if (isFromContactsPage) {
-          setParticipant(location.state.data as IContactPreview)
+        if (isFromContactsPage) setParticipant(location.state.data as IContactPreview)
+        else if (isFromChatListPage) {
         }
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -83,7 +83,7 @@ function ChatArea() {
       fetchChat()
       fetchParticipant()
     }
-  }, [id])
+  }, [id, isFromContactsPage, location.state.data])
 
   if (!id) {
     return (

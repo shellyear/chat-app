@@ -1,3 +1,6 @@
+import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+
 import ContactsPage from './ContactsPage'
 import SettingsPage from './SettingsPage'
 import ChatListPage from './ChatListPage'
@@ -10,6 +13,7 @@ export enum SidebarPage {
 }
 
 function Sidebar() {
+  const { id } = useParams<{ id?: string }>()
   const { currentPage, openSidebarPage } = useSidebarPage()
 
   const showCurrentSidebarPage = (currentPage: SidebarPage) => {
@@ -24,6 +28,13 @@ function Sidebar() {
         return <ChatListPage openSidebarPage={openSidebarPage} />
     }
   }
+
+  useEffect(() => {
+    if (id) {
+      openSidebarPage(SidebarPage.CHATLIST_PAGE)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
 
   return (
     <div className="relative w-full shrink-0 bg-white border-r border-gray-200 flex flex-col sm:w-80">
