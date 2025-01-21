@@ -14,3 +14,8 @@ export const addContact = async (name: string, email: string, surname?: string) 
   })
   return response.data
 }
+
+export const getContact = async (contactId: string) => {
+  const response = await apiClient.get<{ code: string; data: IContact }>(`/contacts/${contactId}`)
+  return response.data
+}
