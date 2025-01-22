@@ -8,6 +8,7 @@ import API from '../../../../api'
 import { IChat } from '../../../../types/chat'
 import useMsgPagination from '../../hooks/useMsgPagination'
 import { IContactPreview } from '../../../../types/contact'
+import { IUser } from '../../../../types/user'
 
 function MessageInput() {
   return (
@@ -51,20 +52,24 @@ function Messages({ chatId }: { chatId: string }) {
 function ChatArea() {
   const { id } = useParams<{ id?: string }>()
   const navigate = useNavigate()
-  const [participant, setParticipant] = useState<IContactPreview>()
+  const [participant, setParticipant] = useState<IUser>()
   const [chat, setChat] = useState<IChat>()
 
   useEffect(() => {
-    const fetchParticipant = async () => {
+    const fetchChatData = async () => {
       try {
+        const {
+          data: { chat, participant }
+        } = await API.chat.getChat(id)
+        setParticipant(participant)
+        setChat(chat)
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Error fetching participant:', error)
+        console.log('Error while fetching chat data')
       }
     }
 
     if (id) {
-      fetchParticipant()
+      fetchChatData()
     }
   }, [id])
 
@@ -83,8 +88,8 @@ function ChatArea() {
           <IoMdArrowBack className="w-5 h-5" />
         </button>
         <div className="flex gap-4 items-center">
-          {participant?.contactId?.profilePicture ? (
-            <img src={participant?.contactId?.profilePicture} alt="profilePicture" className="w-10 h-10 rounded-full" />
+          {participant?.profilePicture ? (
+            <img src={participant?.profilePicture} alt="profilePicture" className="w-10 h-10 rounded-full" />
           ) : (
             <Avatar name={participant?.name} size="sm" />
           )}

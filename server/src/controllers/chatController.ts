@@ -7,6 +7,7 @@ import Logger from "../logger";
 import chatService from "../services/chatService";
 import { Types } from "mongoose";
 import User from "../models/User";
+import Contact from "../models/Contact";
 
 const DOMAIN = "chatController";
 
@@ -88,15 +89,12 @@ const getChats = async (req: Request, res: Response) => {
   }
 };
 
-type Username = string;
-type UserId = Types.ObjectId;
 /**
- * Username example: "@username"
- * UserId: Types.ObjectId
+ * @id "@username" or "userId" or "chatId"
  */
 const getChat = async (
   req: Request<{
-    id: Username | UserId;
+    id: string | Types.ObjectId;
   }>,
   res: Response
 ) => {
@@ -104,28 +102,60 @@ const getChat = async (
     const { id } = req.params;
     const { userId } = req.session;
 
-    const participant = await User.findOne({
-      $or: [{ _id: id }, { username: id }],
-    });
+    let foundUserByUsername;
+    let foundUserById;
+    let foundChatById;
+    let foundChatByParticipants;
 
-    if (!participant) {
+    if (id.toString().startsWith("@")) {
+      foundUserByUsername = await User.findOne({
+        username: id,
+      });
+
+      if (!foundUserByUsername) {
+        /* find a channel here */
+      }
+    }
+
+    if (!foundUserByUsername) {
+      foundUserById = await User.findById(id);
+
+      if (!foundUserById) {
+        foundChatById = await Chat.findById(id);
+      }
+    }
+
+    if (!foundUserById && !foundUserByUsername) {
       res.status(404).json({ code: "USER_NOT_FOUND" });
       return;
     }
 
-    let chat = await Chat.findOne({
-      participantsIds: { $all: [userId, participant._id] },
-    }).populate("lastMessageId");
-
-    if (!chat) {
-      res.status(404).json({ code: "CHAT_NOT_FOUND" });
-      return;
+    if (!foundChatById) {
+      const participantId = foundUserById?._id || foundUserByUsername?._id;
+      foundChatByParticipants = await Chat.findOne({
+        participantsIds: { $all: [userId, participantId] },
+      }).populate("lastMessageId");
     }
 
+    const participant = foundUserById || foundUserByUsername;
+    const participantContact = await Contact.findOne({
+      userId,
+      contactId: participant?._id,
+    });
+
     res.status(200).json({
-      code: "CHAT_EXISTS",
+      code: "GET_CHAT_DATA_SUCCESS",
       data: {
-        chat,
+        chat:
+          foundChatById?.populate("lastMessageId") ||
+          foundChatByParticipants?.populate("lastMessageId"),
+        participant: {
+          ...participant,
+          ...(participantContact && {
+            name: participantContact.name,
+            surname: participantContact.surname,
+          }),
+        },
       },
     });
   } catch (error) {}
