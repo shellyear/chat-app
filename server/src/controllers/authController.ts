@@ -108,7 +108,7 @@ const verify = async (
 
     if (storedVerificationCode === code) {
       const newSessionId = await sessionService.createSession({
-        userId: user._id,
+        userId: user.userId,
         isPersistent: keepMeSignedIn,
       });
 

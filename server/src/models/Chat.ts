@@ -1,7 +1,7 @@
 import mongoose, { Schema, Types } from "mongoose";
 
 export interface IChat {
-  _id: number;
+  chatId: number;
   participantsIds: number[];
   lastMessageId: number;
   createdAt: Date;
@@ -10,7 +10,7 @@ export interface IChat {
 
 const ChatSchema = new mongoose.Schema(
   {
-    _id: { type: Number },
+    chatId: { type: Number, length: 9 },
     participantsIds: [
       {
         type: Number,
