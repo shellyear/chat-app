@@ -5,9 +5,11 @@ import ContactsPage from './ContactsPage'
 import SettingsPage from './SettingsPage'
 import ChatListPage from './ChatListPage'
 import useSidebarPage from '../../hooks/useSidebarPage'
+import EditSettingsPage from './EditSettingsPage'
 
 export enum SidebarPage {
   SETTINGS_PAGE = 'SETTINGS_PAGE',
+  EDIT_SETTINGS_PAGE = 'EDIT_SETTINGS_PAGE',
   CONTACTS_PAGE = 'CONTACTS_PAGE',
   CHATLIST_PAGE = 'CHAT_LIST_PAGE'
 }
@@ -24,6 +26,8 @@ function Sidebar() {
         return <ContactsPage openSidebarPage={openSidebarPage} />
       case SidebarPage.SETTINGS_PAGE:
         return <SettingsPage openSidebarPage={openSidebarPage} />
+      case SidebarPage.EDIT_SETTINGS_PAGE:
+        return <EditSettingsPage openSidebarPage={openSidebarPage} />
       default:
         return <ChatListPage openSidebarPage={openSidebarPage} />
     }

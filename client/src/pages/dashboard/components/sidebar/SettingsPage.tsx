@@ -38,6 +38,10 @@ function SettingsPage({ openSidebarPage }: ISettingPageProps) {
     setShowLogoutMenu((prev) => !prev)
   }
 
+  const onEditClick = () => {
+    openSidebarPage(SidebarPage.EDIT_SETTINGS_PAGE)
+  }
+
   return (
     <div>
       <div className="relative flex items-center justify-between p-3">
@@ -48,7 +52,7 @@ function SettingsPage({ openSidebarPage }: ISettingPageProps) {
           <span className="i18n">Settings</span>
         </div>
         <button type="button" className="p-2">
-          <MdModeEdit className="w-5 h-5" />
+          <MdModeEdit onClick={() => onEditClick()} className="w-5 h-5" />
         </button>
         <button type="button" className="p-2" onClick={onThreeDotsClick}>
           <BsThreeDotsVertical className="w-5 h-5" />
