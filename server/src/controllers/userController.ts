@@ -5,21 +5,16 @@ import Logger from "../logger";
 
 const DOMAIN = "userController";
 
-type Username = string; /* @username */
-type UserId = Types.ObjectId | Username;
-
 const getUser = async (
   req: Request<{
-    id: UserId;
+    id: string;
   }>,
   res: Response
 ) => {
   const { id } = req.params;
 
   try {
-    const user = await User.findOne({
-      $or: [{ _id: id }, { username: id }],
-    });
+    const user = await User.findOne({ userId: id });
 
     if (!user) {
       res.status(404).json({

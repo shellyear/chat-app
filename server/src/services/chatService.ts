@@ -4,11 +4,23 @@ import { Types } from "mongoose";
 
 const DOMAIN = "chatService";
 
+const getChatById = async (chatId: string) => {
+  try {
+    const foundChat = await Chat.findOne({ chatId }).projection({ _id: 0 });
+
+    return foundChat;
+  } catch (error) {
+    Logger.error(`Error while trying to find id ${error}`, DOMAIN);
+    throw error;
+  }
+};
+
 const getUserChats = async (userId: string) => {
   try {
     const chats = await Chat.find({
       participantsIds: { $in: [userId] },
     })
+      .projection({ _id: 0 })
       .populate("participantsIds", ["email", "name", "profilePicture"])
       .populate("lastMessageId", ["content", "createdAt"])
       .sort({ updatedAt: -1 });
@@ -22,6 +34,7 @@ const getUserChats = async (userId: string) => {
 
 const chatService = {
   getUserChats,
+  getChatById,
 };
 
 export default chatService;
