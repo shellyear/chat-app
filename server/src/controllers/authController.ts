@@ -127,7 +127,6 @@ const verify = async (
         message: "Verification successful",
         user: {
           email: user.email,
-          username: user.username,
           profilePicture: user.profilePicture,
           name: user.name,
           surname: user.surname,
@@ -178,7 +177,6 @@ const session = async (req: Request, res: Response) => {
     res.status(200).json({
       user: {
         email: user.email,
-        username: user.username,
         profilePicture: user.profilePicture,
         name: user.name,
         surname: user.surname,
