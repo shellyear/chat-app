@@ -14,10 +14,7 @@ const searchUsers = async (req: Request<{ query: string }>, res: Response) => {
 
   try {
     const users = await User.find({
-      $or: [
-        { email: { $regex: query, $options: "i" } },
-        { username: { $regex: query, $options: "i" } },
-      ],
+      $or: [{ username: { $regex: query, $options: "i" } }],
     }).select("username email profilePicture");
 
     res.status(200).json({
