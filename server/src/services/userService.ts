@@ -1,15 +1,15 @@
 import Logger from "../logger";
-import User from "../models/User";
-import { IUser } from "../types";
+import User, { IUser } from "../models/User";
 import uniqueIdService from "./uniqueIdService";
 
 const DOMAIN = "userService";
 
 const createUser = async (email: string) => {
-  const userId = uniqueIdService.generateUserId();
-
   try {
+    const userId = uniqueIdService.generateUserId() as string;
     const newUser = await User.create({ userId, email });
+
+    await newUser.save();
 
     return newUser as IUser;
   } catch (error) {

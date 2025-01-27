@@ -11,6 +11,7 @@ import emailService from "../services/emailService";
 import sessionService from "../services/sessionService";
 import Config from "../config";
 import Logger from "../logger";
+import userService from "../services/userService";
 
 const DOMAIN = "authController";
 
@@ -53,8 +54,7 @@ const login = async (
       EX: expirationTime,
     });
 
-    const newUser = new User({ email });
-    await newUser.save();
+    await userService.createUser(email);
 
     await emailService.sendVerificationEmail(email, verificationCode);
 
