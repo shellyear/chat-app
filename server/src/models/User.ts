@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 type IImageUrl = string;
 
 export interface IUser extends Document {
-  userId: number;
+  userId: string;
   email: string;
   username?: string;
   name?: string;
@@ -14,7 +14,7 @@ export interface IUser extends Document {
 }
 
 const UserSchema = new Schema<IUser>({
-  userId: { type: Number, length: 10 },
+  userId: { type: String, length: 10, required: true, unique: true },
   email: { type: String, unique: true, required: true, index: true },
   username: { type: String, unique: true, required: false, index: true },
   name: { type: String },
