@@ -6,10 +6,7 @@ import { Types } from "mongoose";
 
 const DOMAIN = "MessageQueueService";
 
-const addUndeliveredMessage = async (
-  userId: Types.ObjectId,
-  message: IMessage
-) => {
+const addUndeliveredMessage = async (userId: number, message: IMessage) => {
   try {
     const messageData = JSON.stringify({
       senderId: message.senderId,
@@ -30,7 +27,7 @@ const addUndeliveredMessage = async (
 };
 
 const getUndeliveredMessages = async (
-  userId: Types.ObjectId
+  userId: number
 ): Promise<IMessageData[]> => {
   try {
     const undeliveredMessages = await redisClient.lRange(
@@ -51,7 +48,7 @@ const getUndeliveredMessages = async (
   }
 };
 
-const clearUndeliveredMessages = async (userId: Types.ObjectId) => {
+const clearUndeliveredMessages = async (userId: number) => {
   try {
     await redisClient.del(`messages:${userId}`);
     Logger.info(`Undelivered messages cleared for user ${userId}`, DOMAIN);

@@ -6,7 +6,7 @@ import { WebSocket } from "ws";
 
 const DOMAIN = "wsConnectionService";
 
-const addConnection = async (userId: Types.ObjectId, ws: WebSocket) => {
+const addConnection = async (userId: number, ws: WebSocket) => {
   try {
     await redisClient.set(`ws:${userId}`, JSON.stringify(ws), {
       EX: 3600, // 1h in s
@@ -21,7 +21,7 @@ const addConnection = async (userId: Types.ObjectId, ws: WebSocket) => {
   }
 };
 
-const removeConnection = async (userId: Types.ObjectId) => {
+const removeConnection = async (userId: number) => {
   try {
     await redisClient.del(`ws:${userId}`);
     Logger.info(`WebSocket connection removed for user ${userId}`, DOMAIN);
@@ -34,9 +34,7 @@ const removeConnection = async (userId: Types.ObjectId) => {
   }
 };
 
-const getConnection = async (
-  userId: Types.ObjectId
-): Promise<WebSocket | null> => {
+const getConnection = async (userId: number): Promise<WebSocket | null> => {
   try {
     const wsData = await redisClient.get(`ws:${userId}`);
 
@@ -55,7 +53,7 @@ const getConnection = async (
   }
 };
 
-const handleUserReconnect = async (userId: Types.ObjectId, ws: WebSocket) => {
+const handleUserReconnect = async (userId: number, ws: WebSocket) => {
   try {
     const undeliveredMessages =
       await messageQueueService.getUndeliveredMessages(userId);

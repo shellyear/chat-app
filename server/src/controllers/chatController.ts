@@ -13,7 +13,7 @@ const DOMAIN = "chatController";
 
 const sendMessage = async (
   req: Request<
-    { id: Types.ObjectId },
+    { id: number },
     {},
     {
       content: string;
@@ -94,7 +94,7 @@ const getChats = async (req: Request, res: Response) => {
  */
 const getChat = async (
   req: Request<{
-    id: string | Types.ObjectId;
+    id: number;
   }>,
   res: Response
 ) => {
@@ -163,7 +163,7 @@ const getChat = async (
 
 const getMessages = async (
   req: Request<{
-    chatId: Types.ObjectId;
+    chatId: number;
   }>,
   res: Response
 ) => {

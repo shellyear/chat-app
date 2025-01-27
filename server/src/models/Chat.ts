@@ -1,18 +1,19 @@
 import mongoose, { Schema, Types } from "mongoose";
 
 export interface IChat {
-  _id: Types.ObjectId;
-  participantsIds: Types.ObjectId[];
-  lastMessageId: Types.ObjectId;
+  _id: number;
+  participantsIds: number[];
+  lastMessageId: number;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const ChatSchema = new mongoose.Schema(
   {
+    _id: { type: Number },
     participantsIds: [
       {
-        type: Schema.Types.ObjectId,
+        type: Number,
         ref: "User",
         required: true,
         validate: {
