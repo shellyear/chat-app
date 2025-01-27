@@ -13,11 +13,11 @@ const ChatSchema = new mongoose.Schema(
     chatId: { type: String, unique: true, required: true }, // format: -123456789
     participantsIds: [
       {
-        type: Number,
+        type: String,
         ref: "User",
         required: true,
         validate: {
-          validator: (v: Types.ObjectId[]) => v.length === 2,
+          validator: (v: string[]) => v.length === 2,
           message: "Chats must have exactly 2 participants",
         },
       },

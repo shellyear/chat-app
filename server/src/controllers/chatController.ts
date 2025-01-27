@@ -69,7 +69,7 @@ const sendMessage = async (
 
 const getChats = async (req: Request, res: Response) => {
   try {
-    const userId = req.session.userId;
+    const { userId } = req.session;
 
     const chats = await chatService.getUserChats(userId);
 

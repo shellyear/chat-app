@@ -20,7 +20,6 @@ const getUserChats = async (userId: string) => {
     const chats = await Chat.find({
       participantsIds: { $in: [userId] },
     })
-      .projection({ _id: 0 })
       .populate("participantsIds", ["email", "name", "profilePicture"])
       .populate("lastMessageId", ["content", "createdAt"])
       .sort({ updatedAt: -1 });

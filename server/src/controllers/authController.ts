@@ -166,7 +166,7 @@ const session = async (req: Request, res: Response) => {
       return;
     }
 
-    const user = await User.findById(sessionData.userId);
+    const user = await User.findOne({ userId: sessionData.userId });
 
     if (!user) {
       res.status(401).json({ message: "Not authenticated" });
