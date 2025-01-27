@@ -9,7 +9,7 @@ interface IChannel {
 }
 
 const channelSchema = new mongoose.Schema({
-  channelId: { type: Number, unique: true, required: true, length: 10 },
+  channelId: { type: Number, unique: true, required: true }, // format: -0123456789
   name: { type: String },
   uniqueName: { type: String, unique: true },
   description: { type: String },

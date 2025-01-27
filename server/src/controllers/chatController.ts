@@ -13,7 +13,7 @@ const DOMAIN = "chatController";
 
 const sendMessage = async (
   req: Request<
-    { id: number },
+    { id: string },
     {},
     {
       content: string;

@@ -4,7 +4,7 @@ import { Types } from "mongoose";
 
 const DOMAIN = "chatService";
 
-const getUserChats = async (userId: number) => {
+const getUserChats = async (userId: string) => {
   try {
     const chats = await Chat.find({
       participantsIds: { $in: [userId] },
