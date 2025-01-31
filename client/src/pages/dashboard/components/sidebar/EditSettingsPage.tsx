@@ -58,13 +58,18 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
         <div className="flex flex-col">
           <ul className="flex flex-col gap-4 px-6">
             <li>
-              <TopLabelInput name="name" label="Name" />
+              <TopLabelInput type="text" name="name" label="Name" onChange={(e) => setName(e.target.value)} />
             </li>
             <li>
-              <TopLabelInput name="surname" label="Last Name" />
+              <TopLabelInput
+                type="text"
+                name="surname"
+                label="Last Name"
+                onChange={(e) => setSurname(e.target.value)}
+              />
             </li>
             <li>
-              <TopLabelInput name="Bio" label="Bio (optional)" />
+              <TopLabelInput type="text" name="Bio" label="Bio (optional)" onChange={(e) => setBio(e.target.value)} />
             </li>
           </ul>
           <div className="bg-gray-100 pt-2 pb-3">
@@ -76,7 +81,12 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
           <div className="mt-4 px-6">
             <div className="text-blue-500 font-semibold">Username</div>
             <div className="mt-4">
-              <TopLabelInput name="Username" label="Username (optional)" />
+              <TopLabelInput
+                type="text"
+                name="Username"
+                label="Username (optional)"
+                onChange={(e) => setUsername(e.target.value)}
+              />
             </div>
           </div>
           <div className="bg-gray-100 pt-2 pb-3 text-sm text-gray-500 px-6 leading-tight">
