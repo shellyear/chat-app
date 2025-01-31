@@ -89,7 +89,7 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
           ? searchResults.map((foundUser) =>
               foundUser.email === user.email ? (
                 <Link
-                  to={generateChatLink(foundUser.username, foundUser._id)}
+                  to={generateChatLink(foundUser.uniqueName, foundUser._id)}
                   key={user.email}
                   className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
                 >
@@ -102,13 +102,13 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
                 </Link>
               ) : (
                 <Link
-                  to={generateChatLink(foundUser.username, foundUser._id)}
+                  to={generateChatLink(foundUser.uniqueName, foundUser._id)}
                   key={foundUser._id}
                   className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
                 >
                   <div className="w-12 h-12 bg-gray-300 rounded-full mr-4" />
                   <div className="flex-grow">
-                    <h3 className="font-semibold">{foundUser.username || foundUser.email}</h3>
+                    <h3 className="font-semibold">{foundUser.uniqueName || foundUser.email}</h3>
                   </div>
                 </Link>
               )

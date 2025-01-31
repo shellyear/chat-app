@@ -61,7 +61,7 @@ function SettingsPage({ openSidebarPage }: ISettingPageProps) {
       </div>
 
       <div className="flex flex-col items-center pt-8 pb-6">
-        <div className="w-24 h-24 rounded-full bg-gray-300 mb-4">
+        <div className="w-[7.5rem] h-[7.5rem] rounded-full bg-gray-300 mb-4">
           {user.profilePicture ? (
             <img src={user.profilePicture} alt="User Avatar" className="w-full h-full rounded-full object-cover" />
           ) : (
