@@ -1,30 +1,81 @@
 import { IoMdArrowBack } from 'react-icons/io'
-import { MdEmail, MdOutlineAddAPhoto } from 'react-icons/md'
-import { useState } from 'react'
+import { MdOutlineAddAPhoto } from 'react-icons/md'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { FaCheck } from 'react-icons/fa6'
 
 import { SidebarPage } from './Sidebar'
 import { useAuth } from '../../../../contexts/AuthContext'
 import TopLabelInput from '../../../../components/TopLabelInput'
+import API from '../../../../api'
 
 interface IEditSettingPageProps {
   openSidebarPage: (pageName: SidebarPage) => void
 }
 
 function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
-  const { user } = useAuth()
+  const { user, setUser } = useAuth()
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [name, setName] = useState(user.name || '')
   const [surname, setSurname] = useState(user.surname || '')
   const [bio, setBio] = useState(user.bio || '')
   const [username, setUsername] = useState(user.uniqueName || '')
 
+  const [profilePicture, setProfilePicture] = useState<File>()
+  const [showSaveButton, setShowSaveButton] = useState(false)
+
+  useEffect(() => {
+    const isValidUsername = /^[a-zA-Z0-9_]{5,34}$/.test(username)
+    if (
+      username !== (user.uniqueName || '') ||
+      name !== (user.name || '') ||
+      surname !== (user.surname || '') ||
+      bio !== (user.bio || '') ||
+      profilePicture
+    ) {
+      if (username && !isValidUsername) {
+        return setShowSaveButton(false)
+      }
+      return setShowSaveButton(true)
+    }
+    setShowSaveButton(false)
+  }, [name, surname, bio, username, profilePicture, user.uniqueName, user.name, user.bio, user.surname])
+
   const handleGoBack = () => {
     openSidebarPage(SidebarPage.SETTINGS_PAGE)
   }
 
+  const handleImageInputClick = () => {
+    fileInputRef.current.click()
+  }
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files[0]
+
+    if (file) {
+      setProfilePicture(file)
+    }
+  }
+
+  const handleSubmit = async () => {
+    try {
+      const response = await API.user.setProfileInfo(user.userId, {
+        name,
+        surname,
+        uniqueName: username,
+        bio,
+        profilePicture
+      })
+      setUser(response.data)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error while setting profile data', error)
+    }
+  }
+
   return (
-    <div className="flex flex-col h-screen">
-      <div className="relative flex items-center justify-between px-6 py-3">
+    <div className="relative flex flex-col h-screen">
+      <div className="flex items-center justify-between px-6 py-3">
         <button type="button" onClick={handleGoBack}>
           <IoMdArrowBack className="w-6 h-6 text-gray-500" />
         </button>
@@ -35,10 +86,10 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
 
       <div className="overflow-y-auto flex-1">
         <div className="flex flex-col items-center pt-8 pb-6">
-          <div className="relative w-[7.5rem] h-[7.5rem] rounded-full bg-gray-300 mb-4">
-            {user.profilePicture ? (
+          <div className="relative w-[7.5rem] h-[7.5rem] rounded-full bg-gray-300 mb-4" onClick={handleImageInputClick}>
+            {profilePicture || user.profilePicture ? (
               <img
-                src={user.profilePicture}
+                src={URL.createObjectURL(profilePicture) || user.profilePicture}
                 alt="User Avatar"
                 className="w-full h-full rounded-full object-cover filter brightness-[0.8]"
               />
@@ -51,6 +102,7 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
               className="absolute w-12 h-12 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition duration-300 hover:scale-110"
               color="white"
             />
+            <input type="file" ref={fileInputRef} accept="image/*" className="hidden" onChange={handleFileChange} />
           </div>
           <h3 className="text-xl font-semibold">{user?.name}</h3>
         </div>
@@ -85,6 +137,9 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
                 type="text"
                 name="Username"
                 label="Username (optional)"
+                pattern="^[a-z0-9_]{5,}$"
+                minLength={5}
+                maxLength={34}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
@@ -101,6 +156,14 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
           </div>
         </div>
       </div>
+      {showSaveButton && (
+        <div
+          className="absolute bottom-6 right-6 flex items-center justify-center w-14 h-14 rounded-full bg-blue-500"
+          onClick={handleSubmit}
+        >
+          <FaCheck className="w-4 h-4" color="white" />
+        </div>
+      )}
     </div>
   )
 }

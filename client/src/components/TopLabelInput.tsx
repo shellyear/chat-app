@@ -5,10 +5,22 @@ interface TopLabelInputProps {
   label: string
   type?: string
   required?: boolean
+  pattern?: string
+  minLength?: number
+  maxLength?: number
   onChange?: ChangeEventHandler<HTMLInputElement>
 }
 
-function TopLabelInput({ name, label, type = 'text', required = false, onChange }: TopLabelInputProps) {
+function TopLabelInput({
+  name,
+  label,
+  type = 'text',
+  pattern,
+  minLength,
+  maxLength,
+  required = false,
+  onChange
+}: TopLabelInputProps) {
   return (
     <div className="relative mb-4 w-full">
       <label
@@ -22,6 +34,9 @@ function TopLabelInput({ name, label, type = 'text', required = false, onChange 
         name={name}
         id={name}
         required={required}
+        pattern={pattern}
+        minLength={minLength}
+        maxLength={maxLength}
         onChange={onChange}
         className="w-full px-4 py-3 text-gray-900 border rounded-md focus:outline-none transition-colors border-gray-300 focus:border-blue-500 focus:bg-white"
       />

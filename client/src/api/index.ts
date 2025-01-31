@@ -2,7 +2,7 @@ import { getSession, login, logout, verifyCode } from './auth'
 import { getChat, getChatMessages, getChats } from './chat'
 import { addContact, getContact, getContacts } from './contact'
 import { searchUsers } from './search'
-import { getUser } from './user'
+import { getUser, setProfileInfo } from './user'
 
 const API = {
   auth: {
@@ -25,7 +25,8 @@ const API = {
     getContact
   },
   user: {
-    getUser
+    getUser,
+    setProfileInfo
   }
 }
 
