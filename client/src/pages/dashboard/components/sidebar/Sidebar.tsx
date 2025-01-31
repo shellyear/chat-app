@@ -41,7 +41,7 @@ function Sidebar() {
   }, [id])
 
   return (
-    <div className="relative w-full shrink-0 bg-white border-r border-gray-200 flex flex-col sm:w-80">
+    <div className="relative w-full shrink-0 bg-white border-r border-gray-200 flex flex-col sm:w-96">
       {showCurrentSidebarPage(currentPage)}
     </div>
   )
