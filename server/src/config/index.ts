@@ -22,10 +22,13 @@ const Config = {
   REDIS_PUBLIC_ENDPOINT:
     process.env.REDIS_PUBLIC_ENDPOINT || "host_port_endpoint",
   REDIS_USER_PASSWORD: process.env.REDIS_USER_PASSWORD || "redis_user_password",
-  TWILLIO_SID: process.env.TWILLIO_SID || "twillio_sid",
-  TWILLIO_AUTH_TOKEN: process.env.TWILLIO_AUTH_TOKEN || "twillio_auth_token",
-  TWILLIO_PHONE_NUMBER:
-    process.env.TWILLIO_PHONE_NUMBER || "twillio_phone_number",
+  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+  // TWILLIO_SID: process.env.TWILLIO_SID || "twillio_sid",
+  // TWILLIO_AUTH_TOKEN: process.env.TWILLIO_AUTH_TOKEN || "twillio_auth_token",
+  // TWILLIO_PHONE_NUMBER:
+  //   process.env.TWILLIO_PHONE_NUMBER || "twillio_phone_number",
 };
 
 console.log({ Config });

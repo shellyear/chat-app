@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/User";
 import Logger from "../logger";
 import UniqueName, { UniqueNameTypes } from "../models/UniqueName";
+import cloudinaryService from "../services/cloudinaryService";
 
 const DOMAIN = "userController";
 
@@ -52,6 +53,7 @@ const setProfileInfo = async (
   try {
     const { userId } = req.session;
     const { uniqueName, name, surname, bio } = req.body;
+    const profilePicture: Express.Multer.File | undefined = req.file;
 
     if (uniqueName) {
       const existingUniqueName = await UniqueName.exists({ uniqueName });
@@ -68,11 +70,21 @@ const setProfileInfo = async (
       await uniqueNameEntry.save();
     }
 
+    let imageUrl;
+    if (profilePicture) {
+      imageUrl = await cloudinaryService.uploadImageStream(
+        "profile-pictures",
+        userId,
+        profilePicture
+      );
+    }
+
     const updateData: Record<string, string | undefined> = {};
     if (uniqueName) updateData.uniqueName = uniqueName;
     if (name) updateData.name = name;
     if (surname) updateData.surname = surname;
     if (bio) updateData.bio = bio;
+    if (imageUrl) updateData.profilePicture = imageUrl;
 
     const updatedUser = await User.findOneAndUpdate(
       {
