@@ -23,17 +23,17 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
   }
 
   return (
-    <div className="max-h-full">
-      <div className="relative flex items-center justify-between p-3">
+    <div className="flex flex-col h-screen">
+      <div className="relative flex items-center justify-between px-6 py-3">
         <button type="button" onClick={handleGoBack}>
-          <IoMdArrowBack className="w-5 h-5" />
+          <IoMdArrowBack className="w-6 h-6 text-gray-500" />
         </button>
-        <div className="flex-1 pl-4 text-lg font-bold">
-          <span className="i18n">Edit profile</span>
+        <div className="flex-1 pl-8 text-xl font-semibold">
+          <span className="i18n">Edit Profile</span>
         </div>
       </div>
 
-      <div className="overflow-y-auto h-full">
+      <div className="overflow-y-auto flex-1">
         <div className="flex flex-col items-center pt-8 pb-6">
           <div className="relative w-[7.5rem] h-[7.5rem] rounded-full bg-gray-300 mb-4">
             {user.profilePicture ? (
