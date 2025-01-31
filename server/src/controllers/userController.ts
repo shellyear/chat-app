@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { Types } from "mongoose";
 import User from "../models/User";
 import Logger from "../logger";
+import UniqueName, { UniqueNameTypes } from "../models/UniqueName";
 
 const DOMAIN = "userController";
 
-const getUser = async (
+const findUser = async (
   req: Request<{
     id: string;
   }>,
@@ -33,8 +33,71 @@ const getUser = async (
   }
 };
 
+/**
+  Set uniqueName for the current user
+*/
+const setProfileInfo = async (
+  req: Request<
+    {},
+    {},
+    {
+      name?: string;
+      surname?: string;
+      bio?: string;
+      uniqueName?: string;
+    }
+  >,
+  res: Response
+) => {
+  try {
+    const { userId } = req.session;
+    const { uniqueName, name, surname, bio } = req.body;
+
+    if (uniqueName) {
+      const existingUniqueName = await UniqueName.exists({ uniqueName });
+      if (existingUniqueName) {
+        res.status(400).json({ message: "UNIQUE_NAME_TAKEN" });
+        return;
+      }
+      const uniqueNameEntry = new UniqueName({
+        uniqueName,
+        type: UniqueNameTypes.USER,
+        referenceId: userId,
+      });
+
+      await uniqueNameEntry.save();
+    }
+
+    const updateData: Record<string, string | undefined> = {};
+    if (uniqueName) updateData.uniqueName = uniqueName;
+    if (name) updateData.name = name;
+    if (surname) updateData.surname = surname;
+    if (bio) updateData.bio = bio;
+
+    const updatedUser = await User.findOneAndUpdate(
+      {
+        userId,
+      },
+      {
+        $set: updateData,
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      res.status(404).json({ code: "USER_NOT_FOUND" });
+      return;
+    }
+
+    res.status(200).json({ code: "PROFILE_UPDATE_SUCCESS", data: updatedUser });
+  } catch (error) {
+    Logger.error(`Error while setting profile info ${error}`, DOMAIN);
+  }
+};
+
 const userController = {
-  getUser,
+  findUser,
+  setProfileInfo,
 };
 
 export default userController;

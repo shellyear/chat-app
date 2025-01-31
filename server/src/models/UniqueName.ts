@@ -1,9 +1,33 @@
 import mongoose from "mongoose";
 
-const usernameSchema = new mongoose.Schema({
-  username: { type: String, unique: true, required: true },
+export enum UniqueNameTypes {
+  USER = "user",
+  GROUP_CHAT = "group",
+  CHANNEL = "channel",
+}
+
+export type IUniqueNameSchema = {
+  uniqueName: string;
+  type: string;
+  referenceId: string;
+};
+
+const uniqueNameSchema = new mongoose.Schema({
+  uniqueName: {
+    type: String,
+    unique: true,
+    index: true,
+    required: true,
+    minlength: 4,
+    maxlength: 34,
+  },
   type: { type: String, enum: ["user", "group", "channel"], required: true },
-  referenceId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  referenceId: { type: String, required: true },
 });
 
-module.exports = mongoose.model("Username", usernameSchema);
+const UniqueName = mongoose.model<IUniqueNameSchema>(
+  "UniqueName",
+  uniqueNameSchema
+);
+
+export default UniqueName;

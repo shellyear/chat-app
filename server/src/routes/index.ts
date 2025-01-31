@@ -5,6 +5,7 @@ import sessionMiddleware from "../middlewares/session";
 import searchRoutes from "./search";
 import contactRoutes from "./contact";
 import userRoutes from "./user";
+import uniqueNameRoutes from "./uniqueNames";
 import { rateLimit } from "express-rate-limit";
 
 const seachLimiter = rateLimit({
@@ -18,6 +19,7 @@ const router = express.Router();
 router.use("/auth", authRoutes);
 router.use("/chats", sessionMiddleware, chatRoutes);
 router.use("/users", sessionMiddleware, userRoutes);
+router.use("/uniqueNames", sessionMiddleware, uniqueNameRoutes);
 router.use("/search", seachLimiter, sessionMiddleware, searchRoutes);
 router.use("/contacts", sessionMiddleware, contactRoutes);
 
