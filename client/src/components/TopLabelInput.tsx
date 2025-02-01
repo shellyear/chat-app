@@ -40,7 +40,7 @@ function TopLabelInput({
       />
       <label
         htmlFor={name}
-        className={`absolute -top-2 left-2 px-1 text-xs bg-white transition-colors tracking-tighter text-gray-600 focus:text-blue-500 peer-focus:font-semibold ${labelClassname}`}
+        className={`absolute -top-2 left-2 px-1 text-xs bg-white transition-colors tracking-tighter text-gray-600 focus:text-blue-500 peer-focus:font-medium ${labelClassname}`}
       >
         {label}
       </label>
