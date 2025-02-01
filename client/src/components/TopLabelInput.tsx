@@ -4,6 +4,7 @@ interface TopLabelInputProps {
   name: string
   label: string
   type?: string
+  value: string
   required?: boolean
   pattern?: string
   minLength?: number
@@ -16,6 +17,7 @@ interface TopLabelInputProps {
 function TopLabelInput({
   name,
   label,
+  value,
   type = 'text',
   pattern,
   minLength,
@@ -28,9 +30,10 @@ function TopLabelInput({
   return (
     <div className="relative mb-4 w-full">
       <input
+        id={name}
         type={type}
         name={name}
-        id={name}
+        value={value}
         required={required}
         pattern={pattern}
         minLength={minLength}
