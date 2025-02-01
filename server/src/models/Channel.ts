@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface IChannel {
+export interface IChannel {
   channelId: number;
   name: string;
   uniqueName: string;

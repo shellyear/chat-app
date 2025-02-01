@@ -56,7 +56,7 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
     }
 
     try {
-      const { data } = await API.search.searchUsers(query)
+      const { data } = await API.search.searchByUniqueName(query)
       setSearchResults(data.data)
     } catch (error) {
       // eslint-disable-next-line no-console
