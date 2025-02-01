@@ -180,6 +180,7 @@ const session = async (req: Request, res: Response) => {
         profilePicture: user.profilePicture,
         name: user.name,
         surname: user.surname,
+        uniqueName: user.uniqueName,
       },
       ...(!sessionData.isPersistent && { sessionId: sessionID }),
     });
