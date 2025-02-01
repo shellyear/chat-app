@@ -158,7 +158,7 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
       </div>
       {showSaveButton && (
         <div
-          className="absolute bottom-6 right-6 flex items-center justify-center w-14 h-14 rounded-full bg-blue-500"
+          className="absolute bottom-6 right-6 flex items-center justify-center w-14 h-14 rounded-full bg-blue-500 hover:bg-blue-600"
           onClick={handleSubmit}
         >
           <FaCheck className="w-4 h-4" color="white" />

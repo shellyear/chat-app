@@ -7,27 +7,28 @@ cloudinary.v2.config({
   api_secret: Config.CLOUDINARY_API_SECRET,
 });
 
-const uploadImageStream = async (
+const uploadImageStream = (
   folder: string,
   userId: string,
   profilePicture: Express.Multer.File
 ): Promise<string> => {
-  let imgUrl = "";
-  const result = await cloudinary.v2.uploader.upload_stream(
-    {
-      folder,
-      public_id: `user-${userId}`,
-    },
-    (err, result) => {
-      if (err) {
-        throw new Error("Error uploading image to Cloudinary");
-      } else {
-        imgUrl = result?.secure_url as string;
-      }
-    }
-  );
-  profilePicture.stream.pipe(result); // Pipe the file buffer into Cloudinary
-  return imgUrl;
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.v2.uploader
+      .upload_stream(
+        {
+          folder,
+          public_id: `user-${userId}`,
+        },
+        (err, result) => {
+          if (err || !result) {
+            reject(new Error("Error uploading image to Cloudinary"));
+          } else {
+            resolve(result.secure_url);
+          }
+        }
+      )
+      .end(profilePicture.buffer);
+  });
 };
 
 const cloudinaryService = {
