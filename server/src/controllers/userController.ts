@@ -93,7 +93,7 @@ const setProfileInfo = async (
       {
         $set: updateData,
       },
-      { new: true }
+      { new: true, projection: { _id: 0 } }
     );
 
     if (!updatedUser) {
