@@ -28,7 +28,7 @@ export const setProfileInfo = async (
     formData.append('profilePicture', data.profilePicture)
   }
 
-  const response = await apiClient.post<{ code: string; data: IUser }>(`/users/${userId}/profile`, formData, {
+  const response = await apiClient.post<{ code: string; data: IUser }>(`/users/user/profile`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }

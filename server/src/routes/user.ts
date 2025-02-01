@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get("/:id", userController.findUser);
 router.post(
-  "/:id/profile",
+  "/user/profile",
   upload.single("profilePicture"),
   userController.setProfileInfo
 );
