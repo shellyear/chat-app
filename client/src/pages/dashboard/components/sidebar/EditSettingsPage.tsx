@@ -73,7 +73,7 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
 
     setUsername(value)
 
-    if (value === '') {
+    if (value === '' || value === user.uniqueName) {
       return setUsernameStateInfo(UsernameStateInfo.OPTIONAL)
     }
 
