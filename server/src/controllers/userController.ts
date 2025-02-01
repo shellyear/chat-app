@@ -56,20 +56,23 @@ const setProfileInfo = async (
     const profilePicture: Express.Multer.File | undefined = req.file;
 
     if (uniqueName) {
-      const existingUniqueName = await UniqueName.exists({ uniqueName });
-      if (existingUniqueName) {
+      const existingUniqueName = await UniqueName.findOne({ uniqueName });
+
+      if (
+        existingUniqueName &&
+        existingUniqueName.type === UniqueNameTypes.USER &&
+        existingUniqueName.referenceId === userId
+      ) {
+        existingUniqueName.uniqueName = uniqueName;
+        await existingUniqueName.save();
+      }
+
+      if (existingUniqueName && existingUniqueName.referenceId !== userId) {
         res.status(400).json({ code: "UNIQUE_NAME_TAKEN" });
         return;
       }
 
-      const userUniqueNameDoc = await UniqueName.findOne({
-        referenceId: userId,
-      });
-
-      if (userUniqueNameDoc) {
-        userUniqueNameDoc.uniqueName = uniqueName;
-        await userUniqueNameDoc.save();
-      } else {
+      if (!existingUniqueName) {
         const newUniqueNameDoc = new UniqueName({
           uniqueName,
           type: UniqueNameTypes.USER,
