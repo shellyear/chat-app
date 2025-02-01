@@ -61,13 +61,22 @@ const setProfileInfo = async (
         res.status(400).json({ code: "UNIQUE_NAME_TAKEN" });
         return;
       }
-      const uniqueNameEntry = new UniqueName({
-        uniqueName,
-        type: UniqueNameTypes.USER,
+
+      const userUniqueNameDoc = await UniqueName.findOne({
         referenceId: userId,
       });
 
-      await uniqueNameEntry.save();
+      if (userUniqueNameDoc) {
+        userUniqueNameDoc.uniqueName = uniqueName;
+        await userUniqueNameDoc.save();
+      } else {
+        const newUniqueNameDoc = new UniqueName({
+          uniqueName,
+          type: UniqueNameTypes.USER,
+          referenceId: userId,
+        });
+        await newUniqueNameDoc.save();
+      }
     }
 
     let imageUrl;
