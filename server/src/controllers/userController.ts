@@ -58,7 +58,7 @@ const setProfileInfo = async (
     if (uniqueName) {
       const existingUniqueName = await UniqueName.exists({ uniqueName });
       if (existingUniqueName) {
-        res.status(400).json({ message: "UNIQUE_NAME_TAKEN" });
+        res.status(400).json({ code: "UNIQUE_NAME_TAKEN" });
         return;
       }
       const uniqueNameEntry = new UniqueName({
