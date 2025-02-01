@@ -2,16 +2,12 @@ import { Request, Response } from "express";
 import UniqueName from "../models/UniqueName";
 
 const checkUniqueNameAvailability = async (
-  req: Request<
-    {},
-    {},
-    {
-      uniqueName: string;
-    }
-  >,
+  req: Request<{
+    uniqueName: string;
+  }>,
   res: Response
 ) => {
-  const { uniqueName } = req.body;
+  const { uniqueName } = req.params;
 
   const uniqueNameTaken = await UniqueName.exists({ uniqueName });
 
