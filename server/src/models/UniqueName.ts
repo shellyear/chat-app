@@ -18,7 +18,7 @@ const uniqueNameSchema = new mongoose.Schema({
     unique: true,
     index: true,
     required: true,
-    minlength: 4,
+    minlength: 5,
     maxlength: 34,
   },
   type: { type: String, enum: ["user", "group", "channel"], required: true },

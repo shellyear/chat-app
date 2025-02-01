@@ -16,7 +16,7 @@ export interface IUser extends Document {
 const UserSchema = new Schema<IUser>({
   userId: { type: String, required: true, unique: true }, // format: 0123456789  - 10 digits in string
   email: { type: String, unique: true, required: true },
-  uniqueName: { type: String, unique: true, minlength: 4, maxlength: 34 },
+  uniqueName: { type: String, unique: true, minlength: 5, maxlength: 34 },
   name: { type: String },
   surname: { type: String },
   bio: { type: String },
