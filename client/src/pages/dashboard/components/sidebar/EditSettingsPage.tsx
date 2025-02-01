@@ -2,6 +2,7 @@ import { IoMdArrowBack } from 'react-icons/io'
 import { MdOutlineAddAPhoto } from 'react-icons/md'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { FaCheck } from 'react-icons/fa6'
+import { debounce } from 'lodash'
 
 import { SidebarPage } from './Sidebar'
 import { useAuth } from '../../../../contexts/AuthContext'
@@ -10,6 +11,17 @@ import API from '../../../../api'
 
 interface IEditSettingPageProps {
   openSidebarPage: (pageName: SidebarPage) => void
+}
+
+enum UsernameStateInfo {
+  OPTIONAL = '(optional)',
+  TAKEN = 'is already taken',
+  INVALID = 'is invalid',
+  AVAILABLE = 'is available'
+}
+
+const isValidUsername = (username: string) => {
+  return /^[a-zA-Z0-9_]{5,34}$/.test(username)
 }
 
 function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
@@ -24,8 +36,9 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
   const [profilePicture, setProfilePicture] = useState<File>()
   const [showSaveButton, setShowSaveButton] = useState(false)
 
+  const [usernameStateInfo, setUsernameStateInfo] = useState<UsernameStateInfo>(UsernameStateInfo.OPTIONAL)
+
   useEffect(() => {
-    const isValidUsername = /^[a-zA-Z0-9_]{5,34}$/.test(username)
     if (
       username !== (user.uniqueName || '') ||
       name !== (user.name || '') ||
@@ -33,7 +46,7 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
       bio !== (user.bio || '') ||
       profilePicture
     ) {
-      if (username && !isValidUsername) {
+      if (username && !isValidUsername(username)) {
         return setShowSaveButton(false)
       }
       return setShowSaveButton(true)
@@ -43,6 +56,54 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
 
   const handleGoBack = () => {
     openSidebarPage(SidebarPage.SETTINGS_PAGE)
+  }
+
+  const debouncedUsernameAvailabilityCheck = debounce(async (username: string) => {
+    try {
+      await API.uniqueName.checkUniqueNameAvailability(username)
+      setUsernameStateInfo(UsernameStateInfo.AVAILABLE)
+    } catch (error) {
+      setUsernameStateInfo(UsernameStateInfo.TAKEN)
+    }
+  }, 300)
+
+  const handleUsernameChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+
+    setUsername(value)
+
+    if (isValidUsername(value)) {
+      setUsernameStateInfo(UsernameStateInfo.OPTIONAL)
+      await debouncedUsernameAvailabilityCheck(value)
+    } else if (value && !isValidUsername(value)) {
+      setUsernameStateInfo(UsernameStateInfo.INVALID)
+    }
+  }
+
+  const getUsernameAdditionalInfo = () => {
+    const label = `Username ${usernameStateInfo}`
+    let labelClassname = ''
+    let inputClassname = ''
+
+    switch (usernameStateInfo) {
+      case UsernameStateInfo.AVAILABLE:
+        labelClassname = 'text-green-500 focus:text-green-600'
+        inputClassname = 'border-green-500 focus:border-green-600'
+        break
+
+      case UsernameStateInfo.TAKEN:
+      case UsernameStateInfo.INVALID:
+        labelClassname = 'text-red-500 focus:text-red-600'
+        inputClassname = 'border-red-500 focus:border-red-600'
+        break
+      default:
+    }
+
+    return {
+      label,
+      labelClassname,
+      inputClassname
+    }
   }
 
   const handleImageInputClick = () => {
@@ -136,11 +197,11 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
               <TopLabelInput
                 type="text"
                 name="Username"
-                label="Username (optional)"
                 pattern="^[a-z0-9_]{5,}$"
                 minLength={5}
                 maxLength={34}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={handleUsernameChange}
+                {...getUsernameAdditionalInfo()}
               />
             </div>
           </div>
