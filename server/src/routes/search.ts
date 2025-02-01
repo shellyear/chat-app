@@ -3,6 +3,6 @@ import searchController from "../controllers/searchController";
 
 const router = express.Router();
 
-router.get("/users", searchController.searchUsers);
+router.get("/uniqueNames", searchController.searchUniqueNames);
 
 export default router;

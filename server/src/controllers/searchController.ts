@@ -16,7 +16,7 @@ type UniqueNameLookupDoc = {
   reference: IUser | IGroupChat | IChannel;
 };
 
-const searchUsers = async (req: Request<{ query: string }>, res: Response) => {
+const searchUniqueNames = async (req: Request<{ query: string }>, res: Response) => {
   const { uniqueName } = req.query;
 
   if (!uniqueName) {
@@ -97,7 +97,7 @@ const searchUsers = async (req: Request<{ query: string }>, res: Response) => {
 };
 
 const searchController = {
-  searchUsers,
+  searchUniqueNames,
 };
 
 export default searchController;
