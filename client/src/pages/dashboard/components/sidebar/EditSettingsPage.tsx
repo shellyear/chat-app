@@ -132,6 +132,7 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
         profilePicture
       })
       setUser(response.data)
+      openSidebarPage(SidebarPage.SETTINGS_PAGE)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Error while setting profile data', error)
