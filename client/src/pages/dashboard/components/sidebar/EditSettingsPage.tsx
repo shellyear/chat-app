@@ -89,7 +89,7 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
           <div className="relative w-[7.5rem] h-[7.5rem] rounded-full bg-gray-300 mb-4" onClick={handleImageInputClick}>
             {profilePicture || user.profilePicture ? (
               <img
-                src={URL.createObjectURL(profilePicture) || user.profilePicture}
+                src={(profilePicture && URL.createObjectURL(profilePicture)) || user.profilePicture}
                 alt="User Avatar"
                 className="w-full h-full rounded-full object-cover filter brightness-[0.8]"
               />
