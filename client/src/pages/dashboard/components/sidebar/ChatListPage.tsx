@@ -87,7 +87,7 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
       <div className="flex-grow overflow-y-auto">
         {searchResults.length > 0
           ? searchResults.map((foundUser) =>
-              foundUser.email === user.email ? (
+              foundUser.uniqueName === user.uniqueName ? (
                 <Link
                   to={generateChatLink(foundUser.uniqueName, foundUser.userId)}
                   key={user.email}
