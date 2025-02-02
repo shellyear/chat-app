@@ -1,5 +1,5 @@
 export interface IChannel {
-  channelId: number
+  channelId: string
   name: string
   uniqueName: string
   description?: string

@@ -13,6 +13,7 @@ import useSearchBar from '../../hooks/useSearchBar'
 import SearchInput from '../../../../components/SearchInput'
 import { generateChatLink } from '../../../../utils/chat'
 import { UniqueNameLookupDoc } from '../../../../types/search'
+import { getLookupDocId, getLookupDocNaming } from '../../../../utils/uniqueNamesSearch'
 
 interface ISearchBar {
   openSidebarPage: (pageName: SidebarPage) => void
@@ -49,14 +50,14 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
   const [chats, setChats] = useState<IChat[]>([])
   const { searchQuery, searchResults, setSearchQuery, setSearchResults } = useSearchBar<UniqueNameLookupDoc>()
 
-  const debouncedSearch = debounce(async (query: string) => {
-    if (query.trim() === '' || query.trim().length < 3) {
+  const debouncedSearch = debounce(async (uniqueName: string) => {
+    if (uniqueName.trim() === '' || uniqueName.trim().length < 3) {
       setSearchResults([])
       return
     }
 
     try {
-      const { data } = await API.search.searchByUniqueName(query)
+      const { data } = await API.search.searchByUniqueName(uniqueName)
       setSearchResults(data.data)
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -86,11 +87,13 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
       <SearchBar openSidebarPage={openSidebarPage} searchQuery={searchQuery} handleSearch={handleSearch} />
       <div className="flex-grow overflow-y-auto">
         {searchResults.length > 0
-          ? searchResults.map((foundUser) =>
-              foundUser.uniqueName === user.uniqueName ? (
+          ? searchResults.map((foundLookupDoc) => {
+              const foundLookupDocId = getLookupDocId(foundLookupDoc)
+              const foundLookupDocNaming = getLookupDocNaming(foundLookupDoc)
+              return foundLookupDoc.uniqueName === user.uniqueName ? (
                 <Link
-                  to={generateChatLink(foundUser.uniqueName, foundUser.userId)}
-                  key={user.email}
+                  to={generateChatLink(foundLookupDoc.uniqueName, foundLookupDocId)}
+                  key={user.uniqueName}
                   className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
                 >
                   <div className="box-border flex items-center justify-center w-12 h-12 rounded-full bg-blue-400 mr-4">
@@ -102,17 +105,18 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
                 </Link>
               ) : (
                 <Link
-                  to={generateChatLink(foundUser.uniqueName, foundUser.userId)}
-                  key={foundUser.userId}
+                  to={generateChatLink(foundLookupDoc.uniqueName, foundLookupDocId)}
+                  key={foundLookupDocId}
                   className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
                 >
                   <div className="w-12 h-12 bg-gray-300 rounded-full mr-4" />
-                  <div className="flex-grow">
-                    <h3 className="font-semibold">{foundUser.uniqueName || foundUser.email}</h3>
+                  <div>
+                    <div className="text-base font-medium">{foundLookupDocNaming}</div>
+                    <div className="text-sm text-gray-500">{`@${foundLookupDoc.uniqueName}`}</div>
                   </div>
                 </Link>
               )
-            )
+            })
           : chats.map((item) => (
               <Link
                 to={`/${item._id}`}
