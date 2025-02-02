@@ -27,7 +27,7 @@ function SearchBar({ openSidebarPage, searchQuery, handleSearch }: ISearchBar) {
   }, [inputRef])
 
   return (
-    <div className="relative p-4 flex items-center border-b border-gray-200">
+    <div className="relative min-h-14 box-border px-4 flex items-center">
       <button type="button" className="p-2 hover:bg-gray-100 rounded-full">
         <IoMdArrowBack onClick={() => openSidebarPage(SidebarPage.CHATLIST_PAGE)} className="h-5 w-5 text-gray-500" />
       </button>
