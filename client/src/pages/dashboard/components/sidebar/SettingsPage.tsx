@@ -45,17 +45,17 @@ function SettingsPage({ openSidebarPage }: ISettingPageProps) {
 
   return (
     <div>
-      <div className="relative flex items-center justify-between p-3">
+      <div className="relative flex items-center justify-between px-6 py-3">
         <button type="button" onClick={handleGoBack}>
-          <IoMdArrowBack className="w-5 h-5" />
+          <IoMdArrowBack className="w-6 h-6 text-gray-500" />
         </button>
-        <div className="flex-1 pl-4 text-lg font-bold">
+        <div className="flex-1 pl-8 text-xl font-semibold">
           <span className="i18n">Settings</span>
         </div>
-        <button type="button" className="p-2">
+        <button type="button" className="pr-2">
           <MdModeEdit onClick={() => onEditClick()} className="w-5 h-5" />
         </button>
-        <button type="button" className="p-2" onClick={onThreeDotsClick}>
+        <button type="button" className="pl-2" onClick={onThreeDotsClick}>
           <BsThreeDotsVertical className="w-5 h-5" />
         </button>
         {showLogoutMenu && <LogoutMenu logout={logout} />}
