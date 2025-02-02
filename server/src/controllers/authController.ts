@@ -54,8 +54,6 @@ const login = async (
       EX: expirationTime,
     });
 
-    await userService.createUser(email);
-
     await emailService.sendVerificationEmail(email, verificationCode);
 
     res.status(200).json({
@@ -86,16 +84,6 @@ const verify = async (
   const { email, code, keepMeSignedIn } = req.body;
 
   try {
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      /* This should not happen if the user always registers via the /login route first. */
-      res
-        .status(404)
-        .json({ message: "User not found", code: "USER_NOT_FOUND" });
-      return;
-    }
-
     const storedVerificationCode = await redisClient.get(email);
 
     if (!storedVerificationCode) {
@@ -106,44 +94,128 @@ const verify = async (
       return;
     }
 
-    if (storedVerificationCode === code) {
-      const newSessionId = await sessionService.createSession({
-        userId: user.userId,
-        isPersistent: keepMeSignedIn,
-      });
-
-      if (keepMeSignedIn) {
-        res.cookie(SESSION_COOKIE, newSessionId, {
-          httpOnly: true,
-          secure: Config.NODE_ENV === "production",
-          sameSite: Config.NODE_ENV === "production" ? "none" : "strict",
-          maxAge: PERSISTENT_EXPIRATION * 1000,
-          domain:
-            Config.NODE_ENV === "production" ? Config.COOKIE_DOMAIN : undefined,
-        });
-      }
-
-      res.status(200).json({
-        message: "Verification successful",
-        user: {
-          email: user.email,
-          profilePicture: user.profilePicture,
-          name: user.name,
-          surname: user.surname,
-        },
-        ...(!keepMeSignedIn && { sessionId: newSessionId }),
-      });
-    } else {
+    if (storedVerificationCode !== code) {
       res.status(400).json({
         message: "Invalid verification code",
         code: "INVALID_VERIFICATION_CODE",
       });
+      return;
     }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      /* User then proceeds to the setupProfilePage to create an account */
+      res.status(200).json({
+        code: "SET_ACCOUNT_INFO",
+        message: "Verification successful, please set your account info",
+      });
+      return;
+    }
+
+    const newSessionId = await sessionService.createSession({
+      userId: user.userId,
+      isPersistent: keepMeSignedIn,
+    });
+
+    if (keepMeSignedIn) {
+      res.cookie(SESSION_COOKIE, newSessionId, {
+        httpOnly: true,
+        secure: Config.NODE_ENV === "production",
+        sameSite: Config.NODE_ENV === "production" ? "none" : "strict",
+        maxAge: PERSISTENT_EXPIRATION * 1000,
+        domain:
+          Config.NODE_ENV === "production" ? Config.COOKIE_DOMAIN : undefined,
+      });
+    }
+
+    res.status(200).json({
+      code: "VERIFICATION_SUCCESS",
+      user: {
+        email: user.email,
+        profilePicture: user.profilePicture,
+        name: user.name,
+        surname: user.surname,
+      },
+      ...(!keepMeSignedIn && { sessionId: newSessionId }),
+    });
   } catch (error) {
     Logger.error(`Error while verifying code: ${error}`, DOMAIN);
     res.status(500).json({
       message: "Failed to verify code",
       code: "INVALID_VERIFICATION_CODE",
+    });
+  }
+};
+
+const setupAccount = async (
+  req: Request<
+    {},
+    {},
+    {
+      email: string;
+      name: string;
+      surname?: string;
+      keepMeSignedIn: string;
+    }
+  >,
+  res: Response
+) => {
+  const { email, name, surname } = req.body;
+  const keepMeSignedIn: boolean = JSON.parse(req.body.keepMeSignedIn);
+  const profilePicture: Express.Multer.File | undefined = req.file;
+
+  try {
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      res.status(400).json({
+        message: "User already exists",
+        code: "USER_ALREADY_EXISTS",
+      });
+      return;
+    }
+
+    const newUser = await userService.createUser({
+      email,
+      name,
+      surname,
+      profilePicture,
+    });
+
+    const newSessionId = await sessionService.createSession({
+      userId: newUser.userId,
+      isPersistent: keepMeSignedIn,
+    });
+
+    if (keepMeSignedIn) {
+      res.cookie(SESSION_COOKIE, newSessionId, {
+        httpOnly: true,
+        secure: Config.NODE_ENV === "production",
+        sameSite: Config.NODE_ENV === "production" ? "none" : "strict",
+        maxAge: PERSISTENT_EXPIRATION * 1000,
+        domain:
+          Config.NODE_ENV === "production" ? Config.COOKIE_DOMAIN : undefined,
+      });
+    }
+
+    res.status(200).json({
+      code: "SETUP_ACCOUNT_SUCCESS",
+      message: "Account setup complete, you are now signed in",
+      user: {
+        email: newUser.email,
+        name: newUser.name,
+        surname: newUser.surname,
+        uniqueName: newUser.uniqueName,
+        profilePicture: newUser.profilePicture,
+      },
+      ...(!keepMeSignedIn && { sessionId: newSessionId }),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to set up profile",
+      code: "PROFILE_SETUP_FAILED",
     });
   }
 };
@@ -220,6 +292,7 @@ const logout = async (req: Request, res: Response) => {
 const authController = {
   login,
   verify,
+  setupAccount,
   session,
   logout,
 };

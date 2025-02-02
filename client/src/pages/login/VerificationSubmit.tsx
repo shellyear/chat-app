@@ -1,10 +1,15 @@
-import { useState, FormEvent } from 'react'
+import { useState, FormEvent, Dispatch, SetStateAction } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import API from '../../api'
 import { useAuth } from '../../contexts/AuthContext'
+import { StepPageEnum } from './Login'
 
-function VerificationSubmit() {
+interface IVerificationSubmitProps {
+  setStep: Dispatch<SetStateAction<number>>
+}
+
+function VerificationSubmit({ setStep }: IVerificationSubmitProps) {
   const { setUser } = useAuth()
   const navigate = useNavigate()
   const [code, setCode] = useState('')
@@ -16,14 +21,19 @@ function VerificationSubmit() {
     const keepMeSignedIn: boolean = JSON.parse(sessionStorage.getItem('keepMeSignedIn'))
 
     try {
-      const response = await API.auth.verifyCode(email, keepMeSignedIn, code)
+      const response = await API.auth.verifyCode(email, code, keepMeSignedIn)
 
-      if (response.status === 200) {
-        setUser(response.data.user)
+      if (response.code === 'SET_ACCOUNT_INFO') {
+        setStep(StepPageEnum.SETUP_ACCOUNT_PAGE)
+      }
+
+      if (response.code === 'VERIFICATION_SUCCESS') {
+        setUser(response.user)
 
         if (!keepMeSignedIn) {
-          sessionStorage.setItem('sessionId', response.data.sessionId)
+          sessionStorage.setItem('sessionId', response.sessionId)
         }
+        sessionStorage.removeItem('email')
 
         navigate('/')
       }

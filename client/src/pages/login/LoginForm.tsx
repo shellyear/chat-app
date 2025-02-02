@@ -2,12 +2,13 @@ import { useState, FormEvent, Dispatch, SetStateAction } from 'react'
 import { IoChatbox } from 'react-icons/io5'
 
 import API from '../../api'
+import { StepPageEnum } from './Login'
 
 interface ILoginForm {
-  setVerificationCodeSent: Dispatch<SetStateAction<boolean>>
+  setStep: Dispatch<SetStateAction<number>>
 }
 
-export default function LoginForm({ setVerificationCodeSent }: ILoginForm) {
+export default function LoginForm({ setStep }: ILoginForm) {
   const [email, setEmail] = useState('')
   const [keepMeSignedIn, setKeepMeSignedIn] = useState(true)
   const [error, setError] = useState('')
@@ -21,7 +22,7 @@ export default function LoginForm({ setVerificationCodeSent }: ILoginForm) {
       if (response.status === 200) {
         sessionStorage.setItem('email', email)
         sessionStorage.setItem('keepMeSignedIn', keepMeSignedIn.toString())
-        setVerificationCodeSent(true)
+        setStep(StepPageEnum.VERIFICATION_PAGE)
       } else {
         setError('Number is not valid')
       }
