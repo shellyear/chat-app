@@ -10,9 +10,9 @@ import { IChat } from '../../../../types/chat'
 import API from '../../../../api'
 import { useAuth } from '../../../../contexts/AuthContext'
 import useSearchBar from '../../hooks/useSearchBar'
-import { IUser } from '../../../../types/user'
 import SearchInput from '../../../../components/SearchInput'
 import { generateChatLink } from '../../../../utils/chat'
+import { UniqueNameLookupDoc } from '../../../../types/search'
 
 interface ISearchBar {
   openSidebarPage: (pageName: SidebarPage) => void
@@ -47,7 +47,7 @@ interface IChatListPageProps {
 function ChatListPage({ openSidebarPage }: IChatListPageProps) {
   const { user } = useAuth()
   const [chats, setChats] = useState<IChat[]>([])
-  const { searchQuery, searchResults, setSearchQuery, setSearchResults } = useSearchBar<IUser>()
+  const { searchQuery, searchResults, setSearchQuery, setSearchResults } = useSearchBar<UniqueNameLookupDoc>()
 
   const debouncedSearch = debounce(async (query: string) => {
     if (query.trim() === '' || query.trim().length < 3) {
