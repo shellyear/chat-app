@@ -4,4 +4,5 @@ export interface IChannel {
   uniqueName: string
   description?: string
   subscribers: string[] // userId[]
+  profilePicture?: string
 }

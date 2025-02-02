@@ -5,4 +5,5 @@ export interface IGroupChat {
   uniqueName?: string
   description: string
   members: string[] // userId[]
+  profilePicture?: string
 }

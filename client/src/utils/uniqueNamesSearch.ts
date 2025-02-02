@@ -29,3 +29,15 @@ export const getLookupDocNaming = (lookupDoc: UniqueNameLookupDoc) => {
     return (lookupDoc.reference as IGroupChat).name
   }
 }
+
+export const getLookupDocProfilePicture = (lookupDoc: UniqueNameLookupDoc) => {
+  if (lookupDoc.type === UniqueNameTypes.USER) {
+    return (lookupDoc.reference as IUser).profilePicture
+  }
+  if (lookupDoc.type === UniqueNameTypes.CHANNEL) {
+    return (lookupDoc.reference as IChannel).profilePicture
+  }
+  if (lookupDoc.type === UniqueNameTypes.GROUP_CHAT) {
+    return (lookupDoc.reference as IGroupChat).profilePicture
+  }
+}

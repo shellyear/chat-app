@@ -13,7 +13,7 @@ import useSearchBar from '../../hooks/useSearchBar'
 import SearchInput from '../../../../components/SearchInput'
 import { generateChatLink } from '../../../../utils/chat'
 import { UniqueNameLookupDoc } from '../../../../types/search'
-import { getLookupDocId, getLookupDocNaming } from '../../../../utils/uniqueNamesSearch'
+import { getLookupDocId, getLookupDocNaming, getLookupDocProfilePicture } from '../../../../utils/uniqueNamesSearch'
 
 interface ISearchBar {
   openSidebarPage: (pageName: SidebarPage) => void
@@ -90,6 +90,7 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
           ? searchResults.map((foundLookupDoc) => {
               const foundLookupDocId = getLookupDocId(foundLookupDoc)
               const foundLookupDocNaming = getLookupDocNaming(foundLookupDoc)
+              const foundLookupDocProfilePicture = getLookupDocProfilePicture(foundLookupDoc)
               return foundLookupDoc.uniqueName === user.uniqueName ? (
                 <Link
                   to={generateChatLink(foundLookupDoc.uniqueName, foundLookupDocId)}
@@ -109,7 +110,15 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
                   key={foundLookupDocId}
                   className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
                 >
-                  <div className="w-12 h-12 bg-gray-300 rounded-full mr-4" />
+                  {foundLookupDocProfilePicture ? (
+                    <img
+                      src={foundLookupDocProfilePicture}
+                      alt="User Avatar"
+                      className="mr-4 w-12 h-12 rounded-full object-cover filter brightness-[0.8]"
+                    />
+                  ) : (
+                    <div className="mr-4 w-12 h-12 bg-gray-300 rounded-full" />
+                  )}
                   <div>
                     <div className="text-base font-medium">{foundLookupDocNaming}</div>
                     <div className="text-sm text-gray-500">{`@${foundLookupDoc.uniqueName}`}</div>
