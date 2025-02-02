@@ -83,13 +83,15 @@ function SettingsPage({ openSidebarPage }: ISettingPageProps) {
             <div className="text-gray-500 text-sm">Email</div>
           </div>
         </li>
-        <li className="flex items-center gap-8">
-          <IoAtOutline className="w-7 h-7" />
-          <div>
-            <div>{user.uniqueName}</div>
-            <div className="text-gray-500 text-sm">Username</div>
-          </div>
-        </li>
+        {user.uniqueName && (
+          <li className="flex items-center gap-8">
+            <IoAtOutline className="w-7 h-7" />
+            <div>
+              <div>{user.uniqueName}</div>
+              <div className="text-gray-500 text-sm">Username</div>
+            </div>
+          </li>
+        )}
       </ul>
     </div>
   )
