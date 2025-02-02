@@ -60,6 +60,7 @@ const addContact = async (
     await newContact.save();
     res.status(201).json({ code: "CONTACT_ADDED", data: newContact });
   } catch (error) {
+    Logger.error(`Error adding contact ${error}`, DOMAIN);
     res.status(500).json({ message: "Error adding contact" });
     return;
   }
