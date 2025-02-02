@@ -87,7 +87,7 @@ const searchUniqueNames = async (req: Request<{ query: string }>, res: Response)
       ]);
 
     res.status(200).json({
-      code: "FOUND_USERS",
+      code: "FOUND_UNIQUE_NAMES",
       data: uniqueNameDocsWithRefs,
     });
   } catch (error) {
