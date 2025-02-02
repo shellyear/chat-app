@@ -1,6 +1,7 @@
 import { IoMdArrowBack } from 'react-icons/io'
-import { MdModeEdit, MdEmail } from 'react-icons/md'
+import { MdModeEdit, MdOutlineMailOutline } from 'react-icons/md'
 import { BsThreeDotsVertical } from 'react-icons/bs'
+import { IoAtOutline } from 'react-icons/io5'
 import { useState } from 'react'
 
 import { useAuth } from '../../../../contexts/AuthContext'
@@ -74,14 +75,22 @@ function SettingsPage({ openSidebarPage }: ISettingPageProps) {
         <p className="text-sm text-gray-500">online or not</p>
       </div>
 
-      <div className="flex flex-col">
-        <ul className="px-6">
-          <li className="flex items-center gap-6">
-            <MdEmail className="w-5 h-5" />
-            <p>{user.email}</p>
-          </li>
-        </ul>
-      </div>
+      <ul className="px-6 flex flex-col gap-4">
+        <li className="flex items-center gap-8">
+          <MdOutlineMailOutline className="w-7 h-7" />
+          <div>
+            <div>{user.email}</div>
+            <div className="text-gray-500 text-sm">Email</div>
+          </div>
+        </li>
+        <li className="flex items-center gap-8">
+          <IoAtOutline className="w-7 h-7" />
+          <div>
+            <div>{user.uniqueName}</div>
+            <div className="text-gray-500 text-sm">Username</div>
+          </div>
+        </li>
+      </ul>
     </div>
   )
 }
