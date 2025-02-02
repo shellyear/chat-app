@@ -42,7 +42,7 @@ const setProfileInfo = async (
     {},
     {},
     {
-      name?: string;
+      name: string;
       surname?: string;
       bio?: string;
       uniqueName?: string;
@@ -54,6 +54,13 @@ const setProfileInfo = async (
     const { userId } = req.session;
     const { uniqueName, name, surname, bio } = req.body;
     const profilePicture: Express.Multer.File | undefined = req.file;
+
+    if (!name) {
+      res.status(400).json({
+        code: "NAME_REQUIRED",
+      });
+      return;
+    }
 
     if (uniqueName) {
       const existingUniqueName = await UniqueName.findOne({ uniqueName });
@@ -92,8 +99,8 @@ const setProfileInfo = async (
     }
 
     const updateData: Record<string, string | undefined> = {};
+    updateData.name = name;
     if (uniqueName) updateData.uniqueName = uniqueName;
-    if (name) updateData.name = name;
     if (surname) updateData.surname = surname;
     if (bio) updateData.bio = bio;
     if (imageUrl) updateData.profilePicture = imageUrl;

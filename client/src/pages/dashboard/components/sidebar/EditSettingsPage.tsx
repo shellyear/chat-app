@@ -46,7 +46,7 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
       bio !== (user.bio || '') ||
       profilePicture
     ) {
-      if (username && !isValidUsername(username)) {
+      if ((username && !isValidUsername(username)) || !name) {
         return setShowSaveButton(false)
       }
       return setShowSaveButton(true)
