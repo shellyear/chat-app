@@ -97,13 +97,13 @@ const searchUniqueNames = async (
                       name: {
                         $ifNull: [
                           { $arrayElemAt: ["$contactData.name", 0] },
-                          "$userData.0.name",
+                          { $arrayElemAt: ["$userData.0.name", 0] },
                         ],
                       },
                       surname: {
                         $ifNull: [
                           { $arrayElemAt: ["$contactData.surname", 0] },
-                          "$userData.0.surname",
+                          { $arrayElemAt: ["$userData.0.surname", 0] },
                         ],
                       },
                     },
