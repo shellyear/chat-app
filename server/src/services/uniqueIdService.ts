@@ -7,12 +7,12 @@ const snowflake = new Snowflake({
 
 const generateUserId = () => {
   const snowflakeId = snowflake.generate() as number;
-  return String(snowflakeId).slice(0, 10);
+  return String(snowflakeId).slice(0, 9);
 };
 
 const generateChatId = () => {
   const snowflakeId = snowflake.generate() as number;
-  return String(snowflakeId).slice(0, 9);
+  return String(snowflakeId).slice(0, 10);
 };
 
 const generateGroupChatId = () => {
