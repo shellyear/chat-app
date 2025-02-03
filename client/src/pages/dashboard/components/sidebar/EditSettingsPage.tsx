@@ -61,8 +61,10 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
   const debouncedUsernameAvailabilityCheck = debounce(async (username: string) => {
     try {
       setUsernameStateInfo(UsernameStateInfo.OPTIONAL)
-      await API.uniqueName.checkUniqueNameAvailability(username)
-      setUsernameStateInfo(UsernameStateInfo.AVAILABLE)
+      const { code } = await API.uniqueName.checkUniqueNameAvailability(username)
+      if (code === 'UNIQUE_NAME_NOT_TAKEN') {
+        setUsernameStateInfo(UsernameStateInfo.AVAILABLE)
+      }
     } catch (error) {
       setUsernameStateInfo(UsernameStateInfo.TAKEN)
     }

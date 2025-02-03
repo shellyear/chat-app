@@ -3,6 +3,6 @@ import uniqueNameController from "../controllers/uniqueNameController";
 
 const router = express.Router();
 
-router.get("/", uniqueNameController.checkUniqueNameAvailability);
+router.get("/:uniqueName", uniqueNameController.checkUniqueNameAvailability);
 
 export default router;
