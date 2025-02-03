@@ -7,7 +7,6 @@ import Avatar from '../../../../components/Avatar'
 import API from '../../../../api'
 import { IChat } from '../../../../types/chat'
 import useMsgPagination from '../../hooks/useMsgPagination'
-import { IContactPreview } from '../../../../types/contact'
 import { IUser } from '../../../../types/user'
 
 function MessageInput() {

@@ -1,8 +1,8 @@
 import mongoose, { Types } from "mongoose";
 
 interface IContact {
-  userId: Types.ObjectId;
-  contactId: Types.ObjectId;
+  userId: string;
+  contactId: string;
   name: string;
   email: string;
   surname?: string;
@@ -12,8 +12,8 @@ interface IContact {
 
 const ContactSchema = new mongoose.Schema(
   {
-    userId: { type: Types.ObjectId, ref: "User", required: true },
-    contactId: { type: Types.ObjectId, ref: "User", required: true },
+    userId: { type: String, required: true },
+    contactId: { type: String, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true },
     surname: { type: String },

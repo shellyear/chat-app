@@ -1,13 +1,13 @@
-import { IContact } from '../types/contact'
+import { IFoundContact } from '../types/contact'
 import { apiClient } from './apiClient'
 
 export const getContacts = async () => {
-  const response = await apiClient.get<{ code: string; data: IContact[] }>('/contacts')
+  const response = await apiClient.get<{ code: string; data: IFoundContact[] }>('/contacts')
   return response.data
 }
 
 export const addContact = async (name: string, email: string, surname?: string) => {
-  const response = await apiClient.post<{ code: string; data: IContact }>('/contacts', {
+  const response = await apiClient.post<{ code: string; data: IFoundContact }>('/contacts', {
     name,
     email,
     surname
@@ -16,6 +16,6 @@ export const addContact = async (name: string, email: string, surname?: string) 
 }
 
 export const getContact = async (contactId: string) => {
-  const response = await apiClient.get<{ code: string; data: IContact }>(`/contacts/${contactId}`)
+  const response = await apiClient.get<{ code: string; data: IFoundContact }>(`/contacts/${contactId}`)
   return response.data
 }

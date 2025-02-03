@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Contact from "../models/Contact";
 import User from "../models/User";
 import Logger from "../logger";
+import { IFoundContact } from "../types/contact";
 
 const DOMAIN = "contactController";
 
@@ -43,15 +44,24 @@ const addContact = async (
       return;
     }
 
-    const foundUserContact = await User.findOne({ email });
-    if (!foundUserContact) {
+    const userToBeAdded = await User.findOne({ email });
+
+    if (!userToBeAdded) {
       res.status(404).json({ message: "User with this email not found" });
+      return;
+    }
+
+    if (userToBeAdded.userId === userId) {
+      res.status(400).json({
+        code: "CANNOT_ADD_SELF",
+        message: "You cannot add yourself as a contact",
+      });
       return;
     }
 
     const newContact = new Contact({
       userId,
-      contactId: foundUserContact._id,
+      contactId: userToBeAdded.userId,
       name,
       email,
       surname,
@@ -70,9 +80,35 @@ const getContacts = async (req: Request, res: Response) => {
   const userId = req.session.userId;
 
   try {
-    const contacts = await Contact.find({ userId })
-      .populate("contactId", "username profilePicture")
-      .sort({ createdAt: -1 });
+    const contacts: IFoundContact[] = await Contact.aggregate([
+      {
+        $match: { userId },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "contactId",
+          foreignField: "userId",
+          as: "contactDetails",
+        },
+      },
+      {
+        $unwind: "$contactDetails",
+      },
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          surname: 1,
+          contactId: 1,
+          "contactDetails.uniqueName": 1,
+          "contactDetails.profilePicture": 1,
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+    ]);
 
     res.status(200).json({ code: "FOUND_CONTACTS_SUCCESS", data: contacts });
     return;

@@ -7,7 +7,7 @@ import { SidebarPage } from './Sidebar'
 import SearchInput from '../../../../components/SearchInput'
 import useSearchBar from '../../hooks/useSearchBar'
 import API from '../../../../api'
-import { IContactPreview } from '../../../../types/contact'
+import { IFoundContact } from '../../../../types/contact'
 import RoundedButton from '../../../../components/RoundedButton'
 import Popup, { usePopup } from './Popup'
 import Avatar from '../../../../components/Avatar'
@@ -43,8 +43,8 @@ interface IContactsPageProps {
 }
 
 function ContactsPage({ openSidebarPage }: IContactsPageProps) {
-  const { searchQuery, searchResults, setSearchQuery, setSearchResults } = useSearchBar<IContactPreview>()
-  const [contacts, setContacts] = useState<IContactPreview[]>([])
+  const { searchQuery, searchResults, setSearchQuery, setSearchResults } = useSearchBar<IFoundContact>()
+  const [contacts, setContacts] = useState<IFoundContact[]>([])
   const { isOpen, setIsOpen } = usePopup()
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
@@ -77,13 +77,13 @@ function ContactsPage({ openSidebarPage }: IContactsPageProps) {
         {searchResults.length > 0
           ? searchResults.map((foundContact) => (
               <Link
-                key={foundContact.contactId._id}
-                to={generateChatLink(foundContact.contactId.username, foundContact.contactId._id)}
+                key={foundContact.contactId}
+                to={generateChatLink(foundContact.contactDetails.uniqueName, foundContact.contactId)}
                 className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
               >
-                {foundContact.contactId.profilePicture ? (
+                {foundContact.contactDetails.profilePicture ? (
                   <img
-                    src={foundContact.contactId.profilePicture}
+                    src={foundContact.contactDetails.profilePicture}
                     alt="profile img"
                     className="w-10 h-10 rounded-full mr-4"
                   />
@@ -97,13 +97,13 @@ function ContactsPage({ openSidebarPage }: IContactsPageProps) {
             ))
           : contacts.map((contact) => (
               <Link
-                key={contact.contactId._id}
-                to={generateChatLink(contact.contactId.username, contact.contactId._id)}
+                key={contact.contactId}
+                to={generateChatLink(contact.contactDetails.uniqueName, contact.contactId)}
                 className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
               >
-                {contact.contactId.profilePicture ? (
+                {contact.contactDetails.profilePicture ? (
                   <img
-                    src={contact.contactId.profilePicture}
+                    src={contact.contactDetails.profilePicture}
                     alt="profile img"
                     className="w-10 h-10 rounded-full mr-4"
                   />

@@ -8,12 +8,12 @@ export type IContact = {
   updatedAt: Date
 }
 
-export type IContactPreview = {
-  userId: string
-  contactId: { _id: string; username?: string; profilePicture?: string }
+export type IFoundContact = {
   name: string
-  email: string
   surname?: string
-  createdAt: Date
-  updatedAt: Date
+  contactId: string
+  contactDetails: {
+    uniqueName?: string
+    profilePicture?: string
+  }
 }
