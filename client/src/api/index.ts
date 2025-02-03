@@ -1,6 +1,6 @@
 import { getSession, login, logout, verifyCode, setupAccount } from './auth'
 import { getChat, getChatMessages, getChats } from './chat'
-import { addContact, getContact, getContacts } from './contact'
+import { addContact, getContacts } from './contact'
 import { searchByUniqueName } from './search'
 import { checkUniqueNameAvailability } from './uniqueName'
 import { getUser, setProfileInfo } from './user'
@@ -23,8 +23,7 @@ const API = {
   },
   contacts: {
     getContacts,
-    addContact,
-    getContact
+    addContact
   },
   user: {
     getUser,

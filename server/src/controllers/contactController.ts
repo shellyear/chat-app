@@ -145,37 +145,9 @@ const deleteContact = async (req: Request, res: Response) => {
   }
 };
 
-const getContact = async (req: Request, res: Response) => {
-  const { id: contactId } = req.params;
-  const { userId } = req.session;
-
-  try {
-    const contact = await Contact.findOne({
-      userId,
-      contactId,
-    }).populate("contactId", "username profilePicture photos bio");
-
-    if (!contact) {
-      res.status(404).json({
-        code: "CONTACT_NOT_FOUND",
-      });
-      return;
-    }
-
-    res.status(200).json({
-      code: "GET_CONTACT_SUCCESS",
-      data: contact,
-    });
-  } catch (error) {
-    Logger.error(`Error while getting a contact ${error}`, DOMAIN);
-    res.status(500).json({ code: "SERVER_ERROR" });
-  }
-};
-
 const contactController = {
   addContact,
   getContacts,
-  getContact,
   deleteContact,
 };
 
