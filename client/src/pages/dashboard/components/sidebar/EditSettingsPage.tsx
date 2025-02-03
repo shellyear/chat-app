@@ -66,6 +66,7 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
         setUsernameStateInfo(UsernameStateInfo.AVAILABLE)
       }
     } catch (error) {
+      setShowSaveButton(false)
       setUsernameStateInfo(UsernameStateInfo.TAKEN)
     }
   }, 300)
