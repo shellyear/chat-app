@@ -16,8 +16,12 @@ type UniqueNameLookupDoc = {
   reference: IUser | IGroupChat | IChannel;
 };
 
-const searchUniqueNames = async (req: Request<{ query: string }>, res: Response) => {
+const searchUniqueNames = async (
+  req: Request<{ query: string }>,
+  res: Response
+) => {
   const { uniqueName } = req.query;
+  const { userId: currentUserId } = req.session;
 
   if (!uniqueName) {
     res.status(400).json({
@@ -58,15 +62,56 @@ const searchUniqueNames = async (req: Request<{ query: string }>, res: Response)
             as: "channelData",
           },
         },
+        /* Lookup Contact data, to check if found user (by uniqueName) is in contacts of currentUser */
         {
+          $lookup: {
+            from: "contacts",
+            let: { refId: "$referenceId" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$userId", currentUserId] }, // Contact.userId === currentUserId
+                      { $eq: ["$contactId", "$$refId"] }, // Contact.contactId === UniqueName.referenceId
+                    ],
+                  },
+                },
+              },
+            ],
+            as: "contactData",
+          },
+        },
+        {
+          /* add Fields or modify existing ones */
           $addFields: {
+            /* add reference field to output document */
             reference: {
               $cond: {
                 if: { $eq: ["$type", "user"] },
-                then: { $arrayElemAt: ["$userData", 0] },
+                then: {
+                  /* merge $userData and $contactData, prioritizing contact details for name and surname */
+                  $mergeObjects: [
+                    { $arrayElemAt: ["$userData", 0] },
+                    {
+                      name: {
+                        $ifNull: [
+                          { $arrayElemAt: ["$contactData.name", 0] },
+                          "$userData.0.name",
+                        ],
+                      },
+                      surname: {
+                        $ifNull: [
+                          { $arrayElemAt: ["$contactData.surname", 0] },
+                          "$userData.0.surname",
+                        ],
+                      },
+                    },
+                  ],
+                },
                 else: {
                   $cond: {
-                    if: { $eq: ["$type", "group"] },
+                    if: { $eq: ["$type", "groupchat"] },
                     then: { $arrayElemAt: ["$groupChatData", 0] },
                     else: { $arrayElemAt: ["$channelData", 0] },
                   },
@@ -79,9 +124,12 @@ const searchUniqueNames = async (req: Request<{ query: string }>, res: Response)
           $project: {
             userData: 0,
             groupChatData: 0,
+            contactData: 0,
             channelData: 0,
             "reference._id": 0,
             "reference.email": 0,
+            "reference.uniqueName": 0,
+            "reference.userId": 0,
           },
         },
       ]);
