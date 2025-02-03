@@ -77,6 +77,7 @@ const getContacts = async (req: Request, res: Response) => {
     res.status(200).json({ code: "FOUND_CONTACTS_SUCCESS", data: contacts });
     return;
   } catch (error) {
+    Logger.error(`Error getting contact ${error}`, DOMAIN);
     res.status(500).json({ message: "Error fetching contacts" });
     return;
   }
