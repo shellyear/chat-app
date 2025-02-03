@@ -13,7 +13,7 @@ import useSearchBar from '../../hooks/useSearchBar'
 import SearchInput from '../../../../components/SearchInput'
 import { generateChatLink } from '../../../../utils/chat'
 import { UniqueNameLookupDoc } from '../../../../types/search'
-import { getLookupDocId, getLookupDocNaming, getLookupDocProfilePicture } from '../../../../utils/uniqueNamesSearch'
+import { getLookupDocNaming, getLookupDocProfilePicture } from '../../../../utils/uniqueNamesSearch'
 
 interface ISearchBar {
   openSidebarPage: (pageName: SidebarPage) => void
@@ -88,7 +88,7 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
       <div className="flex-grow overflow-y-auto">
         {searchResults.length > 0
           ? searchResults.map((foundLookupDoc) => {
-              const foundLookupDocId = getLookupDocId(foundLookupDoc)
+              const foundLookupDocId = foundLookupDoc.referenceId
               const foundLookupDocNaming = getLookupDocNaming(foundLookupDoc)
               const foundLookupDocProfilePicture = getLookupDocProfilePicture(foundLookupDoc)
               return foundLookupDoc.uniqueName === user.uniqueName ? (
