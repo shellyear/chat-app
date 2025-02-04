@@ -89,7 +89,7 @@ function ChatArea() {
   }
 
   return (
-    <div className="flex-grow flex flex-col">
+    <div className="relative flex-grow flex flex-col">
       <div className="flex items-center justify-between w-full bg-white p-4 border-b border-gray-200 cursor-pointer">
         <button type="button" className="sm:hidden" onClick={() => navigate(-1)}>
           <IoMdArrowBack className="w-5 h-5" />
