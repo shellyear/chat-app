@@ -8,7 +8,7 @@ export const generateChatLink = (username: string, userId: string) => {
   }
 }
 
-enum IdTypeEnum {
+export enum IdTypeEnum {
   UNIQUE_NAME = 'UNIQUE_NAME',
   USER = 'USER',
   CHAT = 'CHAT',
@@ -16,9 +16,17 @@ enum IdTypeEnum {
   GROUP_CHAT = 'GROUP_CHAT'
 }
 
-export const getIdType = (id: string): IdTypeEnum | null => {
+export const getIdMetadata = (
+  id: string
+): {
+  type: IdTypeEnum
+  id: string
+} | null => {
   if (id.startsWith('@')) {
-    return IdTypeEnum.UNIQUE_NAME
+    return {
+      type: IdTypeEnum.UNIQUE_NAME,
+      id: id.slice(1)
+    }
   }
 
   if (id.startsWith('-')) {
@@ -26,20 +34,32 @@ export const getIdType = (id: string): IdTypeEnum | null => {
     const slicedId = id.slice(1)
 
     if (slicedId.length === 10) {
-      return IdTypeEnum.CHANNEL
+      return {
+        type: IdTypeEnum.CHANNEL,
+        id: slicedId
+      }
     }
 
     if (slicedId.length === 9) {
-      return IdTypeEnum.GROUP_CHAT
+      return {
+        type: IdTypeEnum.GROUP_CHAT,
+        id: slicedId
+      }
     }
   }
 
   if (id.length === 9) {
-    return IdTypeEnum.USER
+    return {
+      type: IdTypeEnum.USER,
+      id
+    }
   }
 
   if (id.length === 10) {
-    return IdTypeEnum.CHAT
+    return {
+      type: IdTypeEnum.CHAT,
+      id
+    }
   }
 
   return null

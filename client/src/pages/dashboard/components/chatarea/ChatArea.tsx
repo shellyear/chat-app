@@ -8,6 +8,7 @@ import API from '../../../../api'
 import { IChat } from '../../../../types/chat'
 import useMsgPagination from '../../hooks/useMsgPagination'
 import { IUser } from '../../../../types/user'
+import { getIdMetadata, IdTypeEnum } from '../../../../utils/chat'
 
 function MessageInput() {
   return (
@@ -55,20 +56,27 @@ function ChatArea() {
   const [chat, setChat] = useState<IChat>()
 
   useEffect(() => {
-    const fetchChatData = async () => {
-      try {
-        const {
-          data: { chat, participant }
-        } = await API.chat.getChat(id)
-        setParticipant(participant)
-        setChat(chat)
-      } catch (error) {
-        console.log('Error while fetching chat data')
-      }
+    const idMetadata = getIdMetadata(id)
+    if (!idMetadata) return
+
+    if (idMetadata.type === IdTypeEnum.UNIQUE_NAME) {
+      // fetch base on @uniquName
     }
 
-    if (id) {
-      fetchChatData()
+    if (idMetadata.type === IdTypeEnum.USER) {
+      // fetch based on UserId
+    }
+
+    if (idMetadata.type === IdTypeEnum.CHANNEL) {
+      // fetch base on channelId
+    }
+
+    if (idMetadata.type === IdTypeEnum.GROUP_CHAT) {
+      // fetch based on groupChat
+    }
+
+    if (idMetadata.type === IdTypeEnum.CHAT) {
+      // fetch based on chatId
     }
   }, [id])
 
