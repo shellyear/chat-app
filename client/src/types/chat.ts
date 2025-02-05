@@ -3,3 +3,11 @@ export type IChat = {
   participantsIds: { _id: string; username: string; name: string; email: string }[]
   lastMessageId: { content: string; createdAt: Date }
 }
+
+export type IChatParticipantInfo = {
+  name: string
+  profilePicture?: string
+  bio?: string
+  uniqueName?: string
+  email?: string
+}

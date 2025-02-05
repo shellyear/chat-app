@@ -64,7 +64,7 @@ const getCommunityInfoByUniqueName = async (
         name: foundUser.surname
           ? `${foundUser.name} ${foundUser.surname}`
           : foundUser.name,
-        description: foundUser.bio,
+        bio: foundUser.bio,
         email: foundUser.email ? foundUser.email : undefined,
       };
     }
