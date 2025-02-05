@@ -6,7 +6,7 @@ export enum UniqueNameTypes {
   CHANNEL = "channel",
 }
 
-export type IUniqueNameSchema = {
+export type IUniqueName = {
   uniqueName: string;
   type: string;
   referenceId: string;
@@ -25,9 +25,6 @@ const uniqueNameSchema = new mongoose.Schema({
   referenceId: { type: String, required: true },
 });
 
-const UniqueName = mongoose.model<IUniqueNameSchema>(
-  "UniqueName",
-  uniqueNameSchema
-);
+const UniqueName = mongoose.model<IUniqueName>("UniqueName", uniqueNameSchema);
 
 export default UniqueName;
