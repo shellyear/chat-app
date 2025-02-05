@@ -5,8 +5,8 @@ const router = express.Router();
 
 router.get("/:uniqueName", uniqueNameController.checkUniqueNameAvailability);
 router.get(
-  "/community/:uniqueName",
-  uniqueNameController.getCommunityInfoByUniqueName
+  "/peer/:uniqueName",
+  uniqueNameController.getPeerByUniqueName
 );
 
 export default router;

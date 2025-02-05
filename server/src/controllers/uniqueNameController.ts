@@ -27,7 +27,7 @@ const checkUniqueNameAvailability = async (
 /**
  * Get ChatInfo, GroupChatInfo, ChannelInfo using uniqueName
  */
-const getCommunityInfoByUniqueName = async (
+const getPeerByUniqueName = async (
   req: Request<{
     uniqueName: string;
   }>,
@@ -93,7 +93,7 @@ const getCommunityInfoByUniqueName = async (
 
 const uniqueNameController = {
   checkUniqueNameAvailability,
-  getCommunityInfoByUniqueName,
+  getPeerByUniqueName,
 };
 
 export default uniqueNameController;

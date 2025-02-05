@@ -61,7 +61,7 @@ function ChatArea() {
 
     if (idMetadata.type === IdTypeEnum.UNIQUE_NAME) {
       API.uniqueName
-        .getCommunityInfoByUniqueName(idMetadata.id)
+        .getPeerByUniqueName(idMetadata.id)
         .then(({ data }) => {
           setCommunityInfo(data)
         })
