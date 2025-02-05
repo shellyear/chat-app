@@ -2,7 +2,7 @@ import { getSession, login, logout, verifyCode, setupAccount } from './auth'
 import { getChat, getChatMessages, getChats } from './chat'
 import { addContact, getContacts } from './contact'
 import { searchByUniqueName } from './search'
-import { checkUniqueNameAvailability } from './uniqueName'
+import { checkUniqueNameAvailability, getCommunityInfoByUniqueName } from './uniqueName'
 import { getUser, setProfileInfo } from './user'
 
 const API = {
@@ -30,7 +30,8 @@ const API = {
     setProfileInfo
   },
   uniqueName: {
-    checkUniqueNameAvailability
+    checkUniqueNameAvailability,
+    getCommunityInfoByUniqueName
   }
 }
 

@@ -55,11 +55,17 @@ function ChatArea() {
   const [participant, setParticipant] = useState<IUser>()
   const [chat, setChat] = useState<IChat>()
 
+  const fetchCommunity = async (uniqueName: string) => {
+    await API.uniqueName.getCommunityInfoByUniqueName(uniqueName)
+  }
+
   useEffect(() => {
+    if (!id) return
     const idMetadata = getIdMetadata(id)
     if (!idMetadata) return
 
     if (idMetadata.type === IdTypeEnum.UNIQUE_NAME) {
+      fetchCommunity(idMetadata.id)
       // fetch base on @uniquName
     }
 

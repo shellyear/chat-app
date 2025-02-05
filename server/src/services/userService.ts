@@ -44,8 +44,83 @@ const createUser = async ({
   }
 };
 
+const getUserWithContactOverride = async (
+  currentUserId: string,
+  lookupUserId: string
+) => {
+  const result: {
+    name: string;
+    surname?: string;
+    uniqueName?: string;
+    profilePicture?: string;
+    bio?: string;
+    email: string | null; // sent if lookupUserId is in currentUserId contact list
+  }[] = await User.aggregate([
+    { $match: { userId: lookupUserId } },
+    {
+      $lookup: {
+        from: "contacts",
+        let: { userId: "$userId" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$contactId", "$$userId"] },
+                  { $eq: ["$userId", currentUserId] },
+                ],
+              },
+            },
+          },
+          { $limit: 1 },
+        ],
+        as: "contactData",
+      },
+    },
+    {
+      $addFields: {
+        displayName: {
+          $cond: {
+            if: { $gt: [{ $size: "$contactData" }, 0] },
+            then: { $arrayElemAt: ["$contactData.name", 0] },
+            else: "$name",
+          },
+        },
+        displaySurname: {
+          $cond: {
+            if: { $gt: [{ $size: "$contactData" }, 0] },
+            then: { $arrayElemAt: ["$contactData.surname", 0] },
+            else: "$surname",
+          },
+        },
+        displayEmail: {
+          $cond: {
+            if: { $gt: [{ $size: "$contactData" }, 0] },
+            then: { $arrayElemAt: ["$contactData.email", 0] },
+            else: null,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        profilePicture: 1,
+        uniqueName: 1,
+        bio: 1,
+        email: "$displayEmail",
+        name: "$displayName",
+        surname: "$displaySurname",
+      },
+    },
+  ]);
+
+  return result.length ? result[0] : null;
+};
+
 const userService = {
   createUser,
+  getUserWithContactOverride,
 };
 
 export default userService;

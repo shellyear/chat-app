@@ -7,3 +7,12 @@ export const checkUniqueNameAvailability = async (uniqueName: string) => {
 
   return response.data
 }
+
+/*
+ * get ChatInfo, GroupChatInfo, ChannelInfo by uniqueName
+ */
+export const getCommunityInfoByUniqueName = async (uniqueName: string) => {
+  const response = await apiClient.get(`/uniqueNames/community/${uniqueName}`)
+
+  return response.data
+}
