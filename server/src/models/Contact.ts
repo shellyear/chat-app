@@ -12,7 +12,7 @@ interface IContact {
 
 const ContactSchema = new mongoose.Schema(
   {
-    userId: { type: Number, required: true },
+    userId: { type: Number, required: true, index: true },
     contactId: { type: Number, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true },
