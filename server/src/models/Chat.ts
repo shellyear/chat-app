@@ -10,7 +10,7 @@ export interface IChat {
 
 const ChatSchema = new mongoose.Schema(
   {
-    chatId: { type: String, unique: true, required: true, length: 10 }, // format: 0123456789 - 10 characters
+    chatId: { type: String, unique: true, required: true }, // format: 0123456789 - 10 characters
     participantsIds: [
       {
         type: String,
