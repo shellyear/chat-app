@@ -15,7 +15,7 @@ const getChatById = async (chatId: string) => {
   }
 };
 
-const getUserChats = async (userId: string) => {
+const getUserChats = async (userId: number) => {
   try {
     const chats = await Chat.find({
       participantsIds: { $in: [userId] },

@@ -1,7 +1,7 @@
 import Logger from "../logger";
 import User, { IUser } from "../models/User";
 import cloudinaryService from "./cloudinaryService";
-import uniqueIdService from "./uniqueIdService";
+import peerService from "./peerService";
 
 const DOMAIN = "userService";
 
@@ -17,7 +17,7 @@ const createUser = async ({
   profilePicture?: Express.Multer.File;
 }) => {
   try {
-    const userId = uniqueIdService.generateUserId() as string;
+    const userId = peerService.uniqueIdGenerator.generateUserId();
     const newUser = await User.create({
       userId,
       email,
@@ -45,8 +45,8 @@ const createUser = async ({
 };
 
 const getUserWithContactOverride = async (
-  currentUserId: string,
-  lookupUserId: string
+  currentUserId: number,
+  lookupUserId: number
 ) => {
   const result: {
     name: string;

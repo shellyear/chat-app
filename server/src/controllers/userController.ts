@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import Logger from "../logger";
-import UniqueName, { UniqueNameTypes } from "../models/UniqueName";
+import UniqueName from "../models/UniqueName";
 import cloudinaryService from "../services/cloudinaryService";
+import { PeerTypes } from "../types/peer";
 
 const DOMAIN = "userController";
 
@@ -67,7 +68,7 @@ const setProfileInfo = async (
 
       if (
         existingUniqueName &&
-        existingUniqueName.type === UniqueNameTypes.USER &&
+        existingUniqueName.type === PeerTypes.USER &&
         existingUniqueName.referenceId === userId
       ) {
         existingUniqueName.uniqueName = uniqueName;
@@ -82,7 +83,7 @@ const setProfileInfo = async (
       if (!existingUniqueName) {
         const newUniqueNameDoc = new UniqueName({
           uniqueName,
-          type: UniqueNameTypes.USER,
+          type: PeerTypes.USER,
           referenceId: userId,
         });
         await newUniqueNameDoc.save();

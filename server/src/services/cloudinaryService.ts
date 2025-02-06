@@ -9,7 +9,7 @@ cloudinary.v2.config({
 
 const uploadImageStream = (
   folder: string,
-  userId: string,
+  userId: number,
   profilePicture: Express.Multer.File
 ): Promise<string> => {
   return new Promise((resolve, reject) => {

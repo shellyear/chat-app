@@ -1,8 +1,8 @@
 import mongoose, { Types } from "mongoose";
 
 interface IContact {
-  userId: string;
-  contactId: string;
+  userId: number;
+  contactId: number;
   name: string;
   email: string;
   surname?: string;
@@ -12,8 +12,8 @@ interface IContact {
 
 const ContactSchema = new mongoose.Schema(
   {
-    userId: { type: String, required: true },
-    contactId: { type: String, required: true },
+    userId: { type: Number, required: true },
+    contactId: { type: Number, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true },
     surname: { type: String },

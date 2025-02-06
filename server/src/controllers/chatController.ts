@@ -44,7 +44,9 @@ const sendMessage = async (
     chat.lastMessageId = message._id;
     await chat.save();
 
-    const recipientWs = await wsConnectionService.getConnection(recipientId);
+    const recipientWs = await wsConnectionService.getConnection(
+      Number(recipientId)
+    );
 
     if (recipientWs) {
       recipientWs.send(
@@ -59,7 +61,10 @@ const sendMessage = async (
         })
       );
     } else {
-      await messageQueueService.addUndeliveredMessage(recipientId, message);
+      await messageQueueService.addUndeliveredMessage(
+        Number(recipientId),
+        message
+      );
     }
     res.status(201).send();
   } catch (error) {

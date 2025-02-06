@@ -25,6 +25,7 @@ const Config = {
   CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+  MACHINE_ID: 1,
   // TWILLIO_SID: process.env.TWILLIO_SID || "twillio_sid",
   // TWILLIO_AUTH_TOKEN: process.env.TWILLIO_AUTH_TOKEN || "twillio_auth_token",
   // TWILLIO_PHONE_NUMBER:

@@ -1,17 +1,18 @@
 import { Request, Response } from "express";
 import { IUser } from "../models/User";
 import Logger from "../logger";
-import UniqueName, { UniqueNameTypes } from "../models/UniqueName";
+import UniqueName from "../models/UniqueName";
 import { Types } from "mongoose";
 import { IGroupChat } from "../models/GroupChat";
 import { IChannel } from "../models/Channel";
+import { PeerTypes } from "../types/peer";
 
 const DOMAIN = "searchController";
 
 type UniqueNameLookupDoc = {
   _id: Types.ObjectId;
   uniqueName: string;
-  type: UniqueNameTypes;
+  type: PeerTypes;
   referenceId: string;
   reference: IUser | IGroupChat | IChannel;
 };

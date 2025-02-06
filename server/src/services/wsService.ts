@@ -14,13 +14,13 @@ const setupWebsocketServer = (server: http.Server) => {
     const sessionId =
       cookies[SESSION_COOKIE] || req.headers.authorization?.split(" ")[1];
 
-    if (!sessionId) {
+    if (!sessionId || Number.isNaN(Number(sessionId))) {
       socket.write("HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\n");
       socket.destroy();
       return;
     }
 
-    const sessionData = await sessionService.getSession(sessionId);
+    const sessionData = await sessionService.getSession(Number(sessionId));
 
     if (!sessionData) {
       socket.write("HTTP/1.1 403 Forbidden\r\nConnection: close\r\n\r\n");

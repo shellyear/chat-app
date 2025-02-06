@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 const DOMAIN = "sessionService";
 
 export type ISessionData = {
-  userId: string;
+  userId: number;
   isPersistent: boolean;
 };
 
@@ -37,7 +37,7 @@ const createSession = async (data: ISessionData) => {
   }
 };
 
-const getSession = async (sessionId: string): Promise<ISessionData | null> => {
+const getSession = async (sessionId: number): Promise<ISessionData | null> => {
   try {
     const sessionData = await redisClient.get(`${SESSION_PREFIX}${sessionId}`);
     return sessionData ? JSON.parse(sessionData) : null;
@@ -48,7 +48,7 @@ const getSession = async (sessionId: string): Promise<ISessionData | null> => {
 };
 
 const updateSession = async (
-  sessionId: string,
+  sessionId: number,
   newData: ISessionData,
   isPersistent: boolean = false
 ) => {
@@ -68,7 +68,7 @@ const updateSession = async (
 };
 
 const refreshSession = async (
-  sessionId: string,
+  sessionId: number,
   isPersistent: boolean = false
 ) => {
   const expirationTime = isPersistent
@@ -82,7 +82,7 @@ const refreshSession = async (
   }
 };
 
-const deleteSession = async (sessionID: string) => {
+const deleteSession = async (sessionID: number) => {
   try {
     await redisClient.del(`${SESSION_PREFIX}${sessionID}`);
   } catch (error) {
