@@ -1,8 +1,9 @@
 import { getSession, login, logout, verifyCode, setupAccount } from './auth'
 import { getChat, getChatMessages, getChats } from './chat'
 import { addContact, getContacts } from './contact'
+import { getPeerById } from './peer'
 import { searchByUniqueName } from './search'
-import { checkUniqueNameAvailability, getPeerByUniqueName } from './uniqueName'
+import { checkUniqueNameAvailability } from './uniqueName'
 import { getUser, setProfileInfo } from './user'
 
 const API = {
@@ -30,8 +31,10 @@ const API = {
     setProfileInfo
   },
   uniqueName: {
-    checkUniqueNameAvailability,
-    getPeerByUniqueName
+    checkUniqueNameAvailability
+  },
+  peer: {
+    getPeerById
   }
 }
 

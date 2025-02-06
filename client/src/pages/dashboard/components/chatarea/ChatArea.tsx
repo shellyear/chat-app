@@ -7,7 +7,6 @@ import Avatar from '../../../../components/Avatar'
 import API from '../../../../api'
 import { IChat, IChatParticipantInfo } from '../../../../types/chat'
 import useMsgPagination from '../../hooks/useMsgPagination'
-import { getIdMetadata, IdTypeEnum } from '../../../../utils/chat'
 
 function MessageInput() {
   return (
@@ -51,40 +50,14 @@ function Messages({ chatId }: { chatId: string }) {
 function ChatArea() {
   const { id } = useParams<{ id?: string }>()
   const navigate = useNavigate()
-  const [communityInfo, setCommunityInfo] = useState<IChatParticipantInfo>()
+  const [peerInfo, setPeerInfo] = useState<IChatParticipantInfo>()
   const [chat, setChat] = useState<IChat>()
 
   useEffect(() => {
-    if (!id) return
-    const idMetadata = getIdMetadata(id)
-    if (!idMetadata) return
-
-    if (idMetadata.type === IdTypeEnum.UNIQUE_NAME) {
-      API.uniqueName
-        .getPeerByUniqueName(idMetadata.id)
-        .then(({ data }) => {
-          setCommunityInfo(data)
-        })
-        .catch((err) => {
-          // eslint-disable-next-line no-console
-          console.log(err)
-        })
-    }
-
-    if (idMetadata.type === IdTypeEnum.USER) {
-      // fetch based on UserId
-    }
-
-    if (idMetadata.type === IdTypeEnum.CHANNEL) {
-      // fetch base on channelId
-    }
-
-    if (idMetadata.type === IdTypeEnum.GROUP_CHAT) {
-      // fetch based on groupChat
-    }
-
-    if (idMetadata.type === IdTypeEnum.CHAT) {
-      // fetch based on chatId
+    if (id) {
+      API.peer.getPeerById(id).then((res) => {
+        setPeerInfo(res.data)
+      })
     }
   }, [id])
 
@@ -98,19 +71,19 @@ function ChatArea() {
 
   return (
     <div className="relative flex-grow flex flex-col">
-      {communityInfo && (
+      {peerInfo && (
         <div className="flex items-center justify-between w-full bg-white p-4 border-b border-gray-200 cursor-pointer">
           <button type="button" className="sm:hidden" onClick={() => navigate(-1)}>
             <IoMdArrowBack className="w-5 h-5" />
           </button>
           <div className="flex gap-4 items-center">
-            {communityInfo?.profilePicture ? (
-              <img src={communityInfo?.profilePicture} alt="profilePicture" className="w-10 h-10 rounded-full" />
+            {peerInfo?.profilePicture ? (
+              <img src={peerInfo?.profilePicture} alt="profilePicture" className="w-10 h-10 rounded-full" />
             ) : (
-              <Avatar name={communityInfo?.name} size="sm" />
+              <Avatar name={peerInfo?.name} size="sm" />
             )}
             <div>
-              <p className="font-bold text-base leading-4">{communityInfo?.name}</p>
+              <p className="font-bold text-base leading-4">{peerInfo?.name}</p>
               <p className="text-sm text-gray-500">last seen recently</p>
             </div>
           </div>
