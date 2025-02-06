@@ -12,7 +12,7 @@ const getPeerById = async (req: Request<{ id: string }>, res: Response) => {
 
   if (id.startsWith("@")) {
     const uniqueNameDoc: IUniqueName | null = await UniqueName.findOne({
-      uniqueName: id,
+      uniqueName: id.slice(1),
     });
 
     if (!uniqueNameDoc) {
@@ -55,8 +55,6 @@ const getPeerById = async (req: Request<{ id: string }>, res: Response) => {
   const isNumberId = !isNaN(Number(id)) && !isNaN(parseFloat(id));
 
   if (isNumberId) {
-    let peerInfo = null;
-
     const { type, id: internalId } = peerService.clientFacingIdToInternalId(
       Number(id)
     );
