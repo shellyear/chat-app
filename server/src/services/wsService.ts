@@ -14,7 +14,7 @@ const setupWebsocketServer = (server: http.Server) => {
     const sessionId =
       cookies[SESSION_COOKIE] || req.headers.authorization?.split(" ")[1];
 
-    if (!sessionId || Number.isNaN(Number(sessionId))) {
+    if (!sessionId) {
       socket.write("HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\n");
       socket.destroy();
       return;
