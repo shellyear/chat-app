@@ -37,7 +37,7 @@ const createSession = async (data: ISessionData) => {
   }
 };
 
-const getSession = async (sessionId: number): Promise<ISessionData | null> => {
+const getSession = async (sessionId: string): Promise<ISessionData | null> => {
   try {
     const sessionData = await redisClient.get(`${SESSION_PREFIX}${sessionId}`);
     return sessionData ? JSON.parse(sessionData) : null;
