@@ -2,7 +2,9 @@ import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useSt
 
 import Config from '../config'
 
-interface IWebsocketContext {}
+interface IWebsocketContext {
+  sendMessage: Function
+}
 
 interface IWebsocketProvider {
   children: ReactNode
