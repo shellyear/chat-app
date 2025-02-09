@@ -52,8 +52,11 @@ const setupWebsocketServer = (server: http.Server) => {
       await wsConnectionService.handleUserReconnect(sessionData.userId, ws);
 
       ws.on("message", async (data) => {
-        console.log("message event");
-        console.log({ data: data.toString() });
+        const parsedData = JSON.parse(data.toString());
+
+        if (parsedData.event === 'send_private_message') {
+          console.log('private msg recieved')
+        }
       });
 
       ws.on("close", async () => {

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import Config from '../config'
@@ -17,7 +18,7 @@ function WebsocketProvider({ children }: IWebsocketProvider) {
   const [value, setValue] = useState(null)
   const wsRef = useRef<WebSocket | null>(null)
 
-  useEffect(() => {
+  const createWebSocket = () => {
     const ws = new WebSocket(Config.WEBSOCKET_BASE_URL)
 
     ws.onopen = () => {
@@ -31,18 +32,35 @@ function WebsocketProvider({ children }: IWebsocketProvider) {
       console.log('Message from server', e.data)
     }
 
-    wsRef.current = ws
+    ws.onclose = (e: CloseEvent) => {
+      console.log('WebSocket closed', e)
+      setIsReady(false)
+      setTimeout(() => {
+        console.log('Attempting to reconnect...')
+        createWebSocket()
+      }, 3000) // Try to reconnect to wss after 3 sec
+    }
 
+    wsRef.current = ws
+  }
+
+  useEffect(() => {
+    createWebSocket()
     return () => {
-      ws.close()
+      wsRef.current.close()
       wsRef.current = null
     }
   }, [])
 
   const sendMessage = useMemo(() => {
-    return (message: string | ArrayBufferLike | Blob | ArrayBufferView) => {
+    return (content: string | ArrayBufferLike | Blob | ArrayBufferView, recipientId: number) => {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-        wsRef.current.send(message)
+        const messageData = {
+          event: 'send_private_message',
+          content,
+          recipientId
+        }
+        wsRef.current.send(JSON.stringify(messageData))
       } else {
         console.error('WebSocket is not ready to send messages')
       }
