@@ -5,11 +5,16 @@ import { useEffect, useState } from 'react'
 
 import Avatar from '../../../../components/Avatar'
 import API from '../../../../api'
-import { IChat, IChatParticipantInfo } from '../../../../types/chat'
+import { IChat } from '../../../../types/chat'
 import useMsgPagination from '../../hooks/useMsgPagination'
 import { useWebsocket } from '../../../../contexts/WebsocketContext'
+import { PeerInfo } from '../../../../types/peer'
 
-function MessageInput() {
+interface MessageInputProps {
+  peerId: number
+}
+
+function MessageInput({ peerId }: MessageInputProps) {
   const [text, setText] = useState('')
   const { sendMessage } = useWebsocket()
 
@@ -25,7 +30,7 @@ function MessageInput() {
         />
         <button
           type="button"
-          onClick={() => sendMessage(text)}
+          onClick={() => sendMessage(text, peerId)}
           className="bg-blue-500 text-white rounded-full p-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
         >
           <IoIosSend className="h-5 w-5" />
@@ -57,7 +62,7 @@ function Messages({ chatId }: { chatId: string }) {
 function ChatArea() {
   const { id } = useParams<{ id?: string }>()
   const navigate = useNavigate()
-  const [peerInfo, setPeerInfo] = useState<IChatParticipantInfo>()
+  const [peerInfo, setPeerInfo] = useState<PeerInfo>()
   const [chat, setChat] = useState<IChat>()
 
   useEffect(() => {
@@ -101,7 +106,7 @@ function ChatArea() {
       )}
       <div className="chat-background" />
       {chat?._id ? <Messages chatId={chat._id} /> : <div className="flex-grow overflow-y-auto p-4 space-y-4" />}
-      <MessageInput />
+      {peerInfo && <MessageInput peerId={peerInfo.peerId} />}
     </div>
   )
 }

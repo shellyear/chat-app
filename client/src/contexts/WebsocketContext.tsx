@@ -4,7 +4,7 @@ import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useSt
 import Config from '../config'
 
 interface IWebsocketContext {
-  sendMessage: Function
+  sendMessage: (content: string, peerId: number) => void
 }
 
 interface IWebsocketProvider {
@@ -53,12 +53,12 @@ function WebsocketProvider({ children }: IWebsocketProvider) {
   }, [])
 
   const sendMessage = useMemo(() => {
-    return (content: string | ArrayBufferLike | Blob | ArrayBufferView, recipientId: number) => {
+    return (content: string | ArrayBufferLike | Blob | ArrayBufferView, peerId: number) => {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         const messageData = {
           event: 'send_private_message',
           content,
-          recipientId
+          peerId
         }
         wsRef.current.send(JSON.stringify(messageData))
       } else {
