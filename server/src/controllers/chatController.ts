@@ -1,76 +1,9 @@
 import { Request, Response } from "express";
-import Chat from "../models/Chat";
 import Message from "../models/Message";
-import wsConnectionService from "../services/wsConnectionService";
-import messageQueueService from "../services/messageQueueService";
 import Logger from "../logger";
 import chatService from "../services/chatService";
 
 const DOMAIN = "chatController";
-
-const sendMessage = async (
-  req: Request<
-    { id: string },
-    {},
-    {
-      content: string;
-    }
-  >,
-  res: Response
-) => {
-  const { id: recipientId } = req.params;
-  const { content } = req.body;
-  const { userId: senderId } = req.session;
-
-  try {
-    let chat = await Chat.findOne({
-      participants: { $all: [senderId, recipientId] },
-    });
-
-    if (!chat) {
-      chat = await Chat.create({
-        participantsIds: [senderId, recipientId],
-      });
-    }
-
-    const message = await Message.create({
-      chatId: chat._id,
-      senderId,
-      content,
-    });
-
-    await message.save();
-
-    chat.lastMessageId = message._id;
-    await chat.save();
-
-    const recipientWs = await wsConnectionService.getConnection(
-      Number(recipientId)
-    );
-
-    if (recipientWs) {
-      recipientWs.send(
-        JSON.stringify({
-          type: "NEW_MESSAGE",
-          chatId: chat._id,
-          message: {
-            sender: senderId,
-            content,
-            timestamp: message.createdAt,
-          },
-        })
-      );
-    } else {
-      await messageQueueService.addUndeliveredMessage(
-        Number(recipientId),
-        message
-      );
-    }
-    res.status(201).send();
-  } catch (error) {
-    Logger.error(`Error while sending a message ${error}`, DOMAIN);
-  }
-};
 
 const getChats = async (req: Request, res: Response) => {
   try {
@@ -154,7 +87,6 @@ const getMessages = async (
 };
 
 const chatController = {
-  sendMessage,
   getChats,
   getChat,
   getMessages,
