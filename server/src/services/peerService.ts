@@ -96,16 +96,6 @@ class EntityIDGenerator {
   }
 
   /**
-   * The modulo operation ensures the result is less than maxChatId.
-   * Adding 1 ensures the result is at least 1.
-   */
-  generateChatId() {
-    const id = this.snowflake.generate();
-    const maxChatId = 999_999_999_999;
-    return (id % maxChatId) + 1;
-  }
-
-  /**
    * The modulo operation ensures the result is less than maxChannelId.
    * Adding 1n ensures the result is at least 1.
    */
