@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import {
   DEFAULT_EXPIRATION,
   PERSISTENT_EXPIRATION,
@@ -6,13 +5,9 @@ import {
 import Logger from "../logger";
 import redisClient from "./redisClient";
 import { v4 as uuidv4 } from "uuid";
+import { ISessionData } from "../types/session";
 
 const DOMAIN = "sessionService";
-
-export type ISessionData = {
-  userId: number;
-  isPersistent: boolean;
-};
 
 const SESSION_PREFIX = "session:";
 

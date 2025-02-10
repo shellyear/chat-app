@@ -1,11 +1,12 @@
 import http from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import * as cookie from "cookie";
-import sessionService, { ISessionData } from "./services/sessionService";
+import sessionService from "./services/sessionService";
 import { SESSION_COOKIE } from "./constants/session";
 import wsConnectionService from "./services/wsConnectionService";
 import internal from "stream";
 import { WebSocketEvents, WebSocketMessage } from "./types/ws";
+import { ISessionData } from "./types/session";
 
 const setupWebsocketServer = (server: http.Server) => {
   const wss = new WebSocketServer({ noServer: true });
