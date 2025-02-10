@@ -29,6 +29,7 @@ const sendPrivateMessage = async (
     timestamp: new Date(),
   });
 
+  /* broadcast msg to ensure that sent message is synced across all sender devices  */
   broadcastMessage([currentUserId, recipientId], message);
 };
 
