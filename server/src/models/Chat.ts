@@ -11,7 +11,7 @@ const ChatSchema = new mongoose.Schema(
   {
     participantsIds: [
       {
-        type: String,
+        type: Number,
         ref: "User",
         required: true,
         validate: {
