@@ -5,6 +5,7 @@ export type IChat = {
 }
 
 export type IChatParticipantInfo = {
+  userId: number
   name: string
   profilePicture?: string
   bio?: string

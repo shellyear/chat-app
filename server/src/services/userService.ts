@@ -49,6 +49,7 @@ const getUserWithContactOverride = async (
   lookupUserId: number
 ) => {
   const result: {
+    userId: number;
     name: string;
     surname?: string;
     uniqueName?: string;
@@ -105,6 +106,7 @@ const getUserWithContactOverride = async (
     {
       $project: {
         _id: 0,
+        userId: 1,
         profilePicture: 1,
         uniqueName: 1,
         bio: 1,

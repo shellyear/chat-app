@@ -32,6 +32,7 @@ const getPeerById = async (req: Request<{ id: string }>, res: Response) => {
 
       if (foundUser) {
         peerInfo = {
+          userId: foundUser.userId,
           profilePicture: foundUser.profilePicture,
           uniqueName: foundUser.uniqueName,
           name: foundUser.surname
@@ -67,6 +68,7 @@ const getPeerById = async (req: Request<{ id: string }>, res: Response) => {
 
       if (foundUser) {
         peerInfo = {
+          userId: foundUser.userId,
           profilePicture: foundUser.profilePicture,
           uniqueName: foundUser.uniqueName,
           name: foundUser.surname
