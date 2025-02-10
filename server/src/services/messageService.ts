@@ -9,7 +9,7 @@ const sendPrivateMessage = async (
   currentUserId: number,
   ws: WebSocket
 ) => {
-  const { recipientId, content } = data;
+  const { peerId: recipientId, content } = data;
 
   let chat = await Chat.findOne({
     participants: { $all: [currentUserId, recipientId] },

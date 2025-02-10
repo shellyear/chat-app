@@ -8,21 +8,19 @@ export enum WebSocketEvents {
 interface BaseMessage {
   event: WebSocketEvents;
   content: string;
+  peerId: number;
 }
 
 export interface PrivateMessage extends BaseMessage {
   event: WebSocketEvents.SEND_PRIVATE_MESSAGE;
-  recipientId: number;
 }
 
 export interface GroupMessage extends BaseMessage {
   event: WebSocketEvents.SEND_GROUP_MESSAGE;
-  groupChatId: string;
 }
 
 export interface ChannelMessage extends BaseMessage {
   event: WebSocketEvents.SEND_CHANNEL_MESSAGE;
-  channelId: string;
 }
 
 export type WebSocketMessage = PrivateMessage | GroupMessage | ChannelMessage;
