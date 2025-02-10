@@ -1,11 +1,11 @@
 import http from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import * as cookie from "cookie";
-import sessionService, { ISessionData } from "./sessionService";
-import { SESSION_COOKIE } from "../constants/session";
-import wsConnectionService from "./wsConnectionService";
+import sessionService, { ISessionData } from "./services/sessionService";
+import { SESSION_COOKIE } from "./constants/session";
+import wsConnectionService from "./services/wsConnectionService";
 import internal from "stream";
-import { WebSocketEvents, WebSocketMessage } from "../types/ws";
+import { WebSocketEvents, WebSocketMessage } from "./types/ws";
 
 const setupWebsocketServer = (server: http.Server) => {
   const wss = new WebSocketServer({ noServer: true });
@@ -69,8 +69,4 @@ const setupWebsocketServer = (server: http.Server) => {
   );
 };
 
-const websocketService = {
-  setupWebsocketServer,
-};
-
-export default websocketService;
+export default setupWebsocketServer;

@@ -6,7 +6,7 @@ import routes from "./routes";
 import Config from "./config";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import websocketService from "./services/wsService";
+import websocketServer from "./wsServer";
 
 Logger.init(LogLevel.DEBUG);
 
@@ -38,4 +38,4 @@ const httpServer = app.listen(Config.PORT, () => {
   Logger.info(`Server is listening on port ${Config.PORT}`, DOMAIN);
 });
 
-websocketService.setupWebsocketServer(httpServer);
+websocketServer(httpServer);
