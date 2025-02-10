@@ -29,8 +29,10 @@ const sendPrivateMessage = async (
     timestamp: new Date(),
   });
 
-  /* broadcast msg to ensure that sent message is synced across all sender devices  */
-  broadcastMessage([currentUserId, recipientId], message);
+  /* send message to the sender to ensure that the message is synced across all sender devices  */
+  ws.send(JSON.stringify({ event: "newMessage", message }));
+  
+  broadcastMessage([recipientId], message);
 };
 
 const broadcastMessage = async (userIds: number[], message: any) => {
