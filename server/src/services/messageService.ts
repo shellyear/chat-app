@@ -13,13 +13,12 @@ const sendPrivateMessage = async (
   const { peerId: recipientId, content } = data;
 
   let chat = await Chat.findOne({
-    participants: { $all: [currentUserId, recipientId] },
+    participantsIds: { $all: [currentUserId, recipientId] },
   });
 
   if (!chat) {
     chat = await Chat.create({
-      participants: [currentUserId, recipientId],
-      createdAt: new Date(),
+      participantsIds: [currentUserId, recipientId],
     });
   }
 
@@ -29,6 +28,9 @@ const sendPrivateMessage = async (
     content,
     timestamp: new Date(),
   });
+
+  chat.lastMessageId = message._id;
+  chat.save();
 
   /* send message to the sender to ensure that the message is synced across all sender devices  */
   ws.send(JSON.stringify({ event: "newMessage", message }));

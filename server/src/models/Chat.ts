@@ -9,17 +9,14 @@ export interface IChat {
 
 const ChatSchema = new mongoose.Schema(
   {
-    participantsIds: [
-      {
-        type: Number,
-        ref: "User",
-        required: true,
-        validate: {
-          validator: (v: number[]) => v.length === 2,
-          message: "Chats must have exactly 2 participants",
-        },
+    participantsIds: {
+      type: [Number, Number],
+      validate: {
+        validator: (v: number[]) => v.length === 2,
+        message: "Chats must have exactly 2 participants",
       },
-    ],
+      required: true,
+    },
     lastMessageId: { type: Schema.Types.ObjectId, ref: "Message" },
   },
   { timestamps: true }
