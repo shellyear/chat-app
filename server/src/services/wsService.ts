@@ -5,6 +5,7 @@ import sessionService, { ISessionData } from "./sessionService";
 import { SESSION_COOKIE } from "../constants/session";
 import wsConnectionService from "./wsConnectionService";
 import internal from "stream";
+import { WebSocketEvents, WebSocketMessage } from "../types/ws";
 
 const setupWebsocketServer = (server: http.Server) => {
   const wss = new WebSocketServer({ noServer: true });
@@ -52,10 +53,10 @@ const setupWebsocketServer = (server: http.Server) => {
       await wsConnectionService.handleUserReconnect(sessionData.userId, ws);
 
       ws.on("message", async (data) => {
-        const parsedData = JSON.parse(data.toString());
+        const parsedData: WebSocketMessage = JSON.parse(data.toString());
 
-        if (parsedData.event === 'send_private_message') {
-          console.log('private msg recieved')
+        if (parsedData.event === WebSocketEvents.SEND_PRIVATE_MESSAGE) {
+          console.log("private msg recieved");
         }
       });
 
