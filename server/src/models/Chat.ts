@@ -15,7 +15,7 @@ const ChatSchema = new mongoose.Schema(
         ref: "User",
         required: true,
         validate: {
-          validator: (v: string[]) => v.length === 2,
+          validator: (v: number[]) => v.length === 2,
           message: "Chats must have exactly 2 participants",
         },
       },
