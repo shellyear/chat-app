@@ -2,9 +2,18 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import Config from '../config'
+import { PeerTypes } from '../types/peer'
+import { WebSocketEvents } from '../types/ws'
+
+const eventMapping = {
+  user: WebSocketEvents.SEND_PRIVATE_MESSAGE,
+  group: WebSocketEvents.SEND_GROUP_MESSAGE,
+  channel: WebSocketEvents.SEND_GROUP_MESSAGE,
+  secret_chat: WebSocketEvents.SEND_SECRET_MESSAGE
+}
 
 interface IWebsocketContext {
-  sendMessage: (content: string, peerId: number) => void
+  sendMessage: (content: string, peerId: number, peerType: PeerTypes) => void
 }
 
 interface IWebsocketProvider {
@@ -53,10 +62,11 @@ function WebsocketProvider({ children }: IWebsocketProvider) {
   }, [])
 
   const sendMessage = useMemo(() => {
-    return (content: string | ArrayBufferLike | Blob | ArrayBufferView, peerId: number) => {
+    return (content: string | ArrayBufferLike | Blob | ArrayBufferView, peerId: number, peerType: PeerTypes) => {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        const event = eventMapping[peerType]
         const messageData = {
-          event: 'send_private_message',
+          event,
           content,
           peerId
         }

@@ -8,13 +8,14 @@ import API from '../../../../api'
 import { IChat } from '../../../../types/chat'
 import useMsgPagination from '../../hooks/useMsgPagination'
 import { useWebsocket } from '../../../../contexts/WebsocketContext'
-import { PeerInfo } from '../../../../types/peer'
+import { PeerInfo, PeerTypes } from '../../../../types/peer'
 
 interface MessageInputProps {
+  peerType: PeerTypes
   peerId: number
 }
 
-function MessageInput({ peerId }: MessageInputProps) {
+function MessageInput({ peerId, peerType }: MessageInputProps) {
   const [text, setText] = useState('')
   const { sendMessage } = useWebsocket()
 
@@ -30,7 +31,7 @@ function MessageInput({ peerId }: MessageInputProps) {
         />
         <button
           type="button"
-          onClick={() => sendMessage(text, peerId)}
+          onClick={() => sendMessage(text, peerId, peerType)}
           className="bg-blue-500 text-white rounded-full p-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
         >
           <IoIosSend className="h-5 w-5" />
@@ -106,7 +107,7 @@ function ChatArea() {
       )}
       <div className="chat-background" />
       {chat?._id ? <Messages chatId={chat._id} /> : <div className="flex-grow overflow-y-auto p-4 space-y-4" />}
-      {peerInfo && <MessageInput peerId={peerInfo.peerId} />}
+      {peerInfo && <MessageInput peerId={peerInfo.peerId} peerType={peerInfo.type} />}
     </div>
   )
 }
