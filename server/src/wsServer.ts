@@ -1,12 +1,10 @@
 import http from "http";
-import { WebSocketServer, WebSocket } from "ws";
+import { WebSocketServer } from "ws";
 import * as cookie from "cookie";
 import sessionService from "./services/sessionService";
 import { SESSION_COOKIE } from "./constants/session";
-import wsConnectionService from "./services/wsConnectionService";
 import internal from "stream";
-import { WebSocketEvents, WebSocketMessage } from "./types/ws";
-import { ISessionData } from "./types/session";
+import wsController from "./controllers/wsController";
 
 const setupWebsocketServer = (server: http.Server) => {
   const wss = new WebSocketServer({ noServer: true });
@@ -43,31 +41,7 @@ const setupWebsocketServer = (server: http.Server) => {
     }
   );
 
-  wss.on(
-    "connection",
-    async (
-      ws: WebSocket,
-      req: http.IncomingMessage,
-      sessionData: ISessionData
-    ) => {
-      await wsConnectionService.addConnection(sessionData.userId, ws);
-      await wsConnectionService.handleUserReconnect(sessionData.userId, ws);
-
-      ws.on("message", async (data) => {
-        const parsedData: WebSocketMessage = JSON.parse(data.toString());
-
-        if (parsedData.event === WebSocketEvents.SEND_PRIVATE_MESSAGE) {
-          console.log("private msg recieved");
-        }
-      });
-
-      ws.on("close", async () => {
-        await wsConnectionService.removeConnection(sessionData.userId);
-      });
-
-      ws.send(JSON.stringify({ message: "WebSocket connection authorized" }));
-    }
-  );
+  wss.on("connection", wsController.handleConnection);
 };
 
 export default setupWebsocketServer;

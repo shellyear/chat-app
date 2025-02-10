@@ -2,7 +2,6 @@ import redisClient from "./redisClient";
 import { IMessage } from "../models/Message";
 import Logger from "../logger";
 import { IMessageData } from "../types";
-import { Types } from "mongoose";
 
 const DOMAIN = "MessageQueueService";
 
@@ -36,9 +35,7 @@ const getUndeliveredMessages = async (
       -1
     );
 
-    return undeliveredMessages.map(
-      (messageData) => JSON.parse(messageData) as IMessageData
-    );
+    return undeliveredMessages.map((messageData) => JSON.parse(messageData));
   } catch (error) {
     Logger.error(
       `Error fetching undelivered messages for user ${userId}: ${error}`,
