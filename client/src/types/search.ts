@@ -12,6 +12,6 @@ export type UniqueNameLookupDoc = {
   _id: string
   uniqueName: string
   type: UniqueNameTypes
-  referenceId: string
+  referenceId: number
   reference: IUser | IGroupChat | IChannel
 }

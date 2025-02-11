@@ -11,7 +11,7 @@ export type IContact = {
 export type IFoundContact = {
   name: string
   surname?: string
-  contactId: string
+  contactId: number
   contactDetails: {
     uniqueName?: string
     profilePicture?: string

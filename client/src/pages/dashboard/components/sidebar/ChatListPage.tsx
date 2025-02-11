@@ -128,15 +128,13 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
             })
           : chats.map((item) => (
               <Link
-                to={`/${item._id}`}
-                key={item._id}
+                to={generateChatLink(item.peer.uniqueName, item.peer.peerId)}
+                key={item.peer.peerId}
                 className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
               >
                 <div className="w-12 h-12 bg-gray-300 rounded-full mr-4" />
                 <div className="flex-grow">
-                  <h3 className="font-semibold">
-                    User {item.participantsIds.find((participant) => participant._id !== user.userId).email}
-                  </h3>
+                  <h3 className="font-semibold">{item.peer.displayName}</h3>
                   <p className="text-sm text-gray-500 truncate">Last message...</p>
                 </div>
               </Link>

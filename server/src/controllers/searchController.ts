@@ -13,7 +13,7 @@ type UniqueNameLookupDoc = {
   _id: Types.ObjectId;
   uniqueName: string;
   type: PeerTypes;
-  referenceId: string;
+  referenceId: number;
   reference: IUser | IGroupChat | IChannel;
 };
 

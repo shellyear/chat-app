@@ -1,6 +1,6 @@
-export const generateChatLink = (username: string, userId: string) => {
-  if (username) {
-    return `/@${username}` // for users and channels(in the future)
+export const generateChatLink = (uniqueName: string, userId: number) => {
+  if (uniqueName) {
+    return `/@${uniqueName}` // for users and channels(in the future)
   }
 
   if (userId) {
