@@ -26,6 +26,16 @@ const getUserChats = async (userId: number) => {
           localField: "participantsIds",
           foreignField: "userId",
           as: "participants",
+          pipeline: [
+            {
+              $project: {
+                userId: 1,
+                name: 1,
+                profilePicture: 1,
+                uniqueName: 1,
+              },
+            },
+          ],
         },
       },
       {
