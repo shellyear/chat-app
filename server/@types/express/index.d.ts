@@ -1,5 +1,5 @@
 import * as express from "express";
-import { ISessionData } from "../../src/services/sessionService";
+import { ISessionData } from "../../src/types/session";
 
 declare global {
   namespace Express {
