@@ -137,7 +137,7 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
                   <img
                     src={item.peer.displayPicture}
                     alt="display dialog"
-                    className="w-12 h-12 bg-gray-300 rounded-full"
+                    className="w-12 h-12 bg-gray-300 rounded-full mr-4"
                   />
                 ) : (
                   <Avatar name={item.peer.displayName} size="md" className="mr-4" />
