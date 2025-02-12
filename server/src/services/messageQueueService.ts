@@ -1,14 +1,14 @@
 import { redisClient } from "./redisClients";
 import Logger from "../logger";
 import { IMessageData } from "../types/message";
-import { WebSocketEvents } from "../types/ws";
+import { WebSocketOutgoingEvents } from "../types/ws";
 
 const DOMAIN = "MessageQueueService";
 
 const addUndeliveredMessage = async (
   userId: number,
   message: {
-    event: WebSocketEvents;
+    event: WebSocketOutgoingEvents;
     senderId: number;
     content: string;
     createdAt: Date;
@@ -16,6 +16,7 @@ const addUndeliveredMessage = async (
 ) => {
   try {
     const messageData = JSON.stringify({
+      event: message.event,
       senderId: message.senderId,
       content: message.content,
       createdAt: message.createdAt,

@@ -2,7 +2,7 @@ import Chat from "../../models/Chat";
 import Message from "../../models/Message";
 import { WebSocket } from "ws";
 import wsConnectionService from "./wsConnectionService";
-import { PrivateMessage, WebSocketEvents } from "../../types/ws";
+import { PrivateMessage, WebSocketOutgoingEvents } from "../../types/ws";
 import messageQueueService from "../messageQueueService";
 
 const sendPrivateMessage = async (
@@ -33,7 +33,7 @@ const sendPrivateMessage = async (
   chat.save();
 
   const messagePayload = {
-    event: WebSocketEvents.NEW_PRIVATE_MESSAGE,
+    event: WebSocketOutgoingEvents.NEW_PRIVATE_MESSAGE,
     content: message.content,
     senderId: message.senderId,
     createdAt: message.createdAt,

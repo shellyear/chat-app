@@ -1,5 +1,5 @@
 import http from "http";
-import { WebSocketEvents, WebSocketMessage } from "../types/ws";
+import { WebSocketIncomingEvents, WebSocketMessage } from "../types/ws";
 import { WebSocket } from "ws";
 import { ISessionData } from "../types/session";
 import messageService from "../services/ws/wsMessageService";
@@ -23,17 +23,17 @@ const handleConnection = async (
 
       if (
         ![
-          WebSocketEvents.SEND_PRIVATE_MESSAGE,
-          WebSocketEvents.SEND_GROUP_MESSAGE,
-          WebSocketEvents.SEND_CHANNEL_MESSAGE,
-          WebSocketEvents.SEND_SECRET_MESSAGE,
+          WebSocketIncomingEvents.SEND_PRIVATE_MESSAGE,
+          WebSocketIncomingEvents.SEND_GROUP_MESSAGE,
+          WebSocketIncomingEvents.SEND_CHANNEL_MESSAGE,
+          WebSocketIncomingEvents.SEND_SECRET_MESSAGE,
         ].includes(parsedData.event)
       ) {
         Logger.error(`Unknown socket event ${parsedData.event}`, DOMAIN);
       }
 
       switch (parsedData.event) {
-        case WebSocketEvents.SEND_PRIVATE_MESSAGE:
+        case WebSocketIncomingEvents.SEND_PRIVATE_MESSAGE:
           await messageService.sendPrivateMessage(
             parsedData,
             sessionData.userId,
