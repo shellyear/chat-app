@@ -6,7 +6,7 @@ import {
   PERSISTENT_EXPIRATION,
   SESSION_COOKIE,
 } from "../constants/session";
-import redisClient from "../services/redisClient";
+import { redisClient } from "../services/redisClients";
 import emailService from "../services/emailService";
 import sessionService from "../services/sessionService";
 import Config from "../config";

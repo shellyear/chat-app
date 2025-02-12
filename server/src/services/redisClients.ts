@@ -9,6 +9,8 @@ const redisClient = redis.createClient({
   password: Config.REDIS_USER_PASSWORD,
 });
 
+const redisPubSubClient = redis.createClient();
+
 (async () => {
   try {
     await redisClient.connect();
@@ -18,4 +20,4 @@ const redisClient = redis.createClient({
   }
 })();
 
-export default redisClient;
+export { redisClient, redisPubSubClient };

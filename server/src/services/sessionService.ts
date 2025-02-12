@@ -3,7 +3,7 @@ import {
   PERSISTENT_EXPIRATION,
 } from "../constants/session";
 import Logger from "../logger";
-import redisClient from "./redisClient";
+import { redisClient } from "./redisClients";
 import { v4 as uuidv4 } from "uuid";
 import { ISessionData } from "../types/session";
 

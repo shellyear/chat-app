@@ -1,7 +1,6 @@
-import { Types } from "mongoose";
 import Logger from "../logger";
 import messageQueueService from "./messageQueueService";
-import redisClient from "./redisClient";
+import { redisClient } from "./redisClients";
 import { WebSocket } from "ws";
 
 const DOMAIN = "wsConnectionService";
