@@ -3,13 +3,13 @@ import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useSt
 
 import Config from '../config'
 import { PeerTypes } from '../types/peer'
-import { WebSocketEvents } from '../types/ws'
+import { WebSocketOutgoingEvents } from '../types/ws'
 
 const eventMapping = {
-  user: WebSocketEvents.SEND_PRIVATE_MESSAGE,
-  group: WebSocketEvents.SEND_GROUP_MESSAGE,
-  channel: WebSocketEvents.SEND_GROUP_MESSAGE,
-  secret_chat: WebSocketEvents.SEND_SECRET_MESSAGE
+  user: WebSocketOutgoingEvents.SEND_PRIVATE_MESSAGE,
+  group: WebSocketOutgoingEvents.SEND_GROUP_MESSAGE,
+  channel: WebSocketOutgoingEvents.SEND_GROUP_MESSAGE,
+  secret_chat: WebSocketOutgoingEvents.SEND_SECRET_MESSAGE
 }
 
 interface IWebsocketContext {
@@ -38,7 +38,7 @@ function WebsocketProvider({ children }: IWebsocketProvider) {
 
     ws.onmessage = (e: MessageEvent) => {
       setValue(e.data)
-      console.log('Message from server', e.data)
+      console.log('onmessage', e.data)
     }
 
     ws.onclose = (e: CloseEvent) => {
