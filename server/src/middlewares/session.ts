@@ -3,6 +3,8 @@ import sessionService from "../services/sessionService";
 import Logger from "../logger";
 import { SESSION_COOKIE } from "../constants/session";
 
+const DOMAIN = "sessionMiddleware";
+
 const sessionMiddleware = async (
   req: Request,
   res: Response,
@@ -21,8 +23,9 @@ const sessionMiddleware = async (
 
     if (!sessionData) {
       res.clearCookie(SESSION_COOKIE);
-      Logger.info(
-        "Session expired or invalid, user redirected to login page on FE."
+      Logger.debug(
+        "Session expired or invalid, user redirected to login page on FE.",
+        DOMAIN
       );
       res.status(401).json({ message: "User unauthorized" });
       return;
