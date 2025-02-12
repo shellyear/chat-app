@@ -1,55 +1,35 @@
-import Logger from "../logger";
-import messageQueueService from "./messageQueueService";
-import { redisClient } from "./redisClients";
+import Config from "../../config";
+import Logger from "../../logger";
+import messageQueueService from "../messageQueueService";
+import { redisClient } from "../redisClients";
 import { WebSocket } from "ws";
 
 const DOMAIN = "wsConnectionService";
 
+const connections: Map<number, WebSocket> = new Map();
+
 const addConnection = async (userId: number, ws: WebSocket) => {
   try {
-    await redisClient.set(`ws:${userId}`, JSON.stringify(ws), {
-      EX: 3600, // 1h in s
-    });
-    Logger.info(`WebSocket connection stored for user ${userId}`, DOMAIN);
+    connections.set(userId, ws);
+    await redisClient.hSet("userConnections", userId, Config.MACHINE_ID);
+    Logger.info(`Connection for user ${userId} was added`, DOMAIN);
   } catch (error) {
-    Logger.error(
-      `Error storing WebSocket connection for user ${userId}: ${error}`,
-      DOMAIN
-    );
-    throw error;
+    Logger.error(`Error while adding ws connection: ${error}`, DOMAIN);
   }
 };
 
 const removeConnection = async (userId: number) => {
   try {
-    await redisClient.del(`ws:${userId}`);
-    Logger.info(`WebSocket connection removed for user ${userId}`, DOMAIN);
+    connections.delete(userId);
+    await redisClient.hDel("userConnections", userId.toString());
+    Logger.info(`Connection for user ${userId} was removed`, DOMAIN);
   } catch (error) {
-    Logger.error(
-      `Error removing WebSocket connection for user ${userId}: ${error}`,
-      DOMAIN
-    );
-    throw error;
+    Logger.error(`Error while removing ws connection: ${error}`, DOMAIN);
   }
 };
 
-const getConnection = async (userId: number): Promise<WebSocket | null> => {
-  try {
-    const wsData = await redisClient.get(`ws:${userId}`);
-
-    if (!wsData) {
-      Logger.debug(`No WebSocket connection found for user ${userId}`, DOMAIN);
-      return null;
-    }
-
-    return JSON.parse(wsData) as WebSocket;
-  } catch (error) {
-    Logger.error(
-      `Error retrieving WebSocket connection for user ${userId}: ${error}`,
-      DOMAIN
-    );
-    return null;
-  }
+const getConnection = (userId: number): WebSocket | undefined => {
+  return connections.get(userId);
 };
 
 const handleUserReconnect = async (userId: number, ws: WebSocket) => {

@@ -1,16 +1,16 @@
-import Chat from "../models/Chat";
-import Message from "../models/Message";
+import Chat from "../../models/Chat";
+import Message from "../../models/Message";
 import { WebSocket } from "ws";
 import wsConnectionService from "./wsConnectionService";
-import { PrivateMessage } from "../types/ws";
-import messageQueueService from "./messageQueueService";
+import { PrivateMessage, WebSocketEvents } from "../../types/ws";
+import messageQueueService from "../messageQueueService";
 
 const sendPrivateMessage = async (
-  data: PrivateMessage,
+  msg: PrivateMessage,
   currentUserId: number,
   ws: WebSocket
 ) => {
-  const { peerId: recipientId, content } = data;
+  const { peerId: recipientId, content } = msg;
 
   let chat = await Chat.findOne({
     participantsIds: { $all: [currentUserId, recipientId] },
@@ -32,16 +32,24 @@ const sendPrivateMessage = async (
   chat.lastMessageId = message._id;
   chat.save();
 
-  /* send message to the sender to ensure that the message is synced across all sender devices  */
-  ws.send(JSON.stringify({ event: "newMessage", message }));
+  const messagePayload = {
+    event: WebSocketEvents.NEW_PRIVATE_MESSAGE,
+    content: message.content,
+    senderId: message.senderId,
+    createdAt: message.createdAt,
+  };
+  const messagePayloadJson = JSON.stringify(messagePayload);
 
-  const recipientWs = await wsConnectionService.getConnection(recipientId);
+  const recipienWs = wsConnectionService.getConnection(recipientId);
 
-  if (recipientWs) {
-    recipientWs.send(JSON.stringify({ event: "newMessage", message }));
+  if (recipienWs) {
+    recipienWs.send(messagePayloadJson);
   } else {
-    await messageQueueService.addUndeliveredMessage(recipientId, message);
+    messageQueueService.addUndeliveredMessage(recipientId, messagePayload);
   }
+
+  /* send message to the sender to ensure that the message is synced across all sender devices  */
+  ws.send(messagePayloadJson);
 };
 
 const broadcastMessage = async (userIds: number[], message: any) => {

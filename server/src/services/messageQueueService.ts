@@ -1,17 +1,25 @@
 import { redisClient } from "./redisClients";
 import { IMessage } from "../models/Message";
 import Logger from "../logger";
-import { IMessageData } from "../types";
+import { IMessageData } from "../types/message";
+import { WebSocketEvents } from "../types/ws";
 
 const DOMAIN = "MessageQueueService";
 
-const addUndeliveredMessage = async (userId: number, message: IMessage) => {
+const addUndeliveredMessage = async (
+  userId: number,
+  message: {
+    event: WebSocketEvents;
+    senderId: number;
+    content: string;
+    createdAt: Date;
+  }
+) => {
   try {
     const messageData = JSON.stringify({
       senderId: message.senderId,
       content: message.content,
-      timestamp: message.createdAt,
-      chatId: message.chatId,
+      createdAt: message.createdAt,
     });
 
     await redisClient.lPush(`messages:${userId}`, messageData);

@@ -2,9 +2,10 @@ import http from "http";
 import { WebSocketEvents, WebSocketMessage } from "../types/ws";
 import { WebSocket } from "ws";
 import { ISessionData } from "../types/session";
-import messageService from "../services/messageService";
-import wsConnectionService from "../services/wsConnectionService";
+import messageService from "../services/ws/wsMessageService";
 import Logger from "../logger";
+import pubsubService from "../services/pubsubService";
+import wsConnectionService from "../services/ws/wsConnectionService";
 
 const DOMAIN = "wsController";
 
@@ -14,7 +15,7 @@ const handleConnection = async (
   sessionData: ISessionData
 ) => {
   await wsConnectionService.addConnection(sessionData.userId, ws);
-  await wsConnectionService.handleUserReconnect(sessionData.userId, ws);
+  // await pubsubService.subscribeToUserChannel(sessionData.userId, ws);
 
   ws.on("message", async (data) => {
     try {
@@ -47,7 +48,7 @@ const handleConnection = async (
   });
 
   ws.on("close", async () => {
-    await wsConnectionService.removeConnection(sessionData.userId);
+    Logger.info(`WebSocket closed for user ${sessionData.userId}`, DOMAIN);
   });
 };
 
