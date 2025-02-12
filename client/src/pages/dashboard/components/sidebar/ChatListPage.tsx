@@ -14,6 +14,7 @@ import SearchInput from '../../../../components/SearchInput'
 import { generateChatLink } from '../../../../utils/chat'
 import { UniqueNameLookupDoc } from '../../../../types/search'
 import { getLookupDocNaming, getLookupDocProfilePicture } from '../../../../utils/uniqueNamesSearch'
+import Avatar from '../../../../components/Avatar'
 
 interface ISearchBar {
   openSidebarPage: (pageName: SidebarPage) => void
@@ -132,7 +133,16 @@ function ChatListPage({ openSidebarPage }: IChatListPageProps) {
                 key={item.peer.peerId}
                 className="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
               >
-                <div className="w-12 h-12 bg-gray-300 rounded-full mr-4" />
+                {item.peer.displayPicture ? (
+                  <img
+                    src={item.peer.displayPicture}
+                    alt="display dialog"
+                    className="w-12 h-12 bg-gray-300 rounded-full"
+                  />
+                ) : (
+                  <Avatar name={item.peer.displayName} size="md" className="mr-4" />
+                )}
+
                 <div className="flex-grow">
                   <h3 className="font-semibold">{item.peer.displayName}</h3>
                   <p className="text-sm text-gray-500 truncate">Last message...</p>

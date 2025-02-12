@@ -48,6 +48,7 @@ const handleConnection = async (
   });
 
   ws.on("close", async () => {
+    await wsConnectionService.removeConnection(sessionData.userId);
     Logger.info(`WebSocket closed for user ${sessionData.userId}`, DOMAIN);
   });
 };
