@@ -1,5 +1,4 @@
 import { redisClient } from "./redisClients";
-import { IMessage } from "../models/Message";
 import Logger from "../logger";
 import { IMessageData } from "../types/message";
 import { WebSocketEvents } from "../types/ws";

@@ -1,11 +1,6 @@
 import mongoose from "mongoose";
 import { PeerTypes } from "../types/peer";
-
-export type IUniqueName = {
-  uniqueName: string;
-  type: string;
-  referenceId: number;
-};
+import { IUniqueName } from "../types/uniqueName";
 
 const uniqueNameSchema = new mongoose.Schema({
   uniqueName: {

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import peerService from "../services/peerService";
-import UniqueName, { IUniqueName } from "../models/UniqueName";
+import UniqueName from "../models/UniqueName";
+import { IUniqueName } from "../types/uniqueName";
 import userService from "../services/userService";
 import { PeerTypes } from "../types/peer";
 

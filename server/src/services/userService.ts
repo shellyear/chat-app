@@ -1,5 +1,8 @@
+import { HydratedDocument } from "mongoose";
 import Logger from "../logger";
-import User, { IUser } from "../models/User";
+import User from "../models/User";
+import { IUser } from "../types/user";
+
 import cloudinaryService from "./cloudinaryService";
 import peerService from "./peerService";
 
@@ -18,7 +21,7 @@ const createUser = async ({
 }) => {
   try {
     const userId = peerService.uniqueIdGenerator.generateUserId();
-    const newUser = await User.create({
+    const newUser: HydratedDocument<IUser> = await User.create({
       userId,
       email,
       name,
@@ -37,7 +40,7 @@ const createUser = async ({
 
     await newUser.save();
 
-    return newUser as IUser;
+    return newUser;
   } catch (error) {
     Logger.error(`Error while creating a user ${error}`, DOMAIN);
     throw error;

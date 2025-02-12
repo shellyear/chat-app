@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { IUser } from "../models/User";
 import Logger from "../logger";
 import UniqueName from "../models/UniqueName";
 import { Types } from "mongoose";
-import { IGroupChat } from "../models/GroupChat";
-import { IChannel } from "../models/Channel";
 import { PeerTypes } from "../types/peer";
+import { IUser } from "../types/user";
+import { IGroupChat } from "../types/groupChat";
+import { IChannel } from "../types/channel";
 
 const DOMAIN = "searchController";
 

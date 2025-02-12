@@ -1,12 +1,5 @@
 import mongoose from "mongoose";
-
-export interface IChannel {
-  channelId: number;
-  name: string;
-  uniqueName: string;
-  description?: string;
-  subscribers: number[];
-}
+import { IChannel } from "../types/channel";
 
 const channelSchema = new mongoose.Schema({
   channelId: { type: Number, unique: true, required: true }, // format: -0123456789

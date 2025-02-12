@@ -1,17 +1,5 @@
-import mongoose, { Schema, Document, Types } from "mongoose";
-
-type IImageUrl = string;
-
-export interface IUser extends Document {
-  userId: number;
-  email: string;
-  uniqueName?: string;
-  name?: string;
-  surname?: string;
-  bio?: string;
-  profilePicture?: IImageUrl;
-  // photos?: IImageUrl[];
-}
+import mongoose, { Schema } from "mongoose";
+import { IUser } from "../types/user";
 
 const UserSchema = new Schema<IUser>({
   userId: {

@@ -1,14 +1,5 @@
-import mongoose, { Types } from "mongoose";
-
-interface IContact {
-  userId: number;
-  contactId: number;
-  name: string;
-  email: string;
-  surname?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import mongoose from "mongoose";
+import { IContact } from "../types/contact";
 
 const ContactSchema = new mongoose.Schema(
   {

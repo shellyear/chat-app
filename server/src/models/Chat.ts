@@ -1,11 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-
-export interface IChat {
-  participantsIds: number[];
-  lastMessageId: Schema.Types.ObjectId;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { IChat } from "../types/chat";
 
 const ChatSchema = new mongoose.Schema(
   {
