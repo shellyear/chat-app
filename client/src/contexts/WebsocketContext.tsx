@@ -3,7 +3,7 @@ import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useSt
 
 import Config from '../config'
 import { PeerTypes } from '../types/peer'
-import { WebSocketOutgoingEvents } from '../types/ws'
+import { IncomingWebSocketMessage, WebSocketIncomingEvents, WebSocketOutgoingEvents } from '../types/ws'
 
 const eventMapping = {
   user: WebSocketOutgoingEvents.SEND_PRIVATE_MESSAGE,
@@ -19,6 +19,8 @@ interface IWebsocketContext {
 interface IWebsocketProvider {
   children: ReactNode
 }
+
+const notificationSound = new Audio('/telegram_notification.mp3')
 
 export const WebsocketContext = createContext<IWebsocketContext | undefined>(undefined)
 
@@ -37,8 +39,16 @@ function WebsocketProvider({ children }: IWebsocketProvider) {
     }
 
     ws.onmessage = (e: MessageEvent) => {
-      setValue(e.data)
-      console.log('onmessage', e.data)
+      try {
+        const parsedData: IncomingWebSocketMessage = JSON.parse(e.data)
+        notificationSound.play()
+        if (parsedData.event === WebSocketIncomingEvents.NEW_PRIVATE_MESSAGE) {
+          setValue(e.data)
+          console.log('onmessage', parsedData)
+        }
+      } catch (error) {
+        console.log('Error while getting a message', new Date())
+      }
     }
 
     ws.onclose = (e: CloseEvent) => {

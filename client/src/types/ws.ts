@@ -11,3 +11,15 @@ export enum WebSocketIncomingEvents {
   NEW_CHANNEL_MESSAGE = 'new_channel_message',
   NEW_SECRET_MESSAGE = 'new_secret_message'
 }
+
+interface IncomingBaseMessage {
+  event: WebSocketIncomingEvents
+  content: string
+  peerId: number
+}
+
+export interface IncomingPrivateMessage extends IncomingBaseMessage {
+  event: WebSocketIncomingEvents.NEW_PRIVATE_MESSAGE
+}
+
+export type IncomingWebSocketMessage = IncomingPrivateMessage
