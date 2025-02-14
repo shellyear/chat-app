@@ -1,5 +1,5 @@
 export interface IUser {
-  userId: string
+  userId: number
   name: string // required by default, set upon registration
   email: string // // required by default, set upon registration
   uniqueName?: string

@@ -127,7 +127,7 @@ function EditSettingsPage({ openSidebarPage }: IEditSettingPageProps) {
 
   const handleSubmit = async () => {
     try {
-      const response = await API.user.setProfileInfo(user.userId, {
+      const response = await API.user.setProfileInfo({
         name,
         surname,
         uniqueName: username,
