@@ -10,6 +10,7 @@ const addUndeliveredMessage = async (
   message: {
     event: WebSocketOutgoingEvents;
     senderId: number;
+    peerId: number;
     content: string;
     createdAt: Date;
   }
@@ -18,6 +19,7 @@ const addUndeliveredMessage = async (
     const messageData = JSON.stringify({
       event: message.event,
       senderId: message.senderId,
+      peerId: message.peerId,
       content: message.content,
       createdAt: message.createdAt,
     });

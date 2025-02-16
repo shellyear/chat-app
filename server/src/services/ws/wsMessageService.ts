@@ -32,24 +32,33 @@ const sendPrivateMessage = async (
   chat.lastMessageId = message._id;
   chat.save();
 
-  const messagePayload = {
+  const messagePayloadBase = {
     event: WebSocketOutgoingEvents.NEW_PRIVATE_MESSAGE,
+    senderId: currentUserId,
     content: message.content,
-    senderId: message.senderId,
     createdAt: message.createdAt,
   };
-  const messagePayloadJson = JSON.stringify(messagePayload);
+
+  const currentUserPayload = {
+    ...messagePayloadBase,
+    peerId: recipientId,
+  };
+
+  const recipientPayload = {
+    ...messagePayloadBase,
+    peerId: currentUserId,
+  };
 
   const recipienWs = wsConnectionService.getConnection(recipientId);
 
   if (recipienWs) {
-    recipienWs.send(messagePayloadJson);
+    recipienWs.send(JSON.stringify(recipientPayload));
   } else {
-    messageQueueService.addUndeliveredMessage(recipientId, messagePayload);
+    messageQueueService.addUndeliveredMessage(recipientId, recipientPayload);
   }
 
   /* send message to the sender to ensure that the message is synced across all sender devices  */
-  ws.send(messagePayloadJson);
+  ws.send(JSON.stringify(currentUserPayload));
 };
 
 const broadcastMessage = async (userIds: number[], message: any) => {

@@ -6,6 +6,7 @@ import Dashboard from './pages/dashboard/Dashboard'
 import AuthProvider from './contexts/AuthContext'
 import WebsocketProvider from './contexts/WebsocketContext'
 import ChatArea from './pages/dashboard/components/chatarea/ChatArea'
+import MessagesProvider from './contexts/MessagesContext'
 
 function App() {
   return (
@@ -17,9 +18,11 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <WebsocketProvider>
-                  <Dashboard />
-                </WebsocketProvider>
+                <MessagesProvider>
+                  <WebsocketProvider>
+                    <Dashboard />
+                  </WebsocketProvider>
+                </MessagesProvider>
               </ProtectedRoute>
             }
           >

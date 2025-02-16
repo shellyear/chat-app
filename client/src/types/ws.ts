@@ -16,6 +16,7 @@ interface IncomingBaseMessage {
   event: WebSocketIncomingEvents
   content: string
   peerId: number
+  senderId: number
 }
 
 export interface IncomingPrivateMessage extends IncomingBaseMessage {

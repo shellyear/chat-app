@@ -9,6 +9,8 @@ import { IChat } from '../../../../types/chat'
 import useMsgPagination from '../../hooks/useMsgPagination'
 import { useWebsocket } from '../../../../contexts/WebsocketContext'
 import { PeerInfo, PeerTypes } from '../../../../types/peer'
+import { useMessages } from '../../../../contexts/MessagesContext'
+import { useAuth } from '../../../../contexts/AuthContext'
 
 interface MessageInputProps {
   peerType: PeerTypes
@@ -41,21 +43,27 @@ function MessageInput({ peerId, peerType }: MessageInputProps) {
   )
 }
 
-function Messages({ peerId }: { peerId: number }) {
-  const { messages, totalMessages, loading, setPage } = useMsgPagination(peerId)
+function Messages({ peerId, currentUserId }: { peerId: number; currentUserId: number }) {
+  // const { messages, totalMessages, loading, setPage } = useMsgPagination(peerId)
+  const { messages } = useMessages()
+  const dialogMessages = messages[peerId]
 
   return (
     <div className="flex-grow overflow-y-auto p-4 space-y-4">
-      {/* Sample messages */}
-      <div className="flex justify-end">
-        <div className="bg-blue-500 text-white rounded-lg py-2 px-4 max-w-xs">Hello! How are you?</div>
-      </div>
-      <div className="flex justify-start">
-        <div className="bg-gray-200 rounded-lg py-2 px-4 max-w-xs">
-          Hi there! I'm doing well, thanks for asking. How about you?
-        </div>
-      </div>
-      {/* Add more messages as needed */}
+      {dialogMessages?.map((msg) => {
+        if (msg.senderId === currentUserId) {
+          return (
+            <div className="flex justify-end">
+              <div className="bg-blue-500 text-white rounded-lg py-2 px-4 max-w-xs">{msg.content}</div>
+            </div>
+          )
+        }
+        return (
+          <div className="flex justify-start">
+            <div className="bg-gray-200 rounded-lg py-2 px-4 max-w-xs">{msg.content}</div>
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -63,6 +71,7 @@ function Messages({ peerId }: { peerId: number }) {
 function ChatArea() {
   const { id } = useParams<{ id?: string }>()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [peerInfo, setPeerInfo] = useState<PeerInfo>()
 
   useEffect(() => {
@@ -105,7 +114,11 @@ function ChatArea() {
         </div>
       )}
       <div className="chat-background" />
-      {peerInfo ? <Messages peerId={peerInfo.peerId} /> : <div className="flex-grow overflow-y-auto p-4 space-y-4" />}
+      {peerInfo ? (
+        <Messages peerId={peerInfo.peerId} currentUserId={user.userId} />
+      ) : (
+        <div className="flex-grow overflow-y-auto p-4 space-y-4" />
+      )}
       {peerInfo && <MessageInput peerId={peerInfo.peerId} peerType={peerInfo.type} />}
     </div>
   )

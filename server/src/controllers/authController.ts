@@ -132,6 +132,7 @@ const verify = async (
     res.status(200).json({
       code: "VERIFICATION_SUCCESS",
       user: {
+        userId: user.userId,
         email: user.email,
         profilePicture: user.profilePicture,
         name: user.name,
@@ -203,6 +204,7 @@ const setupAccount = async (
       code: "SETUP_ACCOUNT_SUCCESS",
       message: "Account setup complete, you are now signed in",
       user: {
+        userId: newUser.userId,
         email: newUser.email,
         name: newUser.name,
         surname: newUser.surname,
@@ -248,6 +250,7 @@ const session = async (req: Request, res: Response) => {
 
     res.status(200).json({
       user: {
+        userId: user.userId,
         email: user.email,
         profilePicture: user.profilePicture,
         name: user.name,

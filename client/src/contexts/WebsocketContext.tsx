@@ -4,6 +4,7 @@ import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useSt
 import Config from '../config'
 import { PeerTypes } from '../types/peer'
 import { IncomingWebSocketMessage, WebSocketIncomingEvents, WebSocketOutgoingEvents } from '../types/ws'
+import { useMessages } from './MessagesContext'
 
 const eventMapping = {
   user: WebSocketOutgoingEvents.SEND_PRIVATE_MESSAGE,
@@ -26,8 +27,8 @@ export const WebsocketContext = createContext<IWebsocketContext | undefined>(und
 
 function WebsocketProvider({ children }: IWebsocketProvider) {
   const [isReady, setIsReady] = useState(false)
-  const [value, setValue] = useState(null)
   const wsRef = useRef<WebSocket | null>(null)
+  const { addMessage } = useMessages()
 
   const createWebSocket = () => {
     const ws = new WebSocket(Config.WEBSOCKET_BASE_URL)
@@ -43,7 +44,7 @@ function WebsocketProvider({ children }: IWebsocketProvider) {
         const parsedData: IncomingWebSocketMessage = JSON.parse(e.data)
         notificationSound.play()
         if (parsedData.event === WebSocketIncomingEvents.NEW_PRIVATE_MESSAGE) {
-          setValue(e.data)
+          addMessage(parsedData.peerId, parsedData)
           console.log('onmessage', parsedData)
         }
       } catch (error) {
@@ -87,7 +88,7 @@ function WebsocketProvider({ children }: IWebsocketProvider) {
     }
   }, [])
 
-  const contextValue = useMemo(() => ({ value, isReady, sendMessage }), [isReady, sendMessage, value])
+  const contextValue = useMemo(() => ({ isReady, sendMessage }), [isReady, sendMessage])
 
   return <WebsocketContext.Provider value={contextValue}>{children}</WebsocketContext.Provider>
 }
