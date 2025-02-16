@@ -16,7 +16,7 @@ export const getChat = async (chatId: string) => {
   return response.data
 }
 
-export const getChatMessages = async (chatId: string, page: number, limit?: number) => {
+export const getChatMessages = async (peerId: number, page: number, limit?: number) => {
   const response = await apiClient.get<{
     code: string
     data: {
@@ -27,7 +27,7 @@ export const getChatMessages = async (chatId: string, page: number, limit?: numb
         totalMessages: number
       }
     }
-  }>(`/chats/${chatId}/messages`, {
+  }>(`/chats/${peerId}/messages`, {
     params: {
       page,
       limit

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 
 import API from '../../../api'
 
-const useMsgPagination = (chatId: string, initialPage = 1, pageSize = 20) => {
+const useMsgPagination = (peerId: number, initialPage = 1, pageSize = 20) => {
   const [page, setPage] = useState(initialPage)
   const [messages, setMessages] = useState([])
   const [totalMessages, setTotalMessages] = useState(0)
@@ -11,7 +11,7 @@ const useMsgPagination = (chatId: string, initialPage = 1, pageSize = 20) => {
   const fetchMessages = async () => {
     setLoading(true)
     try {
-      const response = await API.chat.getChatMessages(chatId, page, pageSize)
+      const response = await API.chat.getChatMessages(peerId, page, pageSize)
       setMessages(response.data.messages)
       setTotalMessages(response.data.pagination.totalMessages)
     } catch (error) {

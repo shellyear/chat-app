@@ -41,8 +41,8 @@ function MessageInput({ peerId, peerType }: MessageInputProps) {
   )
 }
 
-function Messages({ chatId }: { chatId: string }) {
-  const { messages, totalMessages, loading, setPage } = useMsgPagination(chatId)
+function Messages({ peerId }: { peerId: number }) {
+  const { messages, totalMessages, loading, setPage } = useMsgPagination(peerId)
 
   return (
     <div className="flex-grow overflow-y-auto p-4 space-y-4">
@@ -64,7 +64,6 @@ function ChatArea() {
   const { id } = useParams<{ id?: string }>()
   const navigate = useNavigate()
   const [peerInfo, setPeerInfo] = useState<PeerInfo>()
-  const [chat, setChat] = useState<IChat>()
 
   useEffect(() => {
     if (id) {
@@ -106,7 +105,7 @@ function ChatArea() {
         </div>
       )}
       <div className="chat-background" />
-      {chat?._id ? <Messages chatId={chat._id} /> : <div className="flex-grow overflow-y-auto p-4 space-y-4" />}
+      {peerInfo ? <Messages peerId={peerInfo.peerId} /> : <div className="flex-grow overflow-y-auto p-4 space-y-4" />}
       {peerInfo && <MessageInput peerId={peerInfo.peerId} peerType={peerInfo.type} />}
     </div>
   )
