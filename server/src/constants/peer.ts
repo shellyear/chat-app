@@ -15,4 +15,4 @@ export const PEER_ID_RANGES = {
     MIN: -2002147483648,
     MAX: -1997852516353,
   },
-};
+} as const;
