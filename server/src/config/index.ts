@@ -30,7 +30,7 @@ const Config = {
   // TWILLIO_AUTH_TOKEN: process.env.TWILLIO_AUTH_TOKEN || "twillio_auth_token",
   // TWILLIO_PHONE_NUMBER:
   //   process.env.TWILLIO_PHONE_NUMBER || "twillio_phone_number",
-};
+} as const;
 
 console.log({ Config });
 
