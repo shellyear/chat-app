@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "nodemon src/index.ts",
+    "prodev": "nodemon --exec 'node --trace-gc -r ts-node/register' src/index.ts",
     "start": "ts-node src/index.ts",
     "test": "echo \"Err`or: no test specified\" && exit 1",
     "build": ""
